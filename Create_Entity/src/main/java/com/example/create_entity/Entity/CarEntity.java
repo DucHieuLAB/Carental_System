@@ -1,6 +1,8 @@
 package com.example.create_entity.Entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "cars")
@@ -21,6 +23,10 @@ public class CarEntity {
     @JoinColumn(name = "parking_id",nullable = false)
     private ParkingEntity parkingEntity;
 
+    @OneToMany(
+            mappedBy = "car"
+    )
+    private List<CarImageEntity> carImageEntities = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_detail_id",nullable = false)
@@ -55,4 +61,6 @@ public class CarEntity {
 
     @Column(name = "img ")
     private String img;
+
+
 }

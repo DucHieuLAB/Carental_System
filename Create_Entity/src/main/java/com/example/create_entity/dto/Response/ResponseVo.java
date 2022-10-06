@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseDriver {
+public class ResponseVo {
     boolean status;
     String message;
     Object data;
