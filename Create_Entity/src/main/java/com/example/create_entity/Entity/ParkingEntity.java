@@ -1,6 +1,8 @@
 package com.example.create_entity.Entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -8,11 +10,14 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "parkings")
 public class ParkingEntity {
 
     @Id
     @Column(name = "parking_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "address")
@@ -25,4 +30,7 @@ public class ParkingEntity {
 
     @Column(name = "phone")
     private String phone;
+
+    @Column(name = "status")
+    private int status;
 }

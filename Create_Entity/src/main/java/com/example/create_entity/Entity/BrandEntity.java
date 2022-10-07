@@ -1,65 +1,37 @@
 package com.example.create_entity.Entity;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "brands")
 public class BrandEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brand_id")
-    private long brandId;
+    @Column(name = "id")
+    private long id;
 
-    @Column(nullable = false,length = 100)
-    private String brandName;
+    @Column(name = "name",nullable = false,length = 100)
+    private String name;
 
-    @Column
-    private String brandImg;
+    @Column(name = "img")
+    private String img;
 
-    @Column
+    @Column(name = "description",length = 3000)
     private String description;
+
+    @Column(name = "status")
+    private int status;
 
     @OneToMany(
             mappedBy = "brand"
     )
     private List<CarEntity> carEntities = new ArrayList<>();
 
-    public BrandEntity(){}
-
-    public BrandEntity(long brandId, String brandName, String brandImg, String description) {
-        this.brandId = brandId;
-        this.brandName = brandName;
-        this.brandImg = brandImg;
-        this.description = description;
-    }
-
-    public long getBrandId() {
-        return brandId;
-    }
-
-    public String getBrandName() {
-        return brandName;
-    }
-
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
-    }
-
-    public String getBrandImg() {
-        return brandImg;
-    }
-
-    public void setBrandImg(String brandImg) {
-        this.brandImg = brandImg;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

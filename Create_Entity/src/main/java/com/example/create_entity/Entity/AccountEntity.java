@@ -11,6 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "Accounts",
         uniqueConstraints = {
@@ -18,11 +19,9 @@ import java.util.Date;
 public class AccountEntity   {
 
     @Id
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id",nullable = false)
     private Long ID;
-
 
     @Column(name = "user_name", nullable = false)
     private String Username;
@@ -32,7 +31,6 @@ public class AccountEntity   {
 
     @Column(name = "full_name", nullable = false)
     private String FullName;
-
 
     @Column(name = "dob")
     @Temporal(TemporalType.DATE)
@@ -82,10 +80,6 @@ public class AccountEntity   {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id")
     private DistrictsEntity districtsEntity;
-
-    public AccountEntity() {
-
-    }
 
     @Override
     public String toString() {

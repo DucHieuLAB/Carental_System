@@ -1,14 +1,19 @@
 package com.example.create_entity.Entity;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "cars")
 public class CarEntity {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "car_id")
     private long carId;
 
@@ -28,9 +33,10 @@ public class CarEntity {
     )
     private List<CarImageEntity> carImageEntities = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_detail_id",nullable = false)
-    private BookingDetailEntity bookingDetailEntity  ;
+    @OneToMany(
+            mappedBy = "car"
+    )
+    private List<BookingDetailEntity> bookingDetailEntities = new ArrayList<>();
 
     @Column(name = "year_of_manufacture ")
     private long yearOfManufacture;
@@ -53,14 +59,10 @@ public class CarEntity {
     @Column(name = "gears")
     private String gears;
 
-    @Column(name = "status ")
+    @Column(name = "status",nullable = false)
     private int status;
 
     @Column(name = "description ")
     private String description;
-
-    @Column(name = "img ")
-    private String img;
-
 
 }
