@@ -74,12 +74,12 @@ public class AccountEntity   {
     private String Address;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "role_Id")
     private RoleEntity roleEntity;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "district_id")
     private DistrictsEntity districtsEntity;
 

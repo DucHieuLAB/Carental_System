@@ -30,4 +30,15 @@ public class BookingDetailEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id",nullable = false,unique = true)
     private BookingEntity bookingEntity;
+
+
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "car_id")
+    private CarEntity car;
+
+
+
+
+
 }

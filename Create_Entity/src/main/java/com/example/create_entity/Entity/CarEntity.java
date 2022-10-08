@@ -28,9 +28,9 @@ public class CarEntity {
     )
     private List<CarImageEntity> carImageEntities = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_detail_id",nullable = false)
-    private BookingDetailEntity bookingDetailEntity  ;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "booking_detail_id",nullable = false)
+//    private BookingDetailEntity bookingDetailEntity  ;
 
     @Column(name = "year_of_manufacture ")
     private long yearOfManufacture;
