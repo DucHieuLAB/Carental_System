@@ -2,6 +2,7 @@ package com.example.create_entity;
 
 
 import com.example.create_entity.Entity.AccountEntity;
+import com.example.create_entity.Entity.DistrictsEntity;
 import com.example.create_entity.Entity.DriverEntity;
 import com.example.create_entity.Entity.RoleEntity;
 import com.example.create_entity.Repository.AccountRepository;
@@ -79,6 +80,11 @@ public class TestDemo {
 
     @Test
     public void testDistrict() throws ParseException {
+
+        System.out.println("     -  sss ss ss      -".toUpperCase().trim().replace(" ",""));
+
+
+
 
     }
 }

@@ -2,10 +2,23 @@ package com.example.create_entity.Repository;
 
 import com.example.create_entity.Entity.AccountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface AccountRepository extends JpaRepository<AccountEntity,Long>{
+public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
+
+    @Query(value = "SELECT * FROM accounts where user_name = ?1 ", nativeQuery = true)
+    List<AccountEntity> Check_username(String username);
+
+    @Query(value = "SELECT * FROM accounts where  email =?1", nativeQuery = true)
+    List<AccountEntity> Check_email(String email);
+//    @Query(value = "SELECT * FROM AccountEntity WHERE email = ?1 ", nativeQuery = true)
+//    AccountEntity Check_email(String username);
+
+
 
 
 }
