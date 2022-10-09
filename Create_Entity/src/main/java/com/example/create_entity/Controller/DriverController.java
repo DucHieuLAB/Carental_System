@@ -167,13 +167,14 @@ public class DriverController {
         return new ResponseEntity<>(driverEntities, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/driver/Delete_Status", method = RequestMethod.POST)
+    @RequestMapping(value = "/driver/Change_Status", method = RequestMethod.POST)
     public ResponseEntity<?> Change_Status_Driver(Long id) {
         ReposMesses reposMesses = new ReposMesses();
         DriverEntity driverEntities = driverRepository.GetDriverById(id);
         if (driverEntities != null) {
             driverEntities.getAccountEntity().setStatus(0);
             driverEntities.setStatus(0);
+            driverRepository.save(driverEntities);
         } else {
             reposMesses.setMess("Delete Driver Fail ! ");
             return new ResponseEntity<>(reposMesses, HttpStatus.OK);

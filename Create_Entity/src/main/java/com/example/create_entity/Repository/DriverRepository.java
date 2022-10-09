@@ -18,6 +18,9 @@ public interface DriverRepository extends JpaRepository<DriverEntity,Integer> {
     DriverEntity GetDriverById(Long id);
 
 
+
+
+
 //    @Modifying
 //    @Transactional
 //    @Query(value = "DELETE FROM driver WHERE code = ?1 ",nativeQuery = true)
@@ -25,7 +28,7 @@ public interface DriverRepository extends JpaRepository<DriverEntity,Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM driver WHERE id_diver = ?1 ",nativeQuery = true)
+    @Query(value = "UPDATE  SET  Acc        FROM driver WHERE id_diver = 1 ",nativeQuery = true)
     void Delete(Long ID);
 
 }
