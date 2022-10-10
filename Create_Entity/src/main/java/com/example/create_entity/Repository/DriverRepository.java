@@ -21,13 +21,16 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Integer>, 
     @Query(value = "SELECT * FROM driver WHERE id_diver = ?1 ", nativeQuery = true)
     DriverEntity GetDriverById(Long id);
 
+    @Query(value = "select *  from driver cross join accounts on driver.account_id=accounts.account_id where accounts.user_name = ?",nativeQuery = true )
+    DriverEntity GetByUsername(String username);
+
     @Transactional
-    @Query(value = "select * from driver where status=1 ", nativeQuery = true)
+    @Query(value = "select * from driver where driver.status=1 ", nativeQuery = true)
     Page<DriverEntity> GetDriverByStatus(Pageable pageable);
 
     @Transactional
-    @Query(value = "select * from driver where status=1 ", nativeQuery = true)
-    Page<DriverEntity> GetDriverByName(Pageable pageable);
+    @Query(value = "select * from driver where driver.status=1 ", nativeQuery = true)
+    List<DriverEntity> GetDriverByStatus1();
 
 
     @Transactional

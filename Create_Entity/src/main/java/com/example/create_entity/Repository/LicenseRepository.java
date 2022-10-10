@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LicenseRepository  extends JpaRepository<LicenseTypeEntity,Long> {
 
-    @Query(value = "SELECT * from carrental.license_types where license_name=?1 ", nativeQuery = true)
+    @Query(value = "SELECT * from carrental.license_types where license_name=? ", nativeQuery = true)
     LicenseTypeEntity Get_License_By_Id(String license);
 
 }

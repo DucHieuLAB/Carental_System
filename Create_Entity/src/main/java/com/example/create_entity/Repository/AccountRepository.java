@@ -10,10 +10,10 @@ import java.util.List;
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
-    @Query(value = "SELECT * FROM accounts where user_name = ?1 ", nativeQuery = true)
+    @Query(value = "SELECT * FROM accounts where user_name = ? ", nativeQuery = true)
     List<AccountEntity> Check_username(String username);
 
-    @Query(value = "SELECT * FROM accounts where  email =?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM accounts where  email =?", nativeQuery = true)
     List<AccountEntity> Check_email(String email);
 //    @Query(value = "SELECT * FROM AccountEntity WHERE email = ?1 ", nativeQuery = true)
 //    AccountEntity Check_email(String username);
