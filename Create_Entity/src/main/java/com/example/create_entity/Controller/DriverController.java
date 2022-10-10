@@ -277,6 +277,7 @@ public class DriverController {
             accountEntity.setIdentity_Picture_Front(infoRequest.getIdentity_Picture_Front().trim());
             accountEntity.setAddress(infoRequest.getAddress());
             accountEntity.setCreateDate(date);
+            accountEntity.setImg(infoRequest.getImg());
 
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             String encodedPassword = passwordEncoder.encode(infoRequest.getPassword());

@@ -41,6 +41,7 @@ public class DriverInfoRequest {
 
     private String Identity_Picture_Back;
 
+    private String img;
 
     private String driving_license_image_Front;
 
