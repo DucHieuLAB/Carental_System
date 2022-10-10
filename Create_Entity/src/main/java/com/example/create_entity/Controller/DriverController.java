@@ -89,7 +89,7 @@ public class DriverController {
         return new ResponseEntity<>(driverPagingDriver, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/driver/Search_name", method = RequestMethod.POST)
+    @RequestMapping(value = "/driver/Search_name", method = RequestMethod.GET)
     public ResponseEntity<?> Find_By_Name(@RequestParam(required = false) String name, Integer p) {
         ReposMesses messes = new ReposMesses();
 
@@ -137,8 +137,8 @@ public class DriverController {
         }
     }
 
-    @RequestMapping(value = "/driver/Detail", method = RequestMethod.POST)
-    private ResponseEntity<?> DetailDriver(@RequestParam(required = false) String username) {
+    @RequestMapping(value = "/driver/Detail", method = RequestMethod.GET)
+    private ResponseEntity<?> DetailDriver(@RequestParam(required = true) String username) {
         DriverEntity driverEntities = driverRepository.GetByUsername(username);
         DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
         driverInfoDetailResponse.setName_License(driverEntities.getLicenseTypeEntity().getName_License());
@@ -165,7 +165,7 @@ public class DriverController {
     }
 
 
-    @RequestMapping(value = "/driver/Search_Phone", method = RequestMethod.POST)
+    @RequestMapping(value = "/driver/Search_Phone", method = RequestMethod.GET)
     public ResponseEntity<?> Find_By_Phone(@RequestParam(required = false) String Phone, Integer p) {
 
 
@@ -219,7 +219,7 @@ public class DriverController {
         return driverRepository.findAll();
     }
 
-    @RequestMapping(value = "/driver/Search_CMT", method = RequestMethod.POST)
+    @RequestMapping(value = "/driver/Search_CMT", method = RequestMethod.GET)
     public ResponseEntity<?> Find_By_CMT(@RequestParam(required = false) String cmt, Integer p) {
 
 
