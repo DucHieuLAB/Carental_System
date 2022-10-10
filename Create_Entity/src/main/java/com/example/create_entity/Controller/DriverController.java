@@ -2,6 +2,7 @@ package com.example.create_entity.Controller;
 
 import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.*;
+import com.example.create_entity.Service.DriverService;
 import com.example.create_entity.dto.Request.DriverInfoRequest;
 import com.example.create_entity.dto.Request.PagingDriver;
 import com.example.create_entity.dto.Response.DriverInfoDetailResponse;
@@ -40,7 +41,8 @@ public class DriverController {
 
     @Autowired
     AccountRepository accountRepository;
-
+    @Autowired
+    DriverService driverService = new DriverService();
     @Autowired
     RoleRepository roleRepository;
 
@@ -91,7 +93,7 @@ public class DriverController {
         return new ResponseEntity<>(driverPagingDriver, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/driver/Search_name", method = RequestMethod.POST)
+    @RequestMapping(value = "/driver/Search_name", method = RequestMethod.GET)
     public ResponseEntity<?> Find_By_Name(@RequestParam(required = false) String name, Integer p) {
         ReposMesses messes = new ReposMesses();
 
@@ -139,36 +141,16 @@ public class DriverController {
         }
     }
 
-    @RequestMapping(value = "/driver/Detail", method = RequestMethod.POST)
+    @RequestMapping(value = "/driver/Detail", method = RequestMethod.GET)
     private ResponseEntity<?> DetailDriver(@RequestParam(required = false) String username) {
         DriverEntity driverEntities = driverRepository.GetByUsername(username);
         DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
-        driverInfoDetailResponse.setName_License(driverEntities.getLicenseTypeEntity().getName_License());
-        driverInfoDetailResponse.setYearExperience(driverEntities.getYear_Experience());
-        driverInfoDetailResponse.setDriving_license_image_Front(driverEntities.getDriving_license_image_Front());
-        driverInfoDetailResponse.setDriving_license_image_back(driverEntities.getDriving_license_image_back());
-        driverInfoDetailResponse.setAddress(driverEntities.getAccountEntity().getAddress());
-        driverInfoDetailResponse.setFullName(driverEntities.getAccountEntity().getFullName());
-        driverInfoDetailResponse.setIdentity_Picture_Front(driverEntities.getAccountEntity().getIdentity_Picture_Front());
-        driverInfoDetailResponse.setIdentity_Picture_Back(driverEntities.getAccountEntity().getIdentity_Picture_Back());
-        driverInfoDetailResponse.setIdentity_Number(driverEntities.getAccountEntity().getIdentity_Number());
-        driverInfoDetailResponse.setPhone(driverEntities.getAccountEntity().getPhone());
-        driverInfoDetailResponse.setGender(driverEntities.getAccountEntity().getGender());
-        driverInfoDetailResponse.setEmail(driverEntities.getAccountEntity().getEmail());
-        driverInfoDetailResponse.setDriver_Number_License(driverEntities.getDriver_Number_License());
-        driverInfoDetailResponse.setDob(driverEntities.getAccountEntity().getDOB());
-        driverInfoDetailResponse.setCity(driverEntities.getAccountEntity().getDistrictsEntity().getCity());
-        driverInfoDetailResponse.setWards(driverEntities.getAccountEntity().getDistrictsEntity().getWards());
-        driverInfoDetailResponse.setDistrict_Name(driverEntities.getAccountEntity().getDistrictsEntity().getDistrict_Name());
-        driverInfoDetailResponse.setImg(driverEntities.getAccountEntity().getImg());
-        driverInfoDetailResponse.setStatus(driverEntities.getStatus());
-
-
-        return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.BAD_REQUEST);
+        driverInfoDetailResponse = driverService.driverInfoResponses(driverEntities, driverInfoDetailResponse);
+        return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.OK);
     }
 
 
-    @RequestMapping(value = "/driver/Search_Phone", method = RequestMethod.POST)
+    @RequestMapping(value = "/driver/Search_Phone", method = RequestMethod.GET)
     public ResponseEntity<?> Find_By_Phone(@RequestParam(required = false) String Phone, Integer p) {
 
 
@@ -222,7 +204,7 @@ public class DriverController {
         return driverRepository.findAll();
     }
 
-    @RequestMapping(value = "/driver/Search_CMT", method = RequestMethod.POST)
+    @RequestMapping(value = "/driver/Search_CMT", method = RequestMethod.GET)
     public ResponseEntity<?> Find_By_CMT(@RequestParam(required = false) String cmt, Integer p) {
 
 
@@ -299,20 +281,28 @@ public class DriverController {
         return new ResponseEntity<>(driverEntities, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/driver/Change_Status", method = RequestMethod.POST)
-    public ResponseEntity<?> Change_Status_Driver(Long id) {
+
+    @RequestMapping(value = "/driver/Change_Status", method = RequestMethod.GET)
+    public ResponseEntity<?> Change_Status_Driver(@RequestParam(name = "username") String username) {
         ReposMesses reposMesses = new ReposMesses();
-        DriverEntity driverEntities = driverRepository.GetDriverById(id);
-        if (driverEntities != null) {
+        DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
+        DriverEntity driverEntities = driverRepository.GetByUsername(username.trim());
+        if (driverEntities != null && driverEntities.getStatus() == 1 && driverEntities.getAccountEntity().getStatus() == 1) {
             driverEntities.getAccountEntity().setStatus(0);
             driverEntities.setStatus(0);
             driverRepository.save(driverEntities);
+            driverInfoDetailResponse = driverService.driverInfoResponses(driverEntities, driverInfoDetailResponse);
+
+        } else if (driverEntities != null && driverEntities.getStatus() == 0 && driverEntities.getAccountEntity().getStatus() == 0) {
+            driverEntities.getAccountEntity().setStatus(1);
+            driverEntities.setStatus(1);
+            driverRepository.save(driverEntities);
+            driverInfoDetailResponse = driverService.driverInfoResponses(driverEntities, driverInfoDetailResponse);
         } else {
-            reposMesses.setMess("Delete Driver Fail ! ");
+            reposMesses.setMess("Thay đổi trạng thái thất bại ! ");
             return new ResponseEntity<>(reposMesses, HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(driverEntities, HttpStatus.OK);
+        return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.OK);
     }
 
 
