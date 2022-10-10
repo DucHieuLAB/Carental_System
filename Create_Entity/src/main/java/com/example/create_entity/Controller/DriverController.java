@@ -4,6 +4,8 @@ import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.*;
 import com.example.create_entity.dto.Request.DriverInfoRequest;
 import com.example.create_entity.dto.Request.PagingDriver;
+import com.example.create_entity.dto.Response.DriverInfoDetailResponse;
+import com.example.create_entity.dto.Response.DriverInfoResponse;
 import com.example.create_entity.dto.Response.ReposMesses;
 import lombok.RequiredArgsConstructor;
 
@@ -45,30 +47,39 @@ public class DriverController {
 
 
     @RequestMapping(value = "/driver/ListDriver", method = RequestMethod.GET)
-    public ResponseEntity<?> ManagerDriver(@RequestParam("p") Optional<Integer> p) {
+    public ResponseEntity<?> ManagerDriver(@RequestParam(value = "p", required = false) Integer p) {
 
-
-        Pageable pageable = PageRequest.of(p.orElse(0), 5);
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        }
+        Pageable pageable = PageRequest.of(p, 5);
 
         Page<DriverEntity> page = driverRepository.GetDriverByStatus(pageable);
 
-        DriverInfoRequest infoRequest = new DriverInfoRequest();
-        List<DriverInfoRequest> driverInfoRequests = new ArrayList<>();
-        page.forEach(DriverEntity -> {
 
-            infoRequest.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
-            infoRequest.setYearExperience(DriverEntity.getYear_Experience());
-            infoRequest.setStatus(DriverEntity.getStatus());
-            infoRequest.setPhone(DriverEntity.getAccountEntity().getPhone());
-            infoRequest.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
-            infoRequest.setFullName(DriverEntity.getAccountEntity().getFullName());
-            driverInfoRequests.add(infoRequest);
+        List<DriverInfoResponse> driverInfoResponses = new ArrayList<>();
+        page.forEach(DriverEntity -> {
+            DriverInfoResponse infoResponse = new DriverInfoResponse();
+            infoResponse.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
+            infoResponse.setYearExperience(DriverEntity.getYear_Experience());
+            infoResponse.setStatus(DriverEntity.getStatus());
+            infoResponse.setPhone(DriverEntity.getAccountEntity().getPhone());
+            infoResponse.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
+            infoResponse.setFullName(DriverEntity.getAccountEntity().getFullName());
+            infoResponse.setUsername(DriverEntity.getAccountEntity().getUsername());
+
+
+            driverInfoResponses.add(infoResponse);
+
 
         });
 
         PagingDriver driverPagingDriver = new PagingDriver();
-        driverPagingDriver.setDriverInfoRequestList(driverInfoRequests);
+        driverPagingDriver.setDriverInfoResponsesList(driverInfoResponses);
         driverPagingDriver.setTotalPage(page.getTotalPages());
+        driverPagingDriver.setNumberPage(p+1);
 
 
         if (page.isEmpty()) {
@@ -79,35 +90,45 @@ public class DriverController {
     }
 
     @RequestMapping(value = "/driver/Search_name", method = RequestMethod.POST)
-    public ResponseEntity<?> Find_By_Name(@RequestParam String name, Optional<Integer> p) {
+    public ResponseEntity<?> Find_By_Name(@RequestParam(required = false) String name, Integer p) {
         ReposMesses messes = new ReposMesses();
 
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        } else if (name == null) {
+            name = "";
+        }
+
         List<DriverEntity> driverEntities1 = driverRepository.GetDriverBy_fullName1(name.trim());
-        Pageable pageable = PageRequest.of(p.orElse(0), 5);
+        Pageable pageable = PageRequest.of(p, 5);
         List<DriverEntity> driverEntities = driverRepository.GetDriverBy_fullName(name.trim(), pageable);
 
 
-        List<DriverInfoRequest> infoRequest = new ArrayList<>();
+        List<DriverInfoResponse> infoResponses = new ArrayList<>();
         driverEntities.forEach(DriverEntity -> {
-            DriverInfoRequest infoRequest1 = new DriverInfoRequest();
+            DriverInfoResponse infoResponse = new DriverInfoResponse();
 
+            infoResponse.setYearExperience(DriverEntity.getYear_Experience());
+            infoResponse.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
+            infoResponse.setPhone(DriverEntity.getAccountEntity().getPhone());
+            infoResponse.setStatus(DriverEntity.getStatus());
+            infoResponse.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
+            infoResponse.setFullName(DriverEntity.getAccountEntity().getFullName());
+            infoResponse.setUsername(DriverEntity.getAccountEntity().getUsername());
 
-            infoRequest1.setYearExperience(DriverEntity.getYear_Experience());
-            infoRequest1.setStatus(DriverEntity.getStatus());
-            infoRequest1.setPhone(DriverEntity.getAccountEntity().getPhone());
-            infoRequest1.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
-            infoRequest1.setFullName(DriverEntity.getAccountEntity().getFullName());
-            infoRequest1.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
+            infoResponses.add(infoResponse);
 
-            infoRequest.add(infoRequest1);
 
         });
         PagingDriver pagingDriver = new PagingDriver();
-        pagingDriver.setDriverInfoRequestList(infoRequest);
+        pagingDriver.setDriverInfoResponsesList(infoResponses);
         pagingDriver.setTotalPage(driverEntities1.size() / 5 + 1);
+        pagingDriver.setNumberPage(p+1);
 
 
-        if (infoRequest.isEmpty()) {
+        if (infoResponses.isEmpty()) {
             messes.setMess("NOT FOUND ! ");
             return new ResponseEntity<>(messes, HttpStatus.OK);
 
@@ -116,37 +137,78 @@ public class DriverController {
         }
     }
 
+    @RequestMapping(value = "/driver/Detail", method = RequestMethod.POST)
+    private ResponseEntity<?> DetailDriver(@RequestParam(required = false) String username) {
+        DriverEntity driverEntities = driverRepository.GetByUsername(username);
+        DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
+        driverInfoDetailResponse.setName_License(driverEntities.getLicenseTypeEntity().getName_License());
+        driverInfoDetailResponse.setYearExperience(driverEntities.getYear_Experience());
+        driverInfoDetailResponse.setDriving_license_image_Front(driverEntities.getDriving_license_image_Front());
+        driverInfoDetailResponse.setDriving_license_image_back(driverEntities.getDriving_license_image_back());
+        driverInfoDetailResponse.setAddress(driverEntities.getAccountEntity().getAddress());
+        driverInfoDetailResponse.setFullName(driverEntities.getAccountEntity().getFullName());
+        driverInfoDetailResponse.setIdentity_Picture_Front(driverEntities.getAccountEntity().getIdentity_Picture_Front());
+        driverInfoDetailResponse.setIdentity_Picture_Back(driverEntities.getAccountEntity().getIdentity_Picture_Back());
+        driverInfoDetailResponse.setIdentity_Number(driverEntities.getAccountEntity().getIdentity_Number());
+        driverInfoDetailResponse.setPhone(driverEntities.getAccountEntity().getPhone());
+        driverInfoDetailResponse.setGender(driverEntities.getAccountEntity().getGender());
+        driverInfoDetailResponse.setEmail(driverEntities.getAccountEntity().getEmail());
+        driverInfoDetailResponse.setDriver_Number_License(driverEntities.getDriver_Number_License());
+        driverInfoDetailResponse.setDob(driverEntities.getAccountEntity().getDOB());
+        driverInfoDetailResponse.setCity(driverEntities.getAccountEntity().getDistrictsEntity().getCity());
+        driverInfoDetailResponse.setWards(driverEntities.getAccountEntity().getDistrictsEntity().getWards());
+        driverInfoDetailResponse.setDistrict_Name(driverEntities.getAccountEntity().getDistrictsEntity().getDistrict_Name());
+        driverInfoDetailResponse.setImg(driverEntities.getAccountEntity().getImg());
+
+
+        return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
     @RequestMapping(value = "/driver/Search_Phone", method = RequestMethod.POST)
-    public ResponseEntity<?> Find_By_Phone(@RequestParam String Phone, Optional<Integer> p) {
+    public ResponseEntity<?> Find_By_Phone(@RequestParam(required = false) String Phone, Integer p) {
+
+
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        } else if (Phone == null) {
+            Phone = "";
+        }
+
+        if (Phone == null) {
+            Phone = "";
+        }
         ReposMesses messes = new ReposMesses();
         List<DriverEntity> driverEntities1 = driverRepository.GetDriverBy_Phone1(Phone.trim());
-        Pageable pageable = PageRequest.of(p.orElse(0), 5);
+        Pageable pageable = PageRequest.of(p, 5);
         List<DriverEntity> driverEntities = driverRepository.GetDriverBy_Phone(Phone.trim(), pageable);
-        List<DriverInfoRequest> infoRequest = new ArrayList<>();
+        List<DriverInfoResponse> infoResponses = new ArrayList<>();
 
         driverEntities.forEach(DriverEntity -> {
-            DriverInfoRequest infoRequest1 = new DriverInfoRequest();
+            DriverInfoResponse infoResponse1 = new DriverInfoResponse();
 
-            if (DriverEntity.getAccountEntity().getPhone().trim().contains(Phone.trim())) {
+            infoResponse1.setStatus(DriverEntity.getStatus());
+            infoResponse1.setYearExperience(DriverEntity.getYear_Experience());
+            infoResponse1.setPhone(DriverEntity.getAccountEntity().getPhone());
+            infoResponse1.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
+            infoResponse1.setFullName(DriverEntity.getAccountEntity().getFullName());
+            infoResponse1.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
+            infoResponse1.setUsername(DriverEntity.getAccountEntity().getUsername());
 
-                infoRequest1.setStatus(DriverEntity.getStatus());
-                infoRequest1.setYearExperience(DriverEntity.getYear_Experience());
-                infoRequest1.setPhone(DriverEntity.getAccountEntity().getPhone());
-                infoRequest1.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
-                infoRequest1.setFullName(DriverEntity.getAccountEntity().getFullName());
-                infoRequest1.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
+            infoResponses.add(infoResponse1);
 
-                infoRequest.add(infoRequest1);
-            }
         });
         PagingDriver pagingDriver1 = new PagingDriver();
         pagingDriver1.setTotalPage(driverEntities1.size() / 5 + 1);
-        pagingDriver1.setDriverInfoRequestList(infoRequest);
+        pagingDriver1.setNumberPage(p+1);
+        pagingDriver1.setDriverInfoResponsesList(infoResponses);
 
 
-        if (infoRequest.isEmpty()) {
+        if (infoResponses.isEmpty()) {
             messes.setMess("NOT FOUND ! ");
-            return new ResponseEntity<>(messes, HttpStatus.OK);
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
 
         } else {
             return new ResponseEntity<>(pagingDriver1, HttpStatus.OK);
@@ -158,40 +220,56 @@ public class DriverController {
     }
 
     @RequestMapping(value = "/driver/Search_CMT", method = RequestMethod.POST)
-    public ResponseEntity<?> Find_By_CMT(@RequestParam String cmt, Optional<Integer> p) {
+    public ResponseEntity<?> Find_By_CMT(@RequestParam(required = false) String cmt, Integer p) {
+
+
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        } else if (cmt == null) {
+            cmt = "";
+        }
+        Pageable pageable = PageRequest.of(p, 5);
         PagingDriver pagingDriver_Search_cmt = new PagingDriver();
         ReposMesses messes = new ReposMesses();
-        List<DriverInfoRequest> infoRequest = new ArrayList<>();
-        List<DriverEntity> driverEntities = driverRepository.GetDriverBy_Phone1(cmt.trim());
-        List<DriverEntity> driverEntities1 = driverRepository.GetDriverBy_Phone1(cmt.trim());
+
+        List<DriverInfoResponse> infoResponses = new ArrayList<>();
+        List<DriverEntity> driverEntities = driverRepository.GetDriverBy_Identity(cmt.trim(), pageable);
+        List<DriverEntity> driverEntities1 = driverRepository.GetDriverBy_Identity1(cmt.trim());
 
         driverEntities.forEach(DriverEntity -> {
-            DriverInfoRequest infoRequest1 = new DriverInfoRequest();
+            DriverInfoResponse infoResponse = new DriverInfoResponse();
 
-            if (DriverEntity.getAccountEntity().getIdentity_Number().trim().contains(cmt.trim())) {
-                infoRequest1.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
-                infoRequest1.setYearExperience(DriverEntity.getYear_Experience());
-                infoRequest1.setStatus(DriverEntity.getStatus());
-                infoRequest1.setPhone(DriverEntity.getAccountEntity().getPhone());
-                infoRequest1.setFullName(DriverEntity.getAccountEntity().getFullName());
-                infoRequest1.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
 
-                infoRequest.add(infoRequest1);
-            }
+            infoResponse.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
+            infoResponse.setYearExperience(DriverEntity.getYear_Experience());
+            infoResponse.setStatus(DriverEntity.getStatus());
+            infoResponse.setPhone(DriverEntity.getAccountEntity().getPhone());
+            infoResponse.setFullName(DriverEntity.getAccountEntity().getFullName());
+            infoResponse.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
+            infoResponse.setUsername(DriverEntity.getAccountEntity().getUsername());
+            infoResponse.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
+
+            infoResponses.add(infoResponse);
+
         });
         int more_size = 1;
         pagingDriver_Search_cmt.setTotalPage(driverEntities1.size() / 5 + more_size);
-        pagingDriver_Search_cmt.setDriverInfoRequestList(infoRequest);
+        pagingDriver_Search_cmt.setDriverInfoResponsesList(infoResponses);
+        pagingDriver_Search_cmt.setNumberPage(p+1);
 
 
-        if (infoRequest.isEmpty()) {
+        if (driverEntities1.isEmpty()) {
             messes.setMess("NOT FOUND ! ");
-            return new ResponseEntity<>(messes, HttpStatus.OK);
-
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         } else {
             return new ResponseEntity<>(pagingDriver_Search_cmt, HttpStatus.OK);
         }
     }
+
+
+
 
     @RequestMapping(value = "/driver/ListDriverDemo", method = RequestMethod.GET)
     public ResponseEntity<?> GetListDriver(Long id) {
@@ -209,40 +287,12 @@ public class DriverController {
             driverRepository.save(driverEntities);
         } else {
             reposMesses.setMess("Delete Driver Fail ! ");
-            return new ResponseEntity<>(reposMesses, HttpStatus.OK);
+            return new ResponseEntity<>(reposMesses, HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>(driverEntities, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> LoadDataDriver() {
-
-
-        List<DriverInfoRequest> driverInfoRequests = new ArrayList<>();
-
-        List<DriverEntity> driverEntities = driverRepository.findAll();
-
-        driverEntities.forEach(DriverEntity -> {
-            DriverInfoRequest infoRequest = new DriverInfoRequest();
-
-            infoRequest.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
-            infoRequest.setYearExperience(DriverEntity.getYear_Experience());
-            infoRequest.setStatus(DriverEntity.getStatus());
-            infoRequest.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
-            infoRequest.setFullName(DriverEntity.getAccountEntity().getFullName());
-            infoRequest.setPhone(DriverEntity.getAccountEntity().getPhone());
-
-            driverInfoRequests.add(infoRequest);
-
-
-        });
-        return new ResponseEntity<>(driverInfoRequests, HttpStatus.OK);
-    }
-
-//    @RequestMapping(value = "/driver/Delete", method = RequestMethod.POST)
-//    public ResponseEntity<?> Delete(@RequestParam(name = "id") Long id) {
-//
-//    }
 
     @RequestMapping(value = "/driver/Create", method = RequestMethod.POST)
     public ResponseEntity<?> Create(@RequestBody DriverInfoRequest infoRequest) {
@@ -257,15 +307,15 @@ public class DriverController {
 
 
         if (!accountRepository.Check_email(infoRequest.getEmail()).isEmpty()) {
-            messes.setMess("Email is not valid !");
+            messes.setMess("Email đã tồn tại  !");
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         } else if (!accountRepository.Check_username(infoRequest.getUsername()).isEmpty()) {
-            messes.setMess("UserName is not valid !");
+            messes.setMess("UserName đã tồn tại !");
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         } else if (!infoRequest.getEmail().matches(regexPattern)) {
-            messes.setMess("Email wrong Format !");
+            messes.setMess("Email k đúng định dạng !");
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-        } else {
+        } else{
 
             accountEntity.setFullName(infoRequest.getFullName().trim());
             accountEntity.setEmail(infoRequest.getEmail().trim());
@@ -332,12 +382,6 @@ public class DriverController {
         }
 
     }
-
-//    @RequestMapping(value = "/driver/aaa", method = RequestMethod.GET)
-//    public List<DistrictsEntity> response() {
-//        List<DistrictsEntity> districtsEntities = districtRepository.check_district("HUNGYEN", "NGHIATRU", "VANGIANG");
-//        return districtsEntities;
-//    }
 
 
 }
