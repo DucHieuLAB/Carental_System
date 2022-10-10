@@ -18,6 +18,14 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 //    @Query(value = "SELECT * FROM AccountEntity WHERE email = ?1 ", nativeQuery = true)
 //    AccountEntity Check_email(String username);
 
+    @Query(value = "SELECT * FROM accounts where phone = ? ",nativeQuery = true)
+    List<AccountEntity> Check_Phone(String phone);
+
+    @Query(value = "SELECT * FROM accounts where identity_number = ? ",nativeQuery = true)
+    List<AccountEntity> Check_Identity(String Identity);
+
+
+
 
 
 
