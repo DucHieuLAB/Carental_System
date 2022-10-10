@@ -21,7 +21,7 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Integer>, 
     @Query(value = "SELECT * FROM driver WHERE id_diver = ?1 ", nativeQuery = true)
     DriverEntity GetDriverById(Long id);
 
-    @Query(value = "select *  from driver cross join accounts on driver.account_id=accounts.account_id where accounts.user_name = ?",nativeQuery = true )
+    @Query(value = "select *  from driver cross join accounts on driver.account_id=accounts.account_id where accounts.user_name = ?", nativeQuery = true)
     DriverEntity GetByUsername(String username);
 
     @Transactional
@@ -37,7 +37,9 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Integer>, 
     @Query(value = "select * from driver left join accounts on driver.account_id=accounts.account_id where accounts.full_name like  %?%  ", nativeQuery = true)
     List<DriverEntity> GetDriverBy_fullName(String name, Pageable pageable);
 
-
+    @Transactional
+    @Query(value = "select * from driver left join accounts on driver.account_id=accounts.account_id where  like  %?%  ", nativeQuery = true)
+    List<DriverEntity> GetDriverByPhone(String name, Pageable pageable);
 
 
     @Transactional
@@ -50,7 +52,7 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Integer>, 
 
     @Transactional
     @Query(value = "select * from driver cross join accounts on driver.account_id=accounts.account_id where accounts.phone LIKE  %?%    ", nativeQuery = true)
-    List<DriverEntity> GetDriverBy_Phone(String name,Pageable pageable);
+    List<DriverEntity> GetDriverBy_Phone(String name, Pageable pageable);
 
     @Transactional
     @Query(value = "select * from driver cross join accounts on driver.account_id=accounts.account_id where accounts.identity_number LIKE %?%  ", nativeQuery = true)
@@ -58,8 +60,11 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Integer>, 
 
     @Transactional
     @Query(value = "select * from driver cross join accounts on driver.account_id=accounts.account_id where accounts.identity_number LIKE %?% ", nativeQuery = true)
-    List<DriverEntity> GetDriverBy_Identity(String name,Pageable pageable);
+    List<DriverEntity> GetDriverBy_Identity(String name, Pageable pageable);
 
+
+    @Query(value = "SELECT * From driver where driver.diver_number_license=? ", nativeQuery = true)
+    List<DriverEntity> Check_diver_number_license(String diver_number_license);
 
 ////    @Modifying
 ////    @Transactional
