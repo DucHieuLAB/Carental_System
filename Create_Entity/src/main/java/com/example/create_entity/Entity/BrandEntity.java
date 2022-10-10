@@ -1,7 +1,9 @@
 package com.example.create_entity.Entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "brands")
 public class BrandEntity {
@@ -17,7 +21,7 @@ public class BrandEntity {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "name",nullable = false,length = 100)
+    @Column(name = "name",columnDefinition ="VARCHAR(2048) NOT NULL, FULLTEXT KEY nameFulltext (name)")
     private String name;
 
     @Column(name = "img")
