@@ -20,7 +20,7 @@ public class DistrictsEntity    {
     @Column(name = "district_id")
     private Long id;
 
-    @Column(name = "district_name", nullable = false)
+    @Column(name = "district_name")
     private String District_Name;
 
     @Column(name = "wards")

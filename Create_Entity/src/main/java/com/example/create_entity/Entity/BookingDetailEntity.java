@@ -27,18 +27,7 @@ public class BookingDetailEntity {
     @Column
     private long driver_id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_id",nullable = false,unique = true)
-    private BookingEntity bookingEntity;
-
-
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "car_id")
-    private CarEntity car;
-
-
-
-
-
+    @ManyToOne
+    @JoinColumn(name = "car_id",nullable = false, foreignKey = @ForeignKey(name = "FK_BookingDetail_Car"))
+    CarEntity car;
 }
