@@ -13,16 +13,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Rollback(false)
 public class TestDemo {
 
     @Autowired
@@ -34,7 +37,17 @@ public class TestDemo {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    DriverRepository driverRepository;
 
+//@Test
+//public void testDriver() {
+//    Pageable pageable = PageRequest.of(0,1 );
+//        Page<DriverEntity> a = driverRepository.GetDriverBy_fullName1("Nguyễn Xuân Hiểu",pageable);
+//
+//
+//    System.out.println(a.getTotalPages());
+//}
 
     @Test
     public void testGet() {
