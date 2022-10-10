@@ -161,6 +161,7 @@ public class DriverController {
         driverInfoDetailResponse.setWards(driverEntities.getAccountEntity().getDistrictsEntity().getWards());
         driverInfoDetailResponse.setDistrict_Name(driverEntities.getAccountEntity().getDistrictsEntity().getDistrict_Name());
         driverInfoDetailResponse.setImg(driverEntities.getAccountEntity().getImg());
+        driverInfoDetailResponse.setStatus(driverEntities.getStatus());
 
 
         return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.BAD_REQUEST);

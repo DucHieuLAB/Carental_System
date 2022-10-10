@@ -37,11 +37,11 @@ public class DriverInfoDetailResponse {
     private String Identity_Picture_Back;
 
 
+    private int Status;
 
     private String driving_license_image_Front;
 
     private String driving_license_image_back;
-
 
 
     private String Driver_Number_License;
