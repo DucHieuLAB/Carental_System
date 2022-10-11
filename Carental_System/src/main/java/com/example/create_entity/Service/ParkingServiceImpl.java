@@ -58,6 +58,9 @@ public class ParkingServiceImpl implements ParkingService{
             existDistric = DistrictsEntity.createDistricEntity(districRequest);
             districtRepository.save(existDistric);
         }
+        existDistric = districtRepository.check_districts(districRequest.getCity(),
+                districRequest.getWards(),districRequest.getDistrict_Name());
+        
 
         return new ResponseEntity<>(responseVo,HttpStatus.OK);
     }

@@ -12,7 +12,7 @@
     <artifactId>Create_Entity</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>CRSM_Ver1</name>
-    <description>Car Rental</description>
+    <description>Car Rental Managerment System</description>
     <properties>
         <java.version>11</java.version>
     </properties>
