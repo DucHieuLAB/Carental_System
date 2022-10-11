@@ -7,6 +7,7 @@ import com.example.create_entity.Repository.BrandRepository;
 import com.example.create_entity.Repository.CarRepository;
 import com.example.create_entity.Repository.ParkingRepository;
 import com.example.create_entity.dto.Request.CarRequest;
+import com.example.create_entity.dto.Response.ListCarImageResponse;
 import com.example.create_entity.dto.Response.ListCarResponse;
 import com.example.create_entity.dto.Response.ResponseVo;
 import com.example.create_entity.untils.ResponseVeConvertUntil;
@@ -35,13 +36,16 @@ public class CarServiceImpl implements CarService {
     @Autowired
     ParkingRepository parkingRepository;
 
+    @Autowired
+    CarImageServiceImpl carImageService;
+
     @Override
     public ResponseEntity<?> getListCapacity() {
         ResponseVo responseVo = new ResponseVo();
         List<Integer> result = carRepository.getListCapacity();
         Map<String, Object> map = new HashMap<>();
     if(result.isEmpty()){
-        responseVo.setMessage("Danh sach trong");
+        responseVo.setMessage("Danh sach trống");
         responseVo.setData(null);
         return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
     }
@@ -80,6 +84,7 @@ public class CarServiceImpl implements CarService {
             newCarEntity.setBrand(brandEntity);
             newCarEntity.setParking(parkingEntity.get());
             carRepository.save(newCarEntity);
+            carImageService.addList(carRequest.getImgs(),newCarEntity);
             responseVo.setStatus(true);
             responseVo.setMessage("Tạo mới thành công");
             responseVo.setData(carRequest);
@@ -100,7 +105,7 @@ public class CarServiceImpl implements CarService {
         if(ObjectUtils.isEmpty(modelName)){
             carPage = carRepository.findCarEntityByStatus(pageable);
         }else {
-           carPage = carRepository.findBySearch(modelName,parkingId,capacity,pageable);
+           carPage = carRepository.findBySearch("%"+modelName+"%",parkingId,capacity,pageable);
         }
         ResponseVo responseVo = new ResponseVo();
         Map<String,Object> responseData = new HashMap<>();
@@ -111,7 +116,13 @@ public class CarServiceImpl implements CarService {
             responseVo.setData(responseData);
             return new ResponseEntity<>(responseVo,HttpStatus.OK);
         }
-        responseData.put("cars", ListCarResponse.createListCarPesponse(carPage.getContent()));
+        List<ListCarResponse> cars = ListCarResponse.createListCarPesponse(carPage.getContent());
+        for (ListCarResponse c : cars){
+            List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(carImageService.getListCarByPlateNumber(c.getPlateNumber()));
+            c.setListImg(carImageResponses);
+        }
+        responseVo.setMessage("List Car By Search");
+        responseData.put("cars", cars);
         responseData.put("modelName",modelName);
         responseData.put("parkingId",parkingId);
         responseData.put("capacity",capacity);

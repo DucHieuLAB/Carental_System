@@ -31,13 +31,12 @@ public interface CarRepository extends JpaRepository<CarEntity,Long> {
     @Query("SELECT c FROM CarEntity c WHERE c.id = ?1 AND c.plateNumber = ?2 AND c.status > 0")
     CarEntity findCarEntityByIdAndPlateNumber(Long id, String status);
 
-    @Query(value = "SELECT * FROM cars WHERE MATCH(model_name) "
-            + "AGAINST (?1) "
-            + "AND parking_id = CASE WHEN ?2 IS NULL THEN parking_id ELSE ?2 END "
-            + "AND capacity = CASE WHEN ?3 IS NULL THEN capacity ELSE ?3 END "
-            + "AND status > 0"
-            , nativeQuery = true )
-    Page<CarEntity> findBySearch(String modelName, Long parkingId, int capacity, Pageable pageable);
+    @Query(value = "SELECT * FROM cars  WHERE  cars.model_name like ?1 "
+            + "AND cars.parking_id = CASE WHEN (?2) IS NULL THEN cars.parking_id ELSE ?2 END "
+            + "AND cars.capacity = CASE WHEN (?3) IS NULL THEN cars.capacity  ELSE ?3 END "
+            + "AND status > 0",nativeQuery = true
+            )
+    Page<CarEntity> findBySearch(String modelName, Long parkingId, Integer capacity, Pageable pageable);
 
     @Query("SELECT c FROM CarEntity c WHERE c.parking.id = CASE WHEN ?1 IS NULL THEN c.parking.id ELSE ?1 END "
             + "AND c.capacity = CASE WHEN ?2 IS NULL THEN c.capacity ELSE ?2 END "

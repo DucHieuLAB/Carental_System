@@ -1,4 +1,5 @@
 package com.example.create_entity.Controller;
+
 import com.example.create_entity.Entity.DriverEntity;
 import com.example.create_entity.Repository.DriverRepository;
 import com.example.create_entity.dto.Request.DriverInfoRequest;
@@ -23,27 +24,22 @@ public class DriverController {
     DriverRepository driverRepository;
 
 
-    @RequestMapping(value = "/ListDriver",method = RequestMethod.GET)
-    public ResponseEntity<?>  RegisAccountDriver(){
-      List<DriverEntity> driverEntities =  driverRepository.findAll();
+    @RequestMapping(value = "/ListDriver", method = RequestMethod.GET)
+    public ResponseEntity<?> RegisAccountDriver() {
+        List<DriverEntity> driverEntities = driverRepository.findAll();
         List<DriverInfoRequest> driverInfoRequests = new ArrayList<>();
-        DriverInfoRequest infoRequest = new DriverInfoRequest() ;
+        DriverInfoRequest infoRequest = new DriverInfoRequest();
 
-        for (DriverEntity driverEntity: driverEntities) {
-       infoRequest.setDriverNumberLicense(driverEntity.getDriver_Number_License());
-       infoRequest.setYearExperience(driverEntity.getYear_Experience());
-       infoRequest.setStatus(1);
-       driverInfoRequests.add(infoRequest);
+        for (DriverEntity driverEntity : driverEntities) {
+            infoRequest.setDriverNumberLicense(driverEntity.getDriver_Number_License());
+            infoRequest.setYearExperience(driverEntity.getYear_Experience());
+            infoRequest.setStatus(1);
+            driverInfoRequests.add(infoRequest);
         }
-
-
-
-
-
-      if(!driverInfoRequests.isEmpty()){
-          return new ResponseEntity<>(driverInfoRequests,HttpStatus.OK);
-      }else {
-          return null;
-      }
+        if (!driverInfoRequests.isEmpty()) {
+            return new ResponseEntity<>(driverInfoRequests, HttpStatus.OK);
+        } else {
+            return null;
+        }
     }
 }
