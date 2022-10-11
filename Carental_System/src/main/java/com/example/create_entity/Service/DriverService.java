@@ -40,7 +40,6 @@ public class DriverService {
     LicenseRepository licenseRepository;
 
 
-
     public DriverInfoDetailResponse driverInfoResponses(DriverEntity driverEntities, DriverInfoDetailResponse driverInfoDetailResponse) {
 
 
@@ -112,12 +111,17 @@ public class DriverService {
         List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
         PagingDriver pagingDriver = new PagingDriver();
         pagingDriver.setDriverInfoResponsesList(infoResponses);
-        pagingDriver.setTotalPage(driverEntities1.size() / 5 + 1);
+
+        if (driverEntities1.size() % 5 == 0) {
+            pagingDriver.setTotalPage(driverEntities1.size() / 5);
+        } else {
+            pagingDriver.setTotalPage(driverEntities1.size() / 5 + 1);
+        }
         pagingDriver.setNumberPage(p + 1);
 
 
         if (infoResponses.isEmpty()) {
-            messes.setMess("NOT FOUND ! ");
+            messes.setMess("k tìm thấy tên ! ");
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
 
         } else {
@@ -127,10 +131,21 @@ public class DriverService {
     }
 
     public ResponseEntity<?> DriverDetail(String username) {
-        DriverEntity driverEntities = driverRepository.GetByUsername(username);
-        DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
-        driverInfoDetailResponse = this.driverInfoResponses(driverEntities, driverInfoDetailResponse);
-        return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.OK);
+
+        ReposMesses messes = new ReposMesses();
+        if (username.equals(null)) {
+            username = "";
+        }
+        DriverEntity driverEntities = driverRepository.GetByUsername(username.trim());
+
+        if(driverEntities==null){
+            messes.setMess("Error ! ");
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }else {
+            DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
+            driverInfoDetailResponse = this.driverInfoResponses(driverEntities, driverInfoDetailResponse);
+            return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.OK);
+        }
     }
 
     public ResponseEntity<?> Find_By_Phone(String Phone, Integer p) {
@@ -153,7 +168,13 @@ public class DriverService {
         List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
 
         PagingDriver pagingDriver1 = new PagingDriver();
-        pagingDriver1.setTotalPage(driverEntities1.size() / 5 + 1);
+
+        if (driverEntities1.size() % 5 == 0) {
+            pagingDriver1.setTotalPage(driverEntities1.size() / 5);
+        } else {
+            pagingDriver1.setTotalPage(driverEntities1.size() / 5 + 1);
+        }
+
         pagingDriver1.setNumberPage(p + 1);
         pagingDriver1.setDriverInfoResponsesList(infoResponses);
 
@@ -185,8 +206,12 @@ public class DriverService {
         List<DriverEntity> driverEntities1 = driverRepository.GetDriverBy_Identity1(cmt.trim());
         List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
 
-        int more_size = 1;
-        pagingDriver_Search_cmt.setTotalPage(driverEntities1.size() / 5 + more_size);
+        if (driverEntities1.size() % 5 == 0) {
+            pagingDriver_Search_cmt.setTotalPage(driverEntities1.size() / 5);
+        } else {
+            pagingDriver_Search_cmt.setTotalPage(driverEntities1.size() / 5 + 1);
+        }
+
         pagingDriver_Search_cmt.setDriverInfoResponsesList(infoResponses);
         pagingDriver_Search_cmt.setNumberPage(p + 1);
 
