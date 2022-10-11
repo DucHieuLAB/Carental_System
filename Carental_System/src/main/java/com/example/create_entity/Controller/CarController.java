@@ -16,52 +16,47 @@ import org.springframework.web.bind.annotation.*;
 public class CarController {
     private final int defaultPage = 1;
     private final int defaultSize = 10;
-   private final CarServiceImpl carService;
+    private final CarServiceImpl carService;
 
-   @Autowired
-   public CarController(CarServiceImpl carService) {this.carService = carService;}
+    @Autowired
+    public CarController(CarServiceImpl carService) {
+        this.carService = carService;
+    }
 
     @GetMapping(value = "/capacity")
-    public ResponseEntity<?> getListCapacity(){
-       return carService.getListCapacity();
+    public ResponseEntity<?> getListCapacity() {
+        return carService.getListCapacity();
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addCategory(@RequestBody CarRequest carRequest){
+    public ResponseEntity<?> add(@RequestBody CarRequest carRequest) {
         return carService.add(carRequest);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateCategory(@RequestBody CarRequest carRequest){
+    public ResponseEntity<?> update(@RequestBody CarRequest carRequest) {
         return carService.update(carRequest);
     }
 
     @DeleteMapping("/delete/{carId}")
-    public ResponseEntity<?> delete(@PathVariable Long carId){
-       return carService.delete(carId);
+    public ResponseEntity<?> delete(@PathVariable Long carId) {
+        return carService.delete(carId);
     }
+
     @GetMapping
-    public ResponseEntity<?> listBrand(@RequestParam(required = false) Integer pageIndex,
-                                       @RequestParam(required = false) Integer pageSize,
-                                       @RequestParam(required = false) String modelName,
-                                       @RequestParam(required = false) Integer capacity,
-                                       @RequestParam(required = false) Long parkingId){
-        if(pageIndex == null){
+    public ResponseEntity<?> listCar(@RequestParam(required = false) Integer pageIndex,
+                                     @RequestParam(required = false) Integer pageSize,
+                                     @RequestParam(required = false) String modelName,
+                                     @RequestParam(required = false) Integer capacity,
+                                     @RequestParam(required = false) Long parkingId) {
+        if (pageIndex == null) {
             pageIndex = defaultPage;
         }
-        if(pageSize == null){
+        if (pageSize == null) {
             pageSize = defaultSize;
         }
-       return carService.findAll(pageIndex,pageSize,modelName,parkingId,capacity);
+        return carService.findAll(pageIndex, pageSize, modelName, parkingId, capacity);
     }
-
-
-
-
-
-
-
-
 
 
 }

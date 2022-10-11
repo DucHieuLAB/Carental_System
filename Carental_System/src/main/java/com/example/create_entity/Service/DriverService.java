@@ -118,7 +118,7 @@ public class DriverService {
 
         if (infoResponses.isEmpty()) {
             messes.setMess("NOT FOUND ! ");
-            return new ResponseEntity<>(messes, HttpStatus.OK);
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
 
         } else {
             return new ResponseEntity<>(pagingDriver, HttpStatus.OK);
@@ -278,7 +278,8 @@ public class DriverService {
 
         if (page.isEmpty()) {
             ReposMesses messes = new ReposMesses();
-            messes.setMess("NOT DATA ! ");
+            messes.setMess("K có dữ liệu ! ");
+            return new ResponseEntity<>(messes, HttpStatus.OK);
         }
         return new ResponseEntity<>(driverPagingDriver, HttpStatus.OK);
 
@@ -360,7 +361,7 @@ public class DriverService {
         }
 
         LicenseTypeEntity licenseTypeEntity;
-        licenseTypeEntity = licenseRepository.Get_License_By_name(infoRequest.getName_License());
+        licenseTypeEntity = licenseRepository.Get_License_By_Name(infoRequest.getName_License());
         if (licenseTypeEntity.equals(null)) {
             messes.setMess("K tồn tại List LicenseType !");
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);

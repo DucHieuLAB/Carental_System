@@ -24,7 +24,7 @@ public class DriverController {
     AccountRepository accountRepository;
 
     @Autowired
-    private final  DriverService driverService;
+    private final DriverService driverService;
 
     @Autowired
     RoleRepository roleRepository;
@@ -40,7 +40,7 @@ public class DriverController {
 
     @RequestMapping(value = "/driver/Search_name", method = RequestMethod.GET)
     public ResponseEntity<?> Find_By_Name(@RequestParam(required = false) String name, Integer p) {
-        return driverService.SearchByName(name,p);
+        return driverService.SearchByName(name, p);
     }
 
     @RequestMapping(value = "/driver/Detail", method = RequestMethod.GET)
@@ -75,7 +75,6 @@ public class DriverController {
 
     @RequestMapping(value = "/driver/Create", method = RequestMethod.POST)
     private ResponseEntity<?> Create(@RequestBody DriverInfoRequest infoRequest) {
-
         return driverService.Create(infoRequest);
     }
 
