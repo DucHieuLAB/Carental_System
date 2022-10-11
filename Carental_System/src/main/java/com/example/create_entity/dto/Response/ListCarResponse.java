@@ -20,8 +20,6 @@ public class ListCarResponse {
     private String parkingName;
     private int status;
     private int capacity;
-    private List<ListCarImageResponse> listImg;
-
 
     public static List<ListCarResponse> createListCarPesponse(List<CarEntity> carEntities){
         List<ListCarResponse> result = new ArrayList<>();

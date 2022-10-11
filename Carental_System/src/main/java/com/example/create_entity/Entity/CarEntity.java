@@ -22,7 +22,7 @@ public class CarEntity {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "model_name", nullable = false)
+    @Column(name = "model_name", columnDefinition ="VARCHAR(2048) NOT NULL, FULLTEXT KEY modelNameFulltext (modelName)")
     private String modelName;
 
     @ManyToOne
@@ -48,7 +48,7 @@ public class CarEntity {
     @Column(name = "deposit_amount", nullable = false)
     private double depositAmount;
 
-    @Column(name = "plate_number" ,  nullable = false)
+    @Column(name = "plate_number" ,  columnDefinition ="VARCHAR(2048) NOT NULL, FULLTEXT KEY plateNumberFulltext (plateNumber)")
     private String plateNumber;
 
     @Column(name = "capacity",nullable = false)
