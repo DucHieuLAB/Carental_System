@@ -11,8 +11,10 @@
     <groupId>com.example</groupId>
     <artifactId>Create_Entity</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <name>CRMS_Ver1</name>
     <description>Car Rental Management System</description>
+
     <properties>
         <java.version>11</java.version>
     </properties>
