@@ -60,7 +60,7 @@ public class ParkingServiceImpl implements ParkingService{
         }
         existDistric = districtRepository.check_districts(districRequest.getCity(),
                 districRequest.getWards(),districRequest.getDistrict_Name());
-        
+
 
         return new ResponseEntity<>(responseVo,HttpStatus.OK);
     }
