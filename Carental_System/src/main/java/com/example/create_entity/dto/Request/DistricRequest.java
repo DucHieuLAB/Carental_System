@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DistricRequest {
     private Long id;
-    private String District_Name;
+    private String districtName;
     private String wards;
-    private String City;
+    private String city;
 }

@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/Car")
+@RequestMapping("/v1/parking")
 public class ParkingController {
     private final ParkingServiceImpl parkingService;
 
@@ -17,7 +17,7 @@ public class ParkingController {
         this.parkingService = parkingService;
     }
 
-    @GetMapping(value = "/Parking")
+    @GetMapping(value = "/ListParkings")
     public ResponseEntity<?> getList() {
         return parkingService.getAll();
     }
