@@ -28,6 +28,7 @@ public class ListParkingResponse {
         List<ListParkingResponse> result= new ArrayList<>();
         for (ParkingEntity parking : parkingEntityList) {
             ListParkingResponse tmp = new ListParkingResponse();
+            tmp.setId(parking.getId());
             tmp.setName(parking.getName());
             tmp.setAddress(parking.getAddress());
             tmp.setDistrict(DistrictReponse.createDistricReponse(parking.getDistrictsEntity()));
