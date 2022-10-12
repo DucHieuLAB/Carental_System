@@ -1,5 +1,6 @@
 package com.example.create_entity.Entity;
 
+import com.example.create_entity.dto.Request.ParkingRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ public class ParkingEntity {
     @Column(name = "address")
     private String address;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id",nullable = false)
     private DistrictsEntity districtsEntity;
 
@@ -43,4 +44,22 @@ public class ParkingEntity {
     )
     private List<CarEntity> carEntities = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "pickup_parking"
+    )
+    private List<BookingEntity> bookingEntitiesPickup = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "return_parking"
+    )
+    private List<BookingEntity> bookingEntitiesReturn = new ArrayList<>();
+    
+    public static ParkingEntity createParking(ParkingRequest parkingRequest) {
+        ParkingEntity result = new ParkingEntity();
+        result.setName(parkingRequest.getName());
+        result.setAddress(parkingRequest.getAddress());
+        result.setPhone(parkingRequest.getPhone());
+        result.setStatus(1);
+        return result;
+    }
 }

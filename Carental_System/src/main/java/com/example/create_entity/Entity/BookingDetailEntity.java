@@ -30,4 +30,8 @@ public class BookingDetailEntity {
     @ManyToOne
     @JoinColumn(name = "car_id",nullable = false, foreignKey = @ForeignKey(name = "FK_BookingDetail_Car"))
     CarEntity car;
+
+    @ManyToOne
+    @JoinColumn(name = "booking_id", nullable = false,foreignKey = @ForeignKey(name = "FK_BookingDetail_Booking"))
+    BookingEntity booking;
 }

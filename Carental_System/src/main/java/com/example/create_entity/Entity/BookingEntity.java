@@ -4,11 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "bookings")
@@ -17,14 +15,16 @@ import java.util.Date;
 @NoArgsConstructor
 public class BookingEntity {
     @Id
-    @Column(name = "booking_id",unique = true)
+    @Column(name = "booking_id", unique = true)
     private long id;
 
-    @Column
-    private long pickup_parking_id;
+    @ManyToOne
+    @JoinColumn(name = "pickup_parking_id", nullable = false,foreignKey = @ForeignKey(name = "FK_bookings_pickup_parkings"))
+    private ParkingEntity pickup_parking;
 
-    @Column
-    private long return_parking_id;
+    @ManyToOne
+    @JoinColumn(name = "return_parking_id", nullable = false,foreignKey = @ForeignKey(name = "FK_bookings_return_parkings"))
+    private ParkingEntity return_parking;
 
     @Column
     private Date expected_start_date;
@@ -52,4 +52,9 @@ public class BookingEntity {
 
     @Column
     private int status;
+
+    @OneToMany(
+            mappedBy = "booking"
+    )
+    List<BookingDetailEntity> bookingDetailEntityList;
 }

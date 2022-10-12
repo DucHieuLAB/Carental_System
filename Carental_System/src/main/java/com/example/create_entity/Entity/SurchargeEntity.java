@@ -20,8 +20,8 @@ public class SurchargeEntity {
     @JoinColumn(name = "contract_id", nullable = false)
     private ContractEntity contractEntity;
 
-    @Column(name = "surcharge_name")
-    private double surcharge;
+    @Column(name = "amount")
+    private double amount;
 
     @Column(name = "note")
     private String note;
