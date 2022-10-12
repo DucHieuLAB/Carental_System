@@ -44,6 +44,16 @@ public class ParkingEntity {
     )
     private List<CarEntity> carEntities = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "pickup_parking"
+    )
+    private List<BookingEntity> bookingEntitiesPickup = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "return_parking"
+    )
+    private List<BookingEntity> bookingEntitiesReturn = new ArrayList<>();
+    
     public static ParkingEntity createParking(ParkingRequest parkingRequest) {
         ParkingEntity result = new ParkingEntity();
         result.setName(parkingRequest.getName());

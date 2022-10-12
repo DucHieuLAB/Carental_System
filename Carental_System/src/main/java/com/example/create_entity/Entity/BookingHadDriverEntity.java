@@ -16,7 +16,6 @@ public class BookingHadDriverEntity {
     @Column(name = "HadDriver_id")
     private Long id;
 
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id",nullable = false)
     private BookingEntity bookingEntity;
