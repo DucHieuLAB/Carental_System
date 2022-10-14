@@ -1,8 +1,14 @@
 package com.example.create_entity.Entity;
 
+import com.example.create_entity.dto.Request.BookingRequest;
+import com.example.create_entity.dto.Response.BookingResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,6 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class BookingEntity {
     @Id
     @Column(name = "booking_id", unique = true)
@@ -47,8 +54,9 @@ public class BookingEntity {
     @Column
     private boolean had_driver;
 
-    @Column
-    private long customer_id;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false,foreignKey = @ForeignKey(name = "FK_bookings_customer"))
+    private AccountEntity customer;
 
     @Column
     private int status;
@@ -57,4 +65,34 @@ public class BookingEntity {
             mappedBy = "booking"
     )
     List<BookingDetailEntity> bookingDetailEntityList;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
+    @Column(name = "last_modified_date",nullable = false)
+    private Date lastModifiedDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
+    @Column(name = "create_date",nullable = false)
+    private Date createdDate;
+    public static BookingResponse convertToBookingRespose(BookingEntity be){
+        BookingResponse result = new BookingResponse();
+        if (ObjectUtils.isEmpty(be)){
+            return null;
+        }
+        result.setId(be.getId());
+        result.setPickupParkingId(be.getPickup_parking().getId());
+        result.setReturnParkingId(be.getReturn_parking().getId());
+        result.setExpectedStartDate(be.getExpected_start_date());
+        result.setExpectedEndDate(be.getExpected_end_date());
+        result.setNote(be.getNote());
+        result.setExpectedRentalRrice(be.getExpected_rental_price());
+        result.setQuantity(be.getQuantity());
+        result.setDepositAmount(be.getDeposit_amount());
+        result.setHad_driver(be.isHad_driver());
+        result.setCustomerId(be.getCustomer().getID());
+        result.setStatus(be.getStatus());
+        return result;
+    }
+
 }
