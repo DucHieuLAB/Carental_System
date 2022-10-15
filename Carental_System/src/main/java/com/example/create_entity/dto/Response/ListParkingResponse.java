@@ -33,6 +33,7 @@ public class ListParkingResponse {
             tmp.setAddress(parking.getAddress());
             tmp.setDistrict(DistrictReponse.createDistricReponse(parking.getDistrictsEntity()));
             tmp.setPhone(parking.getPhone());
+            tmp.setStatus(parking.getStatus());
             result.add(tmp);
         }
         return result;

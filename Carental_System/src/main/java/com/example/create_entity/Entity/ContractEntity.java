@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "contracts")
@@ -13,6 +16,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class ContractEntity {
     @Id
     @Column(name = "contract_id")
@@ -33,4 +37,9 @@ public class ContractEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private AccountEntity accountEntity;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
+    @Column(name = "last_modified_date",nullable = false)
+    private Date lastModifiedDate;
 }
