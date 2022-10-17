@@ -28,7 +28,7 @@ public class ListBookingDetailRequest {
         for (ListBookingDetailRequest b : bookingDetailRequests){
             BookingDetailEntity nb = new BookingDetailEntity();
             nb.setId(b.getId());
-            nb.setPlateNumber(b.getPlateNumber());
+         //   nb.setPlateNumber(b.getPlateNumber());
             nb.setReal_pick_up_date(b.realPickUpDate);
             nb.setReal_return_date(b.realReturnDate);
             result.add(nb);

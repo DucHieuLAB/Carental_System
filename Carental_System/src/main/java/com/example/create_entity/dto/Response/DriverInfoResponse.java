@@ -18,7 +18,6 @@ public class DriverInfoResponse {
     private String Identity_Number;
     private int yearExperience;
     private int status;
-
     private String username;
 
 

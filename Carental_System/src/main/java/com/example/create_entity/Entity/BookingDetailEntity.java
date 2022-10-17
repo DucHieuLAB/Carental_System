@@ -24,6 +24,8 @@ public class BookingDetailEntity {
     private Date real_pick_up_date;
     @Column
     private Date real_return_date;
+
+
     @Column
     private long driver_id;
 
