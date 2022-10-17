@@ -34,9 +34,11 @@ public class BookingEntity {
     private ParkingEntity return_parking;
 
     @Column
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expected_start_date;
 
     @Column
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expected_end_date;
 
     @Column
@@ -76,27 +78,27 @@ public class BookingEntity {
     @Column(name = "create_date",nullable = false)
     private Date createdDate;
 
-    public static BookingResponse convertToBookingRespose(BookingEntity be){
+    public static BookingResponse convertToBookingResponse(BookingEntity be){
         BookingResponse result = new BookingResponse();
         if (ObjectUtils.isEmpty(be)){
             return null;
         }
-        result.setId(be.getId());
+        result.setCustomerId(be.getId());
         result.setPickupParkingId(be.getPickup_parking().getId());
         result.setReturnParkingId(be.getReturn_parking().getId());
         result.setExpectedStartDate(be.getExpected_start_date());
         result.setExpectedEndDate(be.getExpected_end_date());
         result.setNote(be.getNote());
-        result.setExpectedRentalRrice(be.getExpected_rental_price());
+        result.setExpectedRentalPrice(be.getExpected_rental_price());
         result.setQuantity(be.getQuantity());
         result.setDepositAmount(be.getDeposit_amount());
         result.setHad_driver(be.isHad_driver());
         result.setCustomerId(be.getCustomer().getID());
+        result.setPhoneCustomer(be.customer.getPhone());
+        result.setFullName(be.customer.getFullName());
         result.setStatus(be.getStatus());
-        result.setFullName(be.getCustomer().getFullName());
-        result.setPhoneCustomer(be.getCustomer().getPhone());
+        result.setCreateDate(be.getCreatedDate());
         result.setLastModifiedDate(be.getLastModifiedDate());
-        result.setCreatedDate(be.getCreatedDate());
         return result;
     }
 

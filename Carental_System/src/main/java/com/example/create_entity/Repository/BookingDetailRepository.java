@@ -6,7 +6,18 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface BookingDetailRepository extends JpaRepository<BookingDetailEntity,Long> {
-@Query("SELECT b FROM BookingDetailEntity b WHERE b.booking.id = ?1")
+import org.springframework.stereotype.Repository;
+
+
+
+@Repository
+public interface BookingDetailRepository extends JpaRepository<BookingDetailEntity, Long> {
+
+    @Query("SELECT b FROM BookingDetailEntity b WHERE b.booking.id = ?1")
     public List<BookingDetailEntity> getListBookingDetailEntitiesByBookingId(Long id);
+
+
+    @Query(value = "SELECT * FROM carrental.booking_details where booking_detail_id = ?1 ", nativeQuery = true)
+    BookingDetailEntity BookingDetail(Long id);
+
 }

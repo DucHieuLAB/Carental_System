@@ -9,4 +9,6 @@ import java.util.List;
 public interface BookingDetailService {
     @Transactional
     public ResponseEntity<?> addList(List<ListBookingDetailRequest> listBookingDetailRequests);
+
+    ResponseEntity<?>  ListBookingDetail(Long id);
 }

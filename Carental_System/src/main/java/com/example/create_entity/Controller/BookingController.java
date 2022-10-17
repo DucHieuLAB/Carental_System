@@ -4,10 +4,7 @@ import com.example.create_entity.Service.BookingServiceImpl;
 import com.example.create_entity.dto.Request.BookingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/booking")
@@ -24,4 +21,12 @@ public class BookingController {
     {
         return bookingService.add(bookingRequest);
     }
+
+
+    @RequestMapping(value = "/ListBooking", method = RequestMethod.GET)
+    public ResponseEntity<?> List(@RequestParam(value = "p", required = false) Integer p)
+    {
+        return bookingService.ListBooking(p);
+    }
+
 }
