@@ -16,7 +16,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class BookingDetailEntity {
+public class  BookingDetailEntity {
     @Id
     @Column(name = "booking_detail_id",unique = true)
     private long id;

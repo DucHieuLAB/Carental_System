@@ -75,6 +75,7 @@ public class BookingEntity {
     @CreatedDate
     @Column(name = "create_date",nullable = false)
     private Date createdDate;
+
     public static BookingResponse convertToBookingRespose(BookingEntity be){
         BookingResponse result = new BookingResponse();
         if (ObjectUtils.isEmpty(be)){
@@ -92,6 +93,10 @@ public class BookingEntity {
         result.setHad_driver(be.isHad_driver());
         result.setCustomerId(be.getCustomer().getID());
         result.setStatus(be.getStatus());
+        result.setFullName(be.getCustomer().getFullName());
+        result.setPhoneCustomer(be.getCustomer().getPhone());
+        result.setLastModifiedDate(be.getLastModifiedDate());
+        result.setCreatedDate(be.getCreatedDate());
         return result;
     }
 

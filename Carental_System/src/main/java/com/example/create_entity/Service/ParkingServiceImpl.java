@@ -83,7 +83,7 @@ public class ParkingServiceImpl implements ParkingService {
                 districRequest.getWards(),
                 districRequest.getDistrictName());
         List<ParkingEntity> parkingEntityExsits = parkingRepository.findParkingByAddressOrNameOrPhone(parkingRequest.getAddress(), parkingRequest.getName(), parkingRequest.getPhone());
-        if (!ObjectUtils.isEmpty(parkingEntityExsits) || parkingEntityExsits.isEmpty()) {
+        if (!ObjectUtils.isEmpty(parkingEntityExsits) || !parkingEntityExsits.isEmpty()) {
             responseVo.setStatus(false);
             responseVo.setMessage("Bãi đỗ xe đã tồn tại trong CSDL");
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -115,11 +115,11 @@ public class ParkingServiceImpl implements ParkingService {
                     districRequest.getWards(),
                     districRequest.getDistrictName());
             if (ObjectUtils.isEmpty(existDistric)) {
-                existDistric = DistrictsEntity.createDistricEntity(districRequest);
                 if (existDistric == null) {
                     responseVo = ResponseVeConvertUntil.createResponseVo(false, "Địa chỉ bạn nhập không đúng vui lòng nhập lại", null);
                     return new ResponseEntity<>(responseVo, HttpStatus.OK);
                 }
+                existDistric = DistrictsEntity.createDistricEntity(districRequest);
                 districtRepository.save(existDistric);
             }
             DistrictsEntity parkingDistric = districtRepository.check_districts(districRequest.getCity(),

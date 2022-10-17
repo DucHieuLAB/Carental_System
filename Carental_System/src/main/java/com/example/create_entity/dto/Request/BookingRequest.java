@@ -23,9 +23,9 @@ public class BookingRequest {
     private int quantity;
     private double depositAmount;
     private boolean had_driver;
-    private long CustomerId;
+    private long customerId;
     private int status;
-    List<ListBookingDetailRequest> lstListBookingDetailRequests;
+    List<String> listCarPlateNumber;
     public static BookingEntity convertToBookingEntity(BookingRequest br){
         BookingEntity result = new BookingEntity();
         if (ObjectUtils.isEmpty(br)){
@@ -39,6 +39,7 @@ public class BookingRequest {
         result.setQuantity(br.getQuantity());
         result.setDeposit_amount(br.getDepositAmount());
         result.setHad_driver(br.isHad_driver());
+        result.setStatus(br.getStatus());
         return result;
     }
 }

@@ -24,9 +24,6 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     @Query(value = "SELECT * FROM accounts where identity_number = ? ",nativeQuery = true)
     List<AccountEntity> Check_Identity(String Identity);
 
-
-
-
-
-
+    @Query(value = "SELECT a FROM AccountEntity  a WHERE a.ID = ?1 ")
+    AccountEntity getCustomerById(long customerId);
 }

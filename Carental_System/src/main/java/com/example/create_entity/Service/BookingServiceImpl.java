@@ -1,16 +1,11 @@
 package com.example.create_entity.Service;
 
-import com.example.create_entity.Entity.AccountEntity;
-import com.example.create_entity.Entity.BookingDetailEntity;
-import com.example.create_entity.Entity.BookingEntity;
-import com.example.create_entity.Entity.ParkingEntity;
-import com.example.create_entity.Repository.AccountRepository;
-import com.example.create_entity.Repository.BookingDetailRepository;
-import com.example.create_entity.Repository.BookingRepository;
-import com.example.create_entity.Repository.ParkingRepository;
+import com.example.create_entity.Entity.*;
+import com.example.create_entity.Repository.*;
 import com.example.create_entity.dto.Request.BookingRequest;
 import com.example.create_entity.dto.Request.ListBookingDetailRequest;
 import com.example.create_entity.dto.Response.BookingResponse;
+import com.example.create_entity.dto.Response.ListBookingDetailResponse;
 import com.example.create_entity.dto.Response.ResponseVo;
 import com.example.create_entity.untils.ResponseVeConvertUntil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -32,6 +26,8 @@ public class BookingServiceImpl implements BookingService {
     ParkingRepository pr;
     @Autowired
     AccountRepository ar;
+    @Autowired
+    CarRepository cr;
 
     @Override
     public ResponseEntity<?> add(BookingRequest bookingRequest) {
@@ -40,24 +36,23 @@ public class BookingServiceImpl implements BookingService {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Booking truyền vào trống", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        BookingEntity exsitBooking = br.findByCustomerIDAndCreatedDate(bookingRequest.getCustomerId(), bookingRequest.getExpectedStartDate(), bookingRequest.getExpectedEndDate());
+        BookingEntity exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(bookingRequest.getCustomerId(), bookingRequest.getExpectedStartDate(), bookingRequest.getExpectedEndDate());
         if (!ObjectUtils.isEmpty(exsitBooking)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn đã đặt booking tương tự", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        if (bookingRequest.getLstListBookingDetailRequests().isEmpty()) {
+        if (bookingRequest.getListCarPlateNumber().isEmpty()) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn chưa chọn xe", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        List<BookingDetailEntity> bookingDetails = ListBookingDetailRequest.convertToBookingDetailEntity(bookingRequest.getLstListBookingDetailRequests());
         BookingEntity newBooking = BookingRequest.convertToBookingEntity(bookingRequest);
         Optional<ParkingEntity> pickUpParking = pr.findById(bookingRequest.getPickupParkingId());
         Optional<ParkingEntity> returnParking = pr.findById(bookingRequest.getReturnParkingId());
-        if (pickUpParking.isPresent() || returnParking.isPresent()) {
+        if (!pickUpParking.isPresent() || !returnParking.isPresent()) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin bãi đỗ không đúng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        AccountEntity customer = ar.getReferenceById(bookingRequest.getCustomerId());
+        AccountEntity customer = ar.getCustomerById(bookingRequest.getCustomerId());
         if (ObjectUtils.isEmpty(customer)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin người dùng không chính xác", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -66,13 +61,36 @@ public class BookingServiceImpl implements BookingService {
         newBooking.setReturn_parking(returnParking.get());
         newBooking.setCustomer(customer);
         try {
+            Date date = new Date(System.currentTimeMillis());
+            newBooking.setLastModifiedDate(date);
+            newBooking.setCreatedDate(date);
             br.save(newBooking);
+            newBooking = br.getByCustomerIdAndExpectStartDateAndExpectEndDate(bookingRequest.getCustomerId(), bookingRequest.getExpectedStartDate(),bookingRequest.getExpectedEndDate());
+            List<BookingDetailEntity> bookingDetailEntities = new ArrayList<>();
+            for (String carPlateNumber: bookingRequest.getListCarPlateNumber()
+                 ) {
+                BookingDetailEntity bookingDetailEntity = new BookingDetailEntity();
+                CarEntity carEntity = cr.findCarEntityByPlateNumber(carPlateNumber);
+                bookingDetailEntity.setBooking(newBooking);
+                bookingDetailEntity.setCar(carEntity);
+                bookingDetailEntity.setLastModifiedDate(date);
+                bookingDetailEntities.add(bookingDetailEntity);
+
+            }
+            bdr.saveAll(bookingDetailEntities);
+            // save list Booking Detail
+            bookingDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(newBooking.getId());
+            List<ListBookingDetailResponse> listBookingDetailResponses = ListBookingDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
             BookingResponse bookingResponse = BookingEntity.convertToBookingRespose(newBooking);
-            responseVo = ResponseVeConvertUntil.createResponseVo(true, "Tạo Booking thành công", bookingResponse);
+            HashMap<String,Object> reponse = new HashMap<>();
+            reponse.put("Booking",bookingResponse);
+            reponse.put("BookingDetail",listBookingDetailResponses);
+            responseVo = ResponseVeConvertUntil.createResponseVo(true, "Tạo Booking thành công", reponse);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (Exception e) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Lỗi Khi Tạo Mới Booking", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
     }
+
 }

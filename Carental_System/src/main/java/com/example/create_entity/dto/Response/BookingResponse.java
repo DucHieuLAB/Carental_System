@@ -10,6 +10,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class BookingResponse {
     private long id;
+    private String fullName;
+    private String phoneCustomer;
     private long pickupParkingId;
     private long returnParkingId;
     private Date expectedStartDate;
@@ -21,4 +23,7 @@ public class BookingResponse {
     private boolean had_driver;
     private long CustomerId;
     private int status;
+    private Date lastModifiedDate;
+    private Date createdDate;
+
 }

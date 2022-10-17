@@ -387,10 +387,10 @@ public class DriverService {
 
         LicenseTypeEntity licenseTypeEntity;
         licenseTypeEntity = licenseRepository.Get_License_By_Name(infoRequest.getName_License());
-        if (licenseTypeEntity.equals(null)) {
-            messes.setMess("K tồn tại List LicenseType !");
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-        }
+//        if (licenseTypeEntity.equals(null)) {
+//            messes.setMess("K tồn tại List LicenseType !");
+//            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+//        }
 
         driver.setAccountEntity(accountEntity);
         driver.setLicenseTypeEntity(licenseTypeEntity);
