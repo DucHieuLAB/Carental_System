@@ -38,7 +38,8 @@ public class ParkingEntity {
 
     @Column(name = "status")
     private int status;
-
+    @Column(name = "location_url",length = 4000)
+    private String location;
     @OneToMany(
             mappedBy = "parking"
     )
@@ -60,6 +61,7 @@ public class ParkingEntity {
         result.setName(parkingRequest.getName());
         result.setAddress(parkingRequest.getAddress());
         result.setPhone(parkingRequest.getPhone());
+        result.setLocation(parkingRequest.getLocation());
         result.setStatus(1);
         return result;
     }

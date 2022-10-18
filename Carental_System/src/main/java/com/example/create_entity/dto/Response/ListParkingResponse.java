@@ -19,6 +19,7 @@ public class ListParkingResponse {
     private String address;
     private DistrictReponse district;
     private String phone;
+    private String location;
     private int status;
 
     public static List<ListParkingResponse> CreateListParkinkResponse(List<ParkingEntity> parkingEntityList){
@@ -34,6 +35,7 @@ public class ListParkingResponse {
             tmp.setDistrict(DistrictReponse.createDistricReponse(parking.getDistrictsEntity()));
             tmp.setPhone(parking.getPhone());
             tmp.setStatus(parking.getStatus());
+            tmp.setLocation(parking.getLocation());
             result.add(tmp);
         }
         return result;

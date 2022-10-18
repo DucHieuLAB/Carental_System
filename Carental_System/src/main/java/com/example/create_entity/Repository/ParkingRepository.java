@@ -30,4 +30,6 @@ public interface ParkingRepository extends JpaRepository<ParkingEntity,Long> {
             + "status > 0",nativeQuery = true
     )
     Page<ParkingEntity> findAllPaging(Pageable pageable);
+    @Query("SELECT p FROM ParkingEntity p WHERE p.name = ?1 AND p.status = 1")
+    ParkingEntity findParkingByName(String name);
 }

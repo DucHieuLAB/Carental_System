@@ -18,7 +18,9 @@ public class ParkingResponse {
     private String address;
     private String phone;
     private int status;
+    private String location;
     private DistrictReponse distric;
+
     public static ParkingResponse createParkingResponse(ParkingEntity parkingEntity){
         ParkingResponse result = new ParkingResponse();
         if(ObjectUtils.isEmpty(parkingEntity)){
@@ -30,6 +32,7 @@ public class ParkingResponse {
         result.setPhone(parkingEntity.getPhone());
         result.setStatus(parkingEntity.getStatus());
         result.setDistric(DistrictReponse.createDistricReponse(parkingEntity.getDistrictsEntity()));
+        result.setLocation(parkingEntity.getLocation());
         return result;
     }
 }
