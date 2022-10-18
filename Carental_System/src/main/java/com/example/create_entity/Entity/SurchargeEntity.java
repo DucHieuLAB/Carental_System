@@ -14,9 +14,10 @@ import javax.persistence.*;
 public class SurchargeEntity {
     @Id
     @Column(name = "surcharge_id")
-    private long contract_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_id", nullable = false)
     private ContractEntity contractEntity;
 

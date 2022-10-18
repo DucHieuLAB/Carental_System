@@ -48,12 +48,12 @@ public class ParkingEntity {
     @OneToMany(
             mappedBy = "pickup_parking"
     )
-    private List<BookingEntity> bookingEntitiesPickup = new ArrayList<>();
+    private List<ContractEntity> bookingEntitiesPickup = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "return_parking"
     )
-    private List<BookingEntity> bookingEntitiesReturn = new ArrayList<>();
+    private List<ContractEntity> bookingEntitiesReturn = new ArrayList<>();
     
     public static ParkingEntity createParking(ParkingRequest parkingRequest) {
         ParkingEntity result = new ParkingEntity();

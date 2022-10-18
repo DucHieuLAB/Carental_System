@@ -4,7 +4,6 @@ import com.example.create_entity.Entity.*;
 
 import com.example.create_entity.Repository.*;
 import com.example.create_entity.dto.Request.BookingRequest;
-import com.example.create_entity.dto.Request.ListBookingDetailRequest;
 import com.example.create_entity.dto.Response.BookingResponse;
 import com.example.create_entity.dto.Response.ListBookingDetailResponse;
 
@@ -12,9 +11,6 @@ import com.example.create_entity.Repository.AccountRepository;
 import com.example.create_entity.Repository.BookingDetailRepository;
 import com.example.create_entity.Repository.BookingRepository;
 import com.example.create_entity.Repository.ParkingRepository;
-import com.example.create_entity.dto.Request.BookingRequest;
-import com.example.create_entity.dto.Request.ListBookingDetailRequest;
-import com.example.create_entity.dto.Response.BookingResponse;
 import com.example.create_entity.dto.Response.PagingBooking;
 import com.example.create_entity.dto.Response.ReposMesses;
 
@@ -54,7 +50,7 @@ public class BookingServiceImpl implements BookingService {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Booking truyền vào trống", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        BookingEntity exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(bookingRequest.getCustomerId(), bookingRequest.getExpectedStartDate(), bookingRequest.getExpectedEndDate());
+        ContractEntity exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(bookingRequest.getCustomerId(), bookingRequest.getExpectedStartDate(), bookingRequest.getExpectedEndDate());
         if (!ObjectUtils.isEmpty(exsitBooking)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn đã đặt booking tương tự", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -63,7 +59,7 @@ public class BookingServiceImpl implements BookingService {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn chưa chọn xe", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        BookingEntity newBooking = BookingRequest.convertToBookingEntity(bookingRequest);
+        ContractEntity newBooking = BookingRequest.convertToBookingEntity(bookingRequest);
         Optional<ParkingEntity> pickUpParking = pr.findById(bookingRequest.getPickupParkingId());
         Optional<ParkingEntity> returnParking = pr.findById(bookingRequest.getReturnParkingId());
         if (!pickUpParking.isPresent() || !returnParking.isPresent()) {
@@ -99,7 +95,7 @@ public class BookingServiceImpl implements BookingService {
             // save list Booking Detail
             bookingDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(newBooking.getId());
             List<ListBookingDetailResponse> listBookingDetailResponses = ListBookingDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
-            BookingResponse bookingResponse = BookingEntity.convertToBookingResponse(newBooking);
+            BookingResponse bookingResponse = ContractEntity.convertToBookingResponse(newBooking);
             HashMap<String,Object> reponse = new HashMap<>();
             reponse.put("Booking",bookingResponse);
             reponse.put("BookingDetail",listBookingDetailResponses);
@@ -121,7 +117,7 @@ public class BookingServiceImpl implements BookingService {
         }
         Pageable pageable = PageRequest.of(p, 5);
 
-        Page<BookingEntity> page = br.ListBooking(pageable);
+        Page<ContractEntity> page = br.ListBooking(pageable);
 
         List<BookingResponse> bookingResponse = new ArrayList<>();
 

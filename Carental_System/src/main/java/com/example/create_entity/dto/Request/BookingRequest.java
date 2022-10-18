@@ -1,6 +1,6 @@
 package com.example.create_entity.dto.Request;
 
-import com.example.create_entity.Entity.BookingEntity;
+import com.example.create_entity.Entity.ContractEntity;
 import lombok.*;
 import org.springframework.util.ObjectUtils;
 
@@ -26,8 +26,8 @@ public class BookingRequest {
     private long customerId;
     private int status;
     List<String> listCarPlateNumber;
-    public static BookingEntity convertToBookingEntity(BookingRequest br){
-        BookingEntity result = new BookingEntity();
+    public static ContractEntity convertToBookingEntity(BookingRequest br){
+        ContractEntity result = new ContractEntity();
         if (ObjectUtils.isEmpty(br)){
             return null;
         }

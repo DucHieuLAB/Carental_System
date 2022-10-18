@@ -10,19 +10,19 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "booking_had_drivers")
+@Table(name = "contract_had_drivers")
 @Getter
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class BookingHadDriverEntity {
+public class ContractHadDriver {
     @Id
     @Column(name = "HadDriver_id")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id", nullable = false)
-    private BookingEntity bookingEntity;
+    private ContractEntity bookingEntity;
 
     @Column(name = "pickup_district_id")
     private long pickup_district_id;

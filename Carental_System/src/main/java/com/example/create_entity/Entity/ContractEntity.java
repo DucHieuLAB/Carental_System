@@ -1,45 +1,117 @@
 package com.example.create_entity.Entity;
 
-import lombok.AllArgsConstructor;
+import com.example.create_entity.dto.Response.BookingResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "contracts")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class ContractEntity {
     @Id
-    @Column(name = "contract_id")
+    @Column(name = "booking_id", unique = true)
     private long id;
 
-    @Column(name = "status")
+    @ManyToOne
+    @JoinColumn(name = "pickup_parking_id", nullable = false,foreignKey = @ForeignKey(name = "FK_bookings_pickup_parkings"))
+    private ParkingEntity pickup_parking;
+
+    @ManyToOne
+    @JoinColumn(name = "return_parking_id", nullable = false,foreignKey = @ForeignKey(name = "FK_bookings_return_parkings"))
+    private ParkingEntity return_parking;
+
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expected_start_date;
+
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expected_end_date;
+
+    @Column
+    private String note;
+
+    @Column
+    private double expected_rental_price;
+
+    @Column
+    private int quantity;
+
+    @Column
+    private double deposit_amount;
+
+    @Column
+    private boolean had_driver;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false,foreignKey = @ForeignKey(name = "FK_bookings_customer"))
+    private AccountEntity customer;
+
+    @Column
     private int status;
 
-    @Column(name = "real_price")
-    private double real_price;
+    @OneToMany(
+            mappedBy = "booking"
+    )
+    List<BookingDetailEntity> bookingDetailEntityList;
 
+    @OneToMany(
+            mappedBy = "contractEntity"
+    )
+    List<SurchargeEntity> surchargeEntities;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_id", nullable = false)
-    private BookingEntity bookingEntity;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private AccountEntity accountEntity;
+    @OneToMany(
+            mappedBy = "contract"
+    )
+    List<PaymentEntity> paymentEntities;
 
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     @Column(name = "last_modified_date",nullable = false)
     private Date lastModifiedDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
+    @Column(name = "create_date",nullable = false)
+    private Date createdDate;
+
+    @Column(name = "real_price")
+    private double real_price;
+
+    public static BookingResponse convertToBookingResponse(ContractEntity be){
+        BookingResponse result = new BookingResponse();
+        if (ObjectUtils.isEmpty(be)){
+            return null;
+        }
+        result.setCustomerId(be.getId());
+        result.setPickupParkingId(be.getPickup_parking().getId());
+        result.setReturnParkingId(be.getReturn_parking().getId());
+        result.setExpectedStartDate(be.getExpected_start_date());
+        result.setExpectedEndDate(be.getExpected_end_date());
+        result.setNote(be.getNote());
+        result.setExpectedRentalPrice(be.getExpected_rental_price());
+        result.setQuantity(be.getQuantity());
+        result.setDepositAmount(be.getDeposit_amount());
+        result.setHad_driver(be.isHad_driver());
+        result.setCustomerId(be.getCustomer().getID());
+        result.setPhoneCustomer(be.customer.getPhone());
+        result.setFullName(be.customer.getFullName());
+        result.setStatus(be.getStatus());
+        result.setCreateDate(be.getCreatedDate());
+        result.setLastModifiedDate(be.getLastModifiedDate());
+        return result;
+    }
+
 }

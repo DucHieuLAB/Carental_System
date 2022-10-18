@@ -3,7 +3,6 @@ package com.example.create_entity.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -11,7 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "booking_details")
+@Table(name = "contract_details")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,7 +34,7 @@ public class  BookingDetailEntity {
 
     @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false,foreignKey = @ForeignKey(name = "FK_BookingDetail_Booking"))
-    BookingEntity booking;
+    ContractEntity booking;
 
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
