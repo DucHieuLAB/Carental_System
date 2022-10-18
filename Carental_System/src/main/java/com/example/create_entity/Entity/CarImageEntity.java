@@ -12,10 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CarImages",
-        uniqueConstraints =
-                { @UniqueConstraint(name = "unique_plate_number_img",
-                        columnNames = { "plate_number", "img" })})
+@Table(name = "CarImages")
 public class CarImageEntity {
     @Id
     @Column(name = "id")
@@ -25,7 +22,7 @@ public class CarImageEntity {
     @Column(name = "plate_number" ,  nullable = false ,length = 100)
     private String plateNumber;
 
-    @Column(name = "img",length = 3000)
+    @Column(name = "img",length = 4000)
     private String img;
 
     @Column(name = "status",nullable = false)

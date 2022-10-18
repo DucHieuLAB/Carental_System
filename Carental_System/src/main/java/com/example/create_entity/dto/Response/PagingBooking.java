@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PagingBooking {
- private    List<BookingResponse> bookingResponseList ;
+ private    List<ContractResponse> contractResponseList;
  private int NumberPage;
  private int TotalPage;
 

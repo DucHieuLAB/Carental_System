@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingRequest {
+public class ContractRequest {
     private long id;
     private long pickupParkingId;
     private long returnParkingId;
@@ -26,7 +26,7 @@ public class BookingRequest {
     private long customerId;
     private int status;
     List<String> listCarPlateNumber;
-    public static ContractEntity convertToBookingEntity(BookingRequest br){
+    public static ContractEntity convertToBookingEntity(ContractRequest br){
         ContractEntity result = new ContractEntity();
         if (ObjectUtils.isEmpty(br)){
             return null;

@@ -1,13 +1,13 @@
 package com.example.create_entity.Service;
 
-import com.example.create_entity.dto.Request.BookingRequest;
+import com.example.create_entity.dto.Request.ContractRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 
-public interface BookingService  {
+public interface ContractService {
     @Transactional
-    ResponseEntity<?> add(BookingRequest bookingRequest);
+    ResponseEntity<?> add(ContractRequest contractRequest);
 
     ResponseEntity<?> ListBooking(Integer p);
 }

@@ -15,7 +15,7 @@ import java.util.Date;
 @Entity
 @Table(name = "Accounts",
         uniqueConstraints = {
-                @UniqueConstraint(name = "UNIQUE", columnNames = {"user_name", "email"})})
+                @UniqueConstraint(name = "UNIQUE_USERNAME_Email", columnNames = {"user_name", "email"})})
 public class AccountEntity   {
 
     @Id

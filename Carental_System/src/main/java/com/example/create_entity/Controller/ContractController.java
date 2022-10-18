@@ -1,25 +1,25 @@
 package com.example.create_entity.Controller;
 
-import com.example.create_entity.Service.BookingServiceImpl;
-import com.example.create_entity.dto.Request.BookingRequest;
+import com.example.create_entity.Service.ContractServiceImpl;
+import com.example.create_entity.dto.Request.ContractRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/booking")
-public class BookingController {
+public class ContractController {
 
-    private final BookingServiceImpl bookingService;
+    private final ContractServiceImpl bookingService;
     @Autowired
-    public BookingController(BookingServiceImpl bookingService1) {
+    public ContractController(ContractServiceImpl bookingService1) {
         this.bookingService = bookingService1;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody BookingRequest bookingRequest)
+    public ResponseEntity<?> add(@RequestBody ContractRequest contractRequest)
     {
-        return bookingService.add(bookingRequest);
+        return bookingService.add(contractRequest);
     }
 
 

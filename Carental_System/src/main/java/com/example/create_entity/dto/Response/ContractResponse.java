@@ -9,7 +9,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingResponse {
+public class ContractResponse {
     private long BookingId;
     private String FullName;
     private String PhoneCustomer;
@@ -25,10 +25,8 @@ public class BookingResponse {
     private long CustomerId;
     private int status;
     private Date lastModifiedDate;
-
     private Date CreateDate;
-
-
+    private double real_price;
 }
 
 

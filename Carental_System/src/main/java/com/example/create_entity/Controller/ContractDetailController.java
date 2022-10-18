@@ -1,20 +1,17 @@
 package com.example.create_entity.Controller;
 
-import com.example.create_entity.Service.BookingDetailService;
-import com.example.create_entity.Service.BookingDetailServiceImpl;
-import com.example.create_entity.Service.BookingService;
-import com.example.create_entity.dto.Response.BookingDetailResponse;
+import com.example.create_entity.Service.ContractDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/")
-public class BookingDetailController {
+public class ContractDetailController {
 
 
     @Autowired
-    BookingDetailService bookingService;
+    ContractDetailService bookingService;
 
 
     @RequestMapping(value = "/BookingDetail/View")

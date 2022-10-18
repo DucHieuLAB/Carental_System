@@ -1,7 +1,6 @@
 package com.example.create_entity.dto.Response;
 
 import com.example.create_entity.Entity.BookingDetailEntity;
-import com.example.create_entity.dto.Request.ListBookingDetailRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ListBookingDetailResponse {
+public class ListContractDetailResponse {
     private long id;
     private Date realPickUpDate;
     private Date realReturnDate;
@@ -30,13 +29,13 @@ public class ListBookingDetailResponse {
     private long yearOfManufacture;
     private double rentalPrice;
 
-    public static List<ListBookingDetailResponse> createListBookingDetailResponse(List<BookingDetailEntity> bdes) {
-        List<ListBookingDetailResponse> result = new ArrayList<>();
+    public static List<ListContractDetailResponse> createListBookingDetailResponse(List<BookingDetailEntity> bdes) {
+        List<ListContractDetailResponse> result = new ArrayList<>();
         if (bdes.isEmpty()) {
             return null;
         }
         for (BookingDetailEntity entity : bdes) {
-            ListBookingDetailResponse tmp = new ListBookingDetailResponse();
+            ListContractDetailResponse tmp = new ListContractDetailResponse();
             tmp.setId(entity.getId());
             tmp.setRealReturnDate(entity.getReal_return_date());
             tmp.setRealPickUpDate(entity.getReal_pick_up_date());

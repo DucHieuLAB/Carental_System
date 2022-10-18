@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import javax.transaction.Transactional;
 import java.util.List;
 
-public interface BookingDetailService {
+public interface ContractDetailService {
     @Transactional
     public ResponseEntity<?> addList(List<ListBookingDetailRequest> listBookingDetailRequests);
 

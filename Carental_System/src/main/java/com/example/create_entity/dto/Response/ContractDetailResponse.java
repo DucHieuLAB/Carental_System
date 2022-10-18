@@ -9,7 +9,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDetailResponse {
+public class ContractDetailResponse {
     private long BookingDetailID;
     private Long DriverID;
     private Long CarID;

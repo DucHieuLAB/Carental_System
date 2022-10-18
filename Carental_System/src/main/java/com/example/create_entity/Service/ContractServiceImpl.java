@@ -3,9 +3,9 @@ package com.example.create_entity.Service;
 import com.example.create_entity.Entity.*;
 
 import com.example.create_entity.Repository.*;
-import com.example.create_entity.dto.Request.BookingRequest;
-import com.example.create_entity.dto.Response.BookingResponse;
-import com.example.create_entity.dto.Response.ListBookingDetailResponse;
+import com.example.create_entity.dto.Request.ContractRequest;
+import com.example.create_entity.dto.Response.ContractResponse;
+import com.example.create_entity.dto.Response.ListContractDetailResponse;
 
 import com.example.create_entity.Repository.AccountRepository;
 import com.example.create_entity.Repository.BookingDetailRepository;
@@ -31,7 +31,7 @@ import java.util.*;
 
 
 @Service
-public class BookingServiceImpl implements BookingService {
+public class ContractServiceImpl implements ContractService {
     @Autowired
     BookingRepository br;
     @Autowired
@@ -44,29 +44,29 @@ public class BookingServiceImpl implements BookingService {
     CarRepository cr;
 
     @Override
-    public ResponseEntity<?> add(BookingRequest bookingRequest) {
+    public ResponseEntity<?> add(ContractRequest contractRequest) {
         ResponseVo responseVo = null;
-        if (ObjectUtils.isEmpty(bookingRequest)) {
+        if (ObjectUtils.isEmpty(contractRequest)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Booking truyền vào trống", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        ContractEntity exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(bookingRequest.getCustomerId(), bookingRequest.getExpectedStartDate(), bookingRequest.getExpectedEndDate());
+        ContractEntity exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
         if (!ObjectUtils.isEmpty(exsitBooking)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn đã đặt booking tương tự", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        if (bookingRequest.getListCarPlateNumber().isEmpty()) {
+        if (contractRequest.getListCarPlateNumber().isEmpty()) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn chưa chọn xe", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        ContractEntity newBooking = BookingRequest.convertToBookingEntity(bookingRequest);
-        Optional<ParkingEntity> pickUpParking = pr.findById(bookingRequest.getPickupParkingId());
-        Optional<ParkingEntity> returnParking = pr.findById(bookingRequest.getReturnParkingId());
+        ContractEntity newBooking = ContractRequest.convertToBookingEntity(contractRequest);
+        Optional<ParkingEntity> pickUpParking = pr.findById(contractRequest.getPickupParkingId());
+        Optional<ParkingEntity> returnParking = pr.findById(contractRequest.getReturnParkingId());
         if (!pickUpParking.isPresent() || !returnParking.isPresent()) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin bãi đỗ không đúng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        AccountEntity customer = ar.getCustomerById(bookingRequest.getCustomerId());
+        AccountEntity customer = ar.getCustomerById(contractRequest.getCustomerId());
         if (ObjectUtils.isEmpty(customer)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin người dùng không chính xác", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -79,9 +79,9 @@ public class BookingServiceImpl implements BookingService {
             newBooking.setLastModifiedDate(date);
             newBooking.setCreatedDate(date);
             br.save(newBooking);
-            newBooking = br.getByCustomerIdAndExpectStartDateAndExpectEndDate(bookingRequest.getCustomerId(), bookingRequest.getExpectedStartDate(),bookingRequest.getExpectedEndDate());
+            newBooking = br.getByCustomerIdAndExpectStartDateAndExpectEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
             List<BookingDetailEntity> bookingDetailEntities = new ArrayList<>();
-            for (String carPlateNumber: bookingRequest.getListCarPlateNumber()
+            for (String carPlateNumber: contractRequest.getListCarPlateNumber()
                  ) {
                 BookingDetailEntity bookingDetailEntity = new BookingDetailEntity();
                 CarEntity carEntity = cr.findCarEntityByPlateNumber(carPlateNumber);
@@ -94,11 +94,11 @@ public class BookingServiceImpl implements BookingService {
             bdr.saveAll(bookingDetailEntities);
             // save list Booking Detail
             bookingDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(newBooking.getId());
-            List<ListBookingDetailResponse> listBookingDetailResponses = ListBookingDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
-            BookingResponse bookingResponse = ContractEntity.convertToBookingResponse(newBooking);
+            List<ListContractDetailResponse> listContractDetailRespons = ListContractDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
+            ContractResponse contractResponse = ContractEntity.convertToBookingResponse(newBooking);
             HashMap<String,Object> reponse = new HashMap<>();
-            reponse.put("Booking",bookingResponse);
-            reponse.put("BookingDetail",listBookingDetailResponses);
+            reponse.put("Booking", contractResponse);
+            reponse.put("BookingDetail", listContractDetailRespons);
             responseVo = ResponseVeConvertUntil.createResponseVo(true, "Tạo Booking thành công", reponse);
 
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -119,17 +119,17 @@ public class BookingServiceImpl implements BookingService {
 
         Page<ContractEntity> page = br.ListBooking(pageable);
 
-        List<BookingResponse> bookingResponse = new ArrayList<>();
+        List<ContractResponse> contractResponse = new ArrayList<>();
 
         page.forEach(BookingEntity -> {
 
-            BookingResponse bookingResponse1 = BookingEntity.convertToBookingResponse(BookingEntity);
-            bookingResponse.add(bookingResponse1);
+            ContractResponse contractResponse1 = BookingEntity.convertToBookingResponse(BookingEntity);
+            contractResponse.add(contractResponse1);
         });
 
         PagingBooking pagingBooking = new PagingBooking();
 
-        pagingBooking.setBookingResponseList(bookingResponse);
+        pagingBooking.setContractResponseList(contractResponse);
         pagingBooking.setTotalPage(page.getTotalPages());
         pagingBooking.setNumberPage(page.getNumber()+1);
 

@@ -1,6 +1,6 @@
 package com.example.create_entity.Entity;
 
-import com.example.create_entity.dto.Response.BookingResponse;
+import com.example.create_entity.dto.Response.ContractResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -90,8 +90,8 @@ public class ContractEntity {
     @Column(name = "real_price")
     private double real_price;
 
-    public static BookingResponse convertToBookingResponse(ContractEntity be){
-        BookingResponse result = new BookingResponse();
+    public static ContractResponse convertToBookingResponse(ContractEntity be){
+        ContractResponse result = new ContractResponse();
         if (ObjectUtils.isEmpty(be)){
             return null;
         }

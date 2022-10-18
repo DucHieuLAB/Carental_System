@@ -9,7 +9,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDetailRequest {
+public class ContractDetailRequest {
     private long id;
     private String plateNumber;
     private Date realPickUpDate;

@@ -6,8 +6,6 @@ import com.example.create_entity.Repository.AccountRepository;
 import com.example.create_entity.Repository.BookingDetailRepository;
 import com.example.create_entity.Repository.DriverRepository;
 import com.example.create_entity.Repository.RoleRepository;
-import com.example.create_entity.Service.BookingDetailService;
-import com.example.create_entity.Service.BookingDetailServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
