@@ -56,6 +56,7 @@ public class ParkingEntity {
     
     public static ParkingEntity createParking(ParkingRequest parkingRequest) {
         ParkingEntity result = new ParkingEntity();
+        result.setId(parkingRequest.getId());
         result.setName(parkingRequest.getName());
         result.setAddress(parkingRequest.getAddress());
         result.setPhone(parkingRequest.getPhone());

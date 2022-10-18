@@ -115,7 +115,7 @@ public class ParkingServiceImpl implements ParkingService {
                     districRequest.getWards(),
                     districRequest.getDistrictName());
             if (ObjectUtils.isEmpty(existDistric)) {
-                if (existDistric == null) {
+                if (districRequest == null) {
                     responseVo = ResponseVeConvertUntil.createResponseVo(false, "Địa chỉ bạn nhập không đúng vui lòng nhập lại", null);
                     return new ResponseEntity<>(responseVo, HttpStatus.OK);
                 }
