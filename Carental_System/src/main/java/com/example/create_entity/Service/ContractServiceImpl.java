@@ -8,8 +8,8 @@ import com.example.create_entity.dto.Response.ContractResponse;
 import com.example.create_entity.dto.Response.ListContractDetailResponse;
 
 import com.example.create_entity.Repository.AccountRepository;
-import com.example.create_entity.Repository.BookingDetailRepository;
-import com.example.create_entity.Repository.BookingRepository;
+import com.example.create_entity.Repository.ContractDetailRepository;
+import com.example.create_entity.Repository.ContractRepository;
 import com.example.create_entity.Repository.ParkingRepository;
 import com.example.create_entity.dto.Response.PagingBooking;
 import com.example.create_entity.dto.Response.ReposMesses;
@@ -33,9 +33,9 @@ import java.util.*;
 @Service
 public class ContractServiceImpl implements ContractService {
     @Autowired
-    BookingRepository br;
+    ContractRepository br;
     @Autowired
-    BookingDetailRepository bdr;
+    ContractDetailRepository bdr;
     @Autowired
     ParkingRepository pr;
     @Autowired

@@ -3,7 +3,7 @@ package com.example.create_entity;
 
 import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.AccountRepository;
-import com.example.create_entity.Repository.BookingDetailRepository;
+import com.example.create_entity.Repository.ContractDetailRepository;
 import com.example.create_entity.Repository.DriverRepository;
 import com.example.create_entity.Repository.RoleRepository;
 import org.assertj.core.api.Assertions;
@@ -34,7 +34,7 @@ public class TestDemo {
     @Autowired
     RoleRepository roleRepository;
     @Autowired
-    BookingDetailRepository bookingDetailRepository;
+    ContractDetailRepository contractDetailRepository;
 
     @Autowired
     DriverRepository driverRepository;

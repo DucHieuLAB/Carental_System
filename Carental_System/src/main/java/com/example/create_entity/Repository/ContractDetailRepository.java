@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface BookingDetailRepository extends JpaRepository<BookingDetailEntity, Long> {
+public interface ContractDetailRepository extends JpaRepository<BookingDetailEntity, Long> {
 
     @Query("SELECT b FROM BookingDetailEntity b WHERE b.booking.id = ?1")
     public List<BookingDetailEntity> getListBookingDetailEntitiesByBookingId(Long id);

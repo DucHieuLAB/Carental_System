@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 @Repository
-public interface BookingRepository extends JpaRepository<ContractEntity,Long> {
+public interface ContractRepository extends JpaRepository<ContractEntity,Long> {
     @Query("SELECT b FROM ContractEntity b WHERE b.customer.ID = ?1 AND b.expected_start_date = ?2 AND b.expected_end_date = ?3")
     ContractEntity findByCustomerIDAndExpectedStartDateAndExpectedEndDate(Long customerId, Date startDate, Date endDate);
 

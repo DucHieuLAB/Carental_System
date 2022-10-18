@@ -10,7 +10,7 @@ import java.util.List;
 
 
 
-import com.example.create_entity.Repository.BookingDetailRepository;
+import com.example.create_entity.Repository.ContractDetailRepository;
 import com.example.create_entity.dto.Response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 public class ContractDetailServiceImpl implements ContractDetailService {
 
     @Autowired
-    BookingDetailRepository bookingDetailRepository;
+    ContractDetailRepository contractDetailRepository;
 
 
     @Override
@@ -31,7 +31,7 @@ public class ContractDetailServiceImpl implements ContractDetailService {
     public ResponseEntity<?> ListBookingDetail(Long id) {
         ContractDetailResponse contractDetailResponse = new ContractDetailResponse();
         BookingDetailEntity bookingDetailEntity ;
-             bookingDetailEntity=  bookingDetailRepository.BookingDetail(id);
+             bookingDetailEntity=  contractDetailRepository.BookingDetail(id);
 
         contractDetailResponse.setReal_Pick_Up_Date(bookingDetailEntity.getReal_pick_up_date());
         contractDetailResponse.setBookingID(bookingDetailEntity.getBooking().getId());
