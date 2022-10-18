@@ -23,10 +23,34 @@ public class ContractController {
     }
 
 
-    @RequestMapping(value = "/ListBooking", method = RequestMethod.GET)
+    @RequestMapping(value = "/ListContract", method = RequestMethod.GET)
     public ResponseEntity<?> List(@RequestParam(value = "p", required = false) Integer p)
     {
-        return bookingService.ListBooking(p);
+        return bookingService.ListContract(p);
     }
 
+    @RequestMapping(value = "/SearchByName", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterByName(@RequestParam(required = false) Integer p,String name)
+    {
+        return bookingService.FilterByName(name,p);
+    }
+
+    @RequestMapping(value = "/SearchByPhone", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterByPhone(@RequestParam(required = false) Integer p,String phone)
+    {
+        return bookingService.FilterByPhone(phone,p);
+    }
+
+    @RequestMapping(value = "/FilterByHadDriver", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterByHadDriver(@RequestParam(required = false) Integer p)
+    {
+        return bookingService.FilterByHadDriver(p);
+    }
+
+
+    @RequestMapping(value = "/FilterByNotHadDriver", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterByNotHadDriver(@RequestParam(required = false) Integer p)
+    {
+        return bookingService.FilterByNotHadDriver(p);
+    }
 }
