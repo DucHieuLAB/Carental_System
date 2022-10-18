@@ -37,7 +37,7 @@ public class CarEntity {
     @OneToMany(
             mappedBy = "car"
     )
-    private List<BookingDetailEntity> bookingDetailEntities = new ArrayList<>();
+    private List<ContractDetailEntity> bookingDetailEntities = new ArrayList<>();
 
     @Column(name = "year_of_manufacture ")
     private long yearOfManufacture;

@@ -1,6 +1,6 @@
 package com.example.create_entity.Service;
 
-import com.example.create_entity.Entity.BookingDetailEntity;
+import com.example.create_entity.Entity.ContractDetailEntity;
 
 import com.example.create_entity.dto.Request.ListBookingDetailRequest;
 import org.springframework.http.ResponseEntity;
@@ -30,19 +30,19 @@ public class ContractDetailServiceImpl implements ContractDetailService {
     @Override
     public ResponseEntity<?> ListBookingDetail(Long id) {
         ContractDetailResponse contractDetailResponse = new ContractDetailResponse();
-        BookingDetailEntity bookingDetailEntity ;
-             bookingDetailEntity=  contractDetailRepository.BookingDetail(id);
+        ContractDetailEntity contractDetailEntity;
+             contractDetailEntity =  contractDetailRepository.BookingDetail(id);
 
-        contractDetailResponse.setReal_Pick_Up_Date(bookingDetailEntity.getReal_pick_up_date());
-        contractDetailResponse.setBookingID(bookingDetailEntity.getBooking().getId());
-        contractDetailResponse.setBookingDetailID(bookingDetailEntity.getId());
-        contractDetailResponse.setReal_Return_Date(bookingDetailEntity.getReal_return_date());
-        contractDetailResponse.setLast_Modified_Date(bookingDetailEntity.getLastModifiedDate());
-        contractDetailResponse.setReal_Pick_Up_Date(bookingDetailEntity.getReal_pick_up_date());
-        contractDetailResponse.setCarID(bookingDetailEntity.getCar().getId());
+        contractDetailResponse.setReal_Pick_Up_Date(contractDetailEntity.getReal_pick_up_date());
+        contractDetailResponse.setBookingID(contractDetailEntity.getBooking().getId());
+        contractDetailResponse.setBookingDetailID(contractDetailEntity.getId());
+        contractDetailResponse.setReal_Return_Date(contractDetailEntity.getReal_return_date());
+        contractDetailResponse.setLast_Modified_Date(contractDetailEntity.getLastModifiedDate());
+        contractDetailResponse.setReal_Pick_Up_Date(contractDetailEntity.getReal_pick_up_date());
+        contractDetailResponse.setCarID(contractDetailEntity.getCar().getId());
 
 
-        return new ResponseEntity<>(bookingDetailEntity, HttpStatus.OK);
+        return new ResponseEntity<>(contractDetailEntity, HttpStatus.OK);
 
 
     }

@@ -80,15 +80,15 @@ public class ContractServiceImpl implements ContractService {
             newBooking.setCreatedDate(date);
             br.save(newBooking);
             newBooking = br.getByCustomerIdAndExpectStartDateAndExpectEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
-            List<BookingDetailEntity> bookingDetailEntities = new ArrayList<>();
+            List<ContractDetailEntity> bookingDetailEntities = new ArrayList<>();
             for (String carPlateNumber: contractRequest.getListCarPlateNumber()
                  ) {
-                BookingDetailEntity bookingDetailEntity = new BookingDetailEntity();
+                ContractDetailEntity contractDetailEntity = new ContractDetailEntity();
                 CarEntity carEntity = cr.findCarEntityByPlateNumber(carPlateNumber);
-                bookingDetailEntity.setBooking(newBooking);
-                bookingDetailEntity.setCar(carEntity);
-                bookingDetailEntity.setLastModifiedDate(date);
-                bookingDetailEntities.add(bookingDetailEntity);
+                contractDetailEntity.setBooking(newBooking);
+                contractDetailEntity.setCar(carEntity);
+                contractDetailEntity.setLastModifiedDate(date);
+                bookingDetailEntities.add(contractDetailEntity);
 
             }
             bdr.saveAll(bookingDetailEntities);

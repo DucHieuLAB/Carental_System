@@ -65,7 +65,7 @@ public class ContractEntity {
     @OneToMany(
             mappedBy = "booking"
     )
-    List<BookingDetailEntity> bookingDetailEntityList;
+    List<ContractDetailEntity> contractDetailEntityList;
 
     @OneToMany(
             mappedBy = "contractEntity"

@@ -1,6 +1,6 @@
 package com.example.create_entity.Repository;
 
-import com.example.create_entity.Entity.BookingDetailEntity;
+import com.example.create_entity.Entity.ContractDetailEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface ContractDetailRepository extends JpaRepository<BookingDetailEntity, Long> {
+public interface ContractDetailRepository extends JpaRepository<ContractDetailEntity, Long> {
 
-    @Query("SELECT b FROM BookingDetailEntity b WHERE b.booking.id = ?1")
-    public List<BookingDetailEntity> getListBookingDetailEntitiesByBookingId(Long id);
+    @Query("SELECT b FROM ContractDetailEntity b WHERE b.booking.id = ?1")
+    public List<ContractDetailEntity> getListBookingDetailEntitiesByBookingId(Long id);
 
 
     @Query(value = "SELECT * FROM carrental.booking_details where booking_detail_id = ?1 ", nativeQuery = true)
-    BookingDetailEntity BookingDetail(Long id);
+    ContractDetailEntity BookingDetail(Long id);
 
 }

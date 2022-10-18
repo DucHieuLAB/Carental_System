@@ -15,9 +15,9 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class  BookingDetailEntity {
+public class ContractDetailEntity {
     @Id
-    @Column(name = "booking_detail_id",unique = true)
+    @Column(name = "contract_detail_id",unique = true)
     private long id;
     @Column
     private Date real_pick_up_date;
@@ -33,7 +33,7 @@ public class  BookingDetailEntity {
     CarEntity car;
 
     @ManyToOne
-    @JoinColumn(name = "booking_id", nullable = false,foreignKey = @ForeignKey(name = "FK_BookingDetail_Booking"))
+    @JoinColumn(name = "contract_id", nullable = false,foreignKey = @ForeignKey(name = "FK_BookingDetail_Booking"))
     ContractEntity booking;
 
     @Temporal(TemporalType.TIMESTAMP)

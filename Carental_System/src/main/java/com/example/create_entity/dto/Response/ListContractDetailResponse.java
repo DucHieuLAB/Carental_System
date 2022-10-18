@@ -1,6 +1,6 @@
 package com.example.create_entity.dto.Response;
 
-import com.example.create_entity.Entity.BookingDetailEntity;
+import com.example.create_entity.Entity.ContractDetailEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,12 +29,12 @@ public class ListContractDetailResponse {
     private long yearOfManufacture;
     private double rentalPrice;
 
-    public static List<ListContractDetailResponse> createListBookingDetailResponse(List<BookingDetailEntity> bdes) {
+    public static List<ListContractDetailResponse> createListBookingDetailResponse(List<ContractDetailEntity> bdes) {
         List<ListContractDetailResponse> result = new ArrayList<>();
         if (bdes.isEmpty()) {
             return null;
         }
-        for (BookingDetailEntity entity : bdes) {
+        for (ContractDetailEntity entity : bdes) {
             ListContractDetailResponse tmp = new ListContractDetailResponse();
             tmp.setId(entity.getId());
             tmp.setRealReturnDate(entity.getReal_return_date());
