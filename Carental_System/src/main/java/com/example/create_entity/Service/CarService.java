@@ -22,4 +22,6 @@ public interface CarService {
 
     ResponseEntity<?> findById(Long brandId, int pageIndex, int pageSize);
 
+    ResponseEntity<?> findByPlateNumber(String carPlateNumber);
+
 }

@@ -111,6 +111,7 @@ public class ContractEntity {
         result.setStatus(be.getStatus());
         result.setCreateDate(be.getCreatedDate());
         result.setLastModifiedDate(be.getLastModifiedDate());
+        result.setReal_price(be.getReal_price());
         return result;
     }
 

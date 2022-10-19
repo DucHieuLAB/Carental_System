@@ -53,4 +53,12 @@ public class ContractController {
     {
         return bookingService.FilterByNotHadDriver(p);
     }
+
+
+    ////////////////////////////////////////////////
+    @GetMapping(value = "Detail/{id}")
+    public ResponseEntity<?> getContractDetail(@RequestParam(name = "id") Long id ){
+//        return bookingService.getContractById();
+        return null;
+    }
 }

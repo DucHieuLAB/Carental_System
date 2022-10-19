@@ -1,10 +1,13 @@
 package com.example.create_entity.Entity;
 
 import com.example.create_entity.dto.Request.CarRequest;
+import com.example.create_entity.dto.Response.CarResponseDetailResponse;
+import com.example.create_entity.dto.Response.ListCarImageResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -84,5 +87,32 @@ public class CarEntity {
         result.setDescription(carRequest.getDescription());
         result.setStatus(carRequest.getStatus());
         return result;
+    }
+
+    public static CarResponseDetailResponse createCarResponseDetailResponse(CarEntity car){
+        if(ObjectUtils.isEmpty(car)){
+            return null;
+        }
+        CarResponseDetailResponse crdp = new CarResponseDetailResponse();
+        crdp.setId(car.getId());
+        crdp.setModelName(car.getModelName());
+        crdp.setBrandName(car.getBrand().getName());
+        crdp.setBrandImg(car.getBrand().getImg());
+        crdp.setBrandId(car.getBrand().getId());
+        crdp.setYearOfManufacture(car.getYearOfManufacture());
+        crdp.setRentalPrice(car.getRentalPrice());
+        crdp.setDepositAmount(car.getDepositAmount());
+        crdp.setPlateNumber(car.getPlateNumber());
+        crdp.setCapacity(car.getCapacity());
+        crdp.setFuel(car.getFuel());
+        crdp.setGears(car.getGears());
+        crdp.setStatus(car.getStatus());
+        crdp.setDescription(car.getDescription());
+        crdp.setParkingId(car.getParking().getId());
+        List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(car.carImageEntities);
+        crdp.setImgs(carImageResponses);
+        crdp.setParkingName(car.getParking().getName());
+        crdp.setParkingAddress(car.getParking().getAddress());
+        return crdp;
     }
 }

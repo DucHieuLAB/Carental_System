@@ -23,7 +23,7 @@ public class CarController {
         this.carService = carService;
     }
 
-    @GetMapping(value = "/capacity")
+    @GetMapping("/capacity")
     public ResponseEntity<?> getListCapacity() {
         return carService.getListCapacity();
     }
@@ -56,6 +56,11 @@ public class CarController {
             pageSize = defaultSize;
         }
         return carService.findAll(pageIndex, pageSize, modelName, parkingId, capacity);
+    }
+
+    @GetMapping("/Car/Detail/{CarPlateNumber}")
+    public ResponseEntity<?> getCar(@PathVariable String CarPlateNumber){
+        return carService.findByPlateNumber(CarPlateNumber);
     }
 
 
