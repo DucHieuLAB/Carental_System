@@ -70,4 +70,27 @@ public interface ContractRepository extends JpaRepository<ContractEntity,Long> {
     @Query(value = "select * from contracts  where contracts.had_driver=0 order by contracts.expected_start_date asc",nativeQuery = true)
     List<ContractEntity> FilterByNotHadDriver1();
 
+    @Query(value ="select * from contracts  where status=1 order by contracts.expected_start_date asc" ,nativeQuery = true)
+    Page<ContractEntity> FilterByWaitingForProgressing(Pageable pageable);
+
+    @Query(value ="select * from contracts  where status=2 order by contracts.expected_start_date asc" ,nativeQuery = true)
+    Page<ContractEntity> FilterByWaitForConfirmation(Pageable pageable);
+
+    @Query(value ="select * from contracts  where status=3 order by contracts.expected_start_date asc" ,nativeQuery = true)
+    Page<ContractEntity> FilterByEffective(Pageable pageable);
+
+
+    @Query(value ="select * from contracts  where status=4 order by contracts.expected_start_date asc" ,nativeQuery = true)
+    Page<ContractEntity> FilterByActivate(Pageable pageable);
+
+
+    @Query(value ="select * from contracts  where status=5 order by contracts.expected_start_date asc" ,nativeQuery = true)
+    Page<ContractEntity> FilterByClose(Pageable pageable);
+
+
+    @Query(value ="select * from contracts  where status=6 order by contracts.expected_start_date asc" ,nativeQuery = true)
+    Page<ContractEntity> FilterByCancel(Pageable pageable);
+
+
+
 }

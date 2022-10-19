@@ -19,4 +19,21 @@ public interface ContractService {
     ResponseEntity<?> FilterByHadDriver(Integer p);
 
     ResponseEntity<?> FilterByNotHadDriver(Integer p);
+
+    ResponseEntity<?> FilterByWaitingForProgressing(Integer p);
+
+    ResponseEntity<?> FilterByWaitForConfirmation(Integer p);
+
+    ResponseEntity<?> FilterByEffective(Integer p);
+
+    ResponseEntity<?> FilterByActivate(Integer p);
+
+
+    ResponseEntity<?> FilterByClose(Integer p);
+
+    ResponseEntity<?> FilterByCancel(Integer p);
+
+
+
+
 }

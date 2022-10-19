@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -198,7 +199,7 @@ public class ContractServiceImpl implements ContractService {
         p = CheckNullPaging(p);
         Integer size = 5;
         Pageable pageable = PageRequest.of(p, size);
-        List<ContractEntity> contractEntities = br.FilterByPhone(phone,pageable);
+        List<ContractEntity> contractEntities = br.FilterByPhone(phone, pageable);
         List<ContractEntity> contractEntities1 = br.FilterByPhone1(phone);
 
         return responseResultContract(contractEntities, contractEntities1, size, p);
@@ -223,4 +224,118 @@ public class ContractServiceImpl implements ContractService {
         List<ContractEntity> contractEntities1 = br.FilterByNotHadDriver1();
         return responseResultContract(contractEntities, contractEntities1, size, p);
     }
+
+    public ResponseEntity<?> responseResultContractReturnPage(Page<ContractEntity> contractEntities) {
+        List<ContractResponse> contractResponses = new ArrayList<>();
+        contractEntities.forEach(ContractEntity -> {
+            ContractResponse contractResponse;
+            contractResponse = ContractEntity.convertToBookingResponse(ContractEntity);
+            contractResponses.add(contractResponse);
+        });
+        PagingContract pagingContract = new PagingContract();
+        pagingContract.setTotalPage(contractEntities.getTotalPages());
+        pagingContract.setContractResponseList(contractResponses);
+        pagingContract.setNumberPage(contractEntities.getNumber() + 1);
+
+        if (contractEntities.isEmpty()) {
+            ReposMesses messes = new ReposMesses();
+            messes.setMess("Không tìm thấy ! ");
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(pagingContract, HttpStatus.OK);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByWaitingForProgressing(Integer p) {
+
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageRequest = PageRequest.of(p, size);
+        try {
+            Page<ContractEntity> contractEntities = br.FilterByWaitingForProgressing(pageRequest);
+            return responseResultContractReturnPage(contractEntities);
+        } catch (Exception e) {
+            ReposMesses messes = new ReposMesses();
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByWaitForConfirmation(Integer p) {
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageRequest = PageRequest.of(p, size);
+        try {
+            Page<ContractEntity> contractEntities = br.FilterByWaitForConfirmation(pageRequest);
+            return responseResultContractReturnPage(contractEntities);
+        } catch (Exception e) {
+            ReposMesses messes = new ReposMesses();
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByEffective(Integer p) {
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageRequest = PageRequest.of(p, size);
+        try {
+            Page<ContractEntity> contractEntities = br.FilterByEffective(pageRequest);
+            return responseResultContractReturnPage(contractEntities);
+        } catch (Exception e) {
+            ReposMesses messes = new ReposMesses();
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByActivate(Integer p) {
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageRequest = PageRequest.of(p, size);
+        try {
+            Page<ContractEntity> contractEntities = br.FilterByActivate(pageRequest);
+            return responseResultContractReturnPage(contractEntities);
+        } catch (Exception e) {
+            ReposMesses messes = new ReposMesses();
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByClose(Integer p) {
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageRequest = PageRequest.of(p, size);
+        try {
+            Page<ContractEntity> contractEntities = br.FilterByClose(pageRequest);
+            return responseResultContractReturnPage(contractEntities);
+        } catch (Exception e) {
+            ReposMesses messes = new ReposMesses();
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByCancel(Integer p) {
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageRequest = PageRequest.of(p, size);
+        try {
+            Page<ContractEntity> contractEntities = br.FilterByCancel(pageRequest);
+            return responseResultContractReturnPage(contractEntities);
+        } catch (Exception e) {
+            ReposMesses messes = new ReposMesses();
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

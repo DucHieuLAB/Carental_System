@@ -54,6 +54,42 @@ public class ContractController {
         return bookingService.FilterByNotHadDriver(p);
     }
 
+    @RequestMapping(value = "/FilterByWaitingForProgressing", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterByWaitingForProgressing(@RequestParam(required = false) Integer p)
+    {
+        return bookingService.FilterByWaitingForProgressing(p);
+    }
+
+    @RequestMapping(value = "/FilterByWaitForConfirmation", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterByWaitForConfirmation(@RequestParam(required = false) Integer p)
+    {
+        return bookingService.FilterByWaitForConfirmation(p);
+    }
+
+
+    @RequestMapping(value = "/FilterByEffective", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterByEffective(@RequestParam(required = false) Integer p)
+    {
+        return bookingService.FilterByEffective(p);
+    }
+
+
+    @RequestMapping(value = "/FilterByActivate", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterByActivate(@RequestParam(required = false) Integer p)
+    {
+        return bookingService.FilterByActivate(p);
+    }
+    @RequestMapping(value = "/FilterByClose", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterByClose(@RequestParam(required = false) Integer p)
+    {
+        return bookingService.FilterByClose(p);
+    }
+
+    @RequestMapping(value = "/FilterByCancel", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterByCancel(@RequestParam(required = false) Integer p)
+    {
+        return bookingService.FilterByCancel(p);
+    }
 
     ////////////////////////////////////////////////
     @GetMapping(value = "Detail/{id}")
