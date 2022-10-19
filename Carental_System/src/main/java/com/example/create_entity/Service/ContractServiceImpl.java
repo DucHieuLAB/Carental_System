@@ -223,4 +223,17 @@ public class ContractServiceImpl implements ContractService {
         List<ContractEntity> contractEntities1 = br.FilterByNotHadDriver1();
         return responseResultContract(contractEntities, contractEntities1, size, p);
     }
+    @Override
+    public ResponseEntity<?> getContractById(Long id) {
+        ResponseVo responseVo = null;
+        ContractEntity contractEntity = br.FindByID(id);
+        if(ObjectUtils.isEmpty(contractEntity)){
+            responseVo = ResponseVeConvertUntil.createResponseVo(false,"Không tìm thấy thông tin phù hợp",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.OK);
+        }
+        ContractResponse response = ContractEntity.convertToBookingResponse(contractEntity);
+        responseVo = ResponseVeConvertUntil.createResponseVo(true,"Lấy thông tin Hợp đồng thành công",response);
+        return new ResponseEntity<>(responseVo,HttpStatus.OK);
+    }
+
 }

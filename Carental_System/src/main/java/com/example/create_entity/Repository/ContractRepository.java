@@ -69,5 +69,6 @@ public interface ContractRepository extends JpaRepository<ContractEntity,Long> {
     List<ContractEntity> FilterByNotHadDriver(Pageable pageable);
     @Query(value = "select * from contracts  where contracts.had_driver=0 order by contracts.expected_start_date asc",nativeQuery = true)
     List<ContractEntity> FilterByNotHadDriver1();
-
+    @Query("SELECT c FROM ContractEntity c WHERE c.id = ?1 and c.status > 0 ")
+    ContractEntity FindByID(Long id);
 }
