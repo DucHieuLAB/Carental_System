@@ -49,4 +49,9 @@ public class ParkingController {
         }
         return parkingService.findAllPaging(pageIndex, pageSize);
     }
+
+    @GetMapping("/Detail/{id}")
+    public ResponseEntity<?> getCar(@PathVariable long id){
+        return parkingService.findById(id);
+    }
 }

@@ -226,14 +226,24 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public ResponseEntity<?> getContractById(Long id) {
         ResponseVo responseVo = null;
-        ContractEntity contractEntity = br.FindByID(id);
-        if(ObjectUtils.isEmpty(contractEntity)){
-            responseVo = ResponseVeConvertUntil.createResponseVo(false,"Không tìm thấy thông tin phù hợp",null);
+        if (id == null){
+            responseVo = ResponseVeConvertUntil.createResponseVo(false,"Chưa có thông tin Id",null);
             return new ResponseEntity<>(responseVo,HttpStatus.OK);
         }
-        ContractResponse response = ContractEntity.convertToBookingResponse(contractEntity);
-        responseVo = ResponseVeConvertUntil.createResponseVo(true,"Lấy thông tin Hợp đồng thành công",response);
-        return new ResponseEntity<>(responseVo,HttpStatus.OK);
+        try{
+            Long contractId = id;
+            ContractEntity contractEntity = br.FindByID(contractId);
+            if(ObjectUtils.isEmpty(contractEntity)){
+                responseVo = ResponseVeConvertUntil.createResponseVo(false,"Không tìm thấy thông tin phù hợp",null);
+                return new ResponseEntity<>(responseVo,HttpStatus.OK);
+            }
+            ContractResponse response = ContractEntity.convertToBookingResponse(contractEntity);
+            responseVo = ResponseVeConvertUntil.createResponseVo(true,"Lấy thông tin Hợp đồng thành công",response);
+            return new ResponseEntity<>(responseVo,HttpStatus.OK);
+        }catch (NumberFormatException e){
+            responseVo = ResponseVeConvertUntil.createResponseVo(false,"Id nhập vào không hợp lệ",e);
+            return new ResponseEntity<>(responseVo,HttpStatus.OK);
+        }
     }
 
 }

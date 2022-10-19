@@ -58,7 +58,7 @@ public class CarController {
         return carService.findAll(pageIndex, pageSize, modelName, parkingId, capacity);
     }
 
-    @GetMapping("/Car/Detail/{CarPlateNumber}")
+    @GetMapping("/Detail/{CarPlateNumber}")
     public ResponseEntity<?> getCar(@PathVariable String CarPlateNumber){
         return carService.findByPlateNumber(CarPlateNumber);
     }

@@ -53,9 +53,9 @@ public class ContractController {
     {
         return contractService.FilterByNotHadDriver(p);
     }
-    
-    @GetMapping(value = "Detail/{id}")
-    public ResponseEntity<?> getContractDetail(@RequestParam(name = "id") Long id ){
+
+    @GetMapping("/Detail/{id}")
+    public ResponseEntity<?> getCar(@PathVariable long id){
         return contractService.getContractById(id);
     }
 }
