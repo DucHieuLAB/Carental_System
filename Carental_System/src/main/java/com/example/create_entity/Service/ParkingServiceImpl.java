@@ -33,8 +33,6 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Autowired
     DistrictRepository districtRepository;
-
-
     @Override
     public ResponseEntity<?> getAll() {
         ResponseVo responseVo = new ResponseVo();
@@ -94,6 +92,19 @@ public class ParkingServiceImpl implements ParkingService {
         parkingRepository.save(newParkingEntity);
         ParkingResponse parkingResponse = ParkingResponse.createParkingResponse(newParkingEntity);
         responseVo = ResponseVeConvertUntil.createResponseVo(true, "Tạo mới thành công", parkingResponse);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> findById(long id) {
+        ResponseVo responseVo = null;
+        Optional<ParkingEntity> parkingEntity = parkingRepository.findById(id);
+        if (!parkingEntity.isPresent()){
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy bãi đỗ", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        ParkingResponse response = ParkingResponse.createParkingResponse(parkingEntity.get());
+        responseVo = ResponseVeConvertUntil.createResponseVo(true, "Tạo mới thành công", response);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
@@ -186,4 +197,6 @@ public class ParkingServiceImpl implements ParkingService {
         responseVo = ResponseVeConvertUntil.createResponseVo(true,"Danh Sách Bãi Đỗ Xe",responseData);
         return new ResponseEntity<>(responseVo,HttpStatus.OK);
     }
+
+
 }

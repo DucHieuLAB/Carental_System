@@ -20,6 +20,7 @@ public interface ContractService {
 
     ResponseEntity<?> FilterByNotHadDriver(Integer p);
 
+
     ResponseEntity<?> FilterByWaitingForProgressing(Integer p);
 
     ResponseEntity<?> FilterByWaitForConfirmation(Integer p);
@@ -35,5 +36,8 @@ public interface ContractService {
 
 
 
+
+
+    ResponseEntity<?> getContractById(Long id);
 
 }

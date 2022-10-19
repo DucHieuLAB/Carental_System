@@ -7,94 +7,100 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/booking")
+@RequestMapping("/v1/contract")
 public class ContractController {
 
-    private final ContractServiceImpl bookingService;
+    private final ContractServiceImpl contractService;
     @Autowired
     public ContractController(ContractServiceImpl bookingService1) {
-        this.bookingService = bookingService1;
+        this.contractService = bookingService1;
     }
 
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody ContractRequest contractRequest)
     {
-        return bookingService.add(contractRequest);
+        return contractService.add(contractRequest);
     }
 
 
     @RequestMapping(value = "/ListContract", method = RequestMethod.GET)
     public ResponseEntity<?> List(@RequestParam(value = "p", required = false) Integer p)
     {
-        return bookingService.ListContract(p);
+        return contractService.ListContract(p);
     }
 
     @RequestMapping(value = "/SearchByName", method = RequestMethod.GET)
     public ResponseEntity<?> FilterByName(@RequestParam(required = false) Integer p,String name)
     {
-        return bookingService.FilterByName(name,p);
+        return contractService.FilterByName(name,p);
     }
 
     @RequestMapping(value = "/SearchByPhone", method = RequestMethod.GET)
     public ResponseEntity<?> FilterByPhone(@RequestParam(required = false) Integer p,String phone)
     {
-        return bookingService.FilterByPhone(phone,p);
+        return contractService.FilterByPhone(phone,p);
     }
 
     @RequestMapping(value = "/FilterByHadDriver", method = RequestMethod.GET)
     public ResponseEntity<?> FilterByHadDriver(@RequestParam(required = false) Integer p)
     {
-        return bookingService.FilterByHadDriver(p);
+        return contractService.FilterByHadDriver(p);
     }
 
 
     @RequestMapping(value = "/FilterByNotHadDriver", method = RequestMethod.GET)
     public ResponseEntity<?> FilterByNotHadDriver(@RequestParam(required = false) Integer p)
     {
-        return bookingService.FilterByNotHadDriver(p);
+        return contractService.FilterByNotHadDriver(p);
     }
+
 
     @RequestMapping(value = "/FilterByWaitingForProgressing", method = RequestMethod.GET)
     public ResponseEntity<?> FilterByWaitingForProgressing(@RequestParam(required = false) Integer p)
     {
-        return bookingService.FilterByWaitingForProgressing(p);
+        return contractService.FilterByWaitingForProgressing(p);
     }
 
     @RequestMapping(value = "/FilterByWaitForConfirmation", method = RequestMethod.GET)
     public ResponseEntity<?> FilterByWaitForConfirmation(@RequestParam(required = false) Integer p)
     {
-        return bookingService.FilterByWaitForConfirmation(p);
+        return contractService.FilterByWaitForConfirmation(p);
     }
 
 
     @RequestMapping(value = "/FilterByEffective", method = RequestMethod.GET)
     public ResponseEntity<?> FilterByEffective(@RequestParam(required = false) Integer p)
     {
-        return bookingService.FilterByEffective(p);
+        return contractService.FilterByEffective(p);
     }
 
 
     @RequestMapping(value = "/FilterByActivate", method = RequestMethod.GET)
     public ResponseEntity<?> FilterByActivate(@RequestParam(required = false) Integer p)
     {
-        return bookingService.FilterByActivate(p);
+        return contractService.FilterByActivate(p);
     }
     @RequestMapping(value = "/FilterByClose", method = RequestMethod.GET)
     public ResponseEntity<?> FilterByClose(@RequestParam(required = false) Integer p)
     {
-        return bookingService.FilterByClose(p);
+        return contractService.FilterByClose(p);
     }
 
     @RequestMapping(value = "/FilterByCancel", method = RequestMethod.GET)
     public ResponseEntity<?> FilterByCancel(@RequestParam(required = false) Integer p)
     {
-        return bookingService.FilterByCancel(p);
+        return contractService.FilterByCancel(p);
     }
 
-    ////////////////////////////////////////////////
-    @GetMapping(value = "Detail/{id}")
-    public ResponseEntity<?> getContractDetail(@RequestParam(name = "id") Long id ){
-//        return bookingService.getContractById();
-        return null;
+
+//    @GetMapping(value = "Detail/{id}")
+//    public ResponseEntity<?> getContractDetail(@RequestParam(name = "id") Long id ){
+////        return bookingService.getContractById();
+//        return null;
+
+    @GetMapping("/Detail/{id}")
+    public ResponseEntity<?> getCar(@PathVariable long id){
+        return contractService.getContractById(id);
+
     }
 }

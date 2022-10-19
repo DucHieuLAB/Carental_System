@@ -13,4 +13,5 @@ public interface ParkingService {
     public ResponseEntity<?> add(ParkingRequest parkingRequest);
 
 
+    ResponseEntity<?> findById(long id);
 }
