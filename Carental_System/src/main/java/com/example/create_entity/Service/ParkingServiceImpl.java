@@ -109,7 +109,7 @@ public class ParkingServiceImpl implements ParkingService {
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         ParkingEntity parkingEntity = exsitParking.get();
-        ParkingEntity checkName = parkingRepository.findParkingByName(parkingEntity.getName());
+        ParkingEntity checkName = parkingRepository.findParkingByName(parkingRequest.getName());
         if(!ObjectUtils.isEmpty(checkName)){
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Tên Bãi đỗ đã được lấy", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
