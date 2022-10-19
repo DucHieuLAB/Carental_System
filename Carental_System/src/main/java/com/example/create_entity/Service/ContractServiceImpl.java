@@ -11,7 +11,7 @@ import com.example.create_entity.Repository.AccountRepository;
 import com.example.create_entity.Repository.ContractDetailRepository;
 import com.example.create_entity.Repository.ContractRepository;
 import com.example.create_entity.Repository.ParkingRepository;
-import com.example.create_entity.dto.Response.PagingBooking;
+import com.example.create_entity.dto.Response.PagingContract;
 import com.example.create_entity.dto.Response.ReposMesses;
 
 import com.example.create_entity.dto.Response.ResponseVo;
@@ -27,7 +27,6 @@ import org.springframework.util.ObjectUtils;
 
 
 import java.util.*;
-
 
 
 @Service
@@ -81,8 +80,7 @@ public class ContractServiceImpl implements ContractService {
             br.save(newBooking);
             newBooking = br.getByCustomerIdAndExpectStartDateAndExpectEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
             List<ContractDetailEntity> bookingDetailEntities = new ArrayList<>();
-            for (String carPlateNumber: contractRequest.getListCarPlateNumber()
-                 ) {
+            for (String carPlateNumber : contractRequest.getListCarPlateNumber()) {
                 ContractDetailEntity contractDetailEntity = new ContractDetailEntity();
                 CarEntity carEntity = cr.findCarEntityByPlateNumber(carPlateNumber);
                 contractDetailEntity.setBooking(newBooking);
@@ -96,7 +94,7 @@ public class ContractServiceImpl implements ContractService {
             bookingDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(newBooking.getId());
             List<ListContractDetailResponse> listContractDetailRespons = ListContractDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
             ContractResponse contractResponse = ContractEntity.convertToBookingResponse(newBooking);
-            HashMap<String,Object> reponse = new HashMap<>();
+            HashMap<String, Object> reponse = new HashMap<>();
             reponse.put("Booking", contractResponse);
             reponse.put("BookingDetail", listContractDetailRespons);
             responseVo = ResponseVeConvertUntil.createResponseVo(true, "Tạo Booking thành công", reponse);
@@ -109,7 +107,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> ListBooking(Integer p) {
+    public ResponseEntity<?> ListContract(Integer p) {
         if (p == null) {
             p = 0;
         } else if (p > 0) {
@@ -117,7 +115,7 @@ public class ContractServiceImpl implements ContractService {
         }
         Pageable pageable = PageRequest.of(p, 5);
 
-        Page<ContractEntity> page = br.ListBooking(pageable);
+        Page<ContractEntity> page = br.ListContract(pageable);
 
         List<ContractResponse> contractResponse = new ArrayList<>();
 
@@ -127,15 +125,15 @@ public class ContractServiceImpl implements ContractService {
             contractResponse.add(contractResponse1);
         });
 
-        PagingBooking pagingBooking = new PagingBooking();
+        PagingContract pagingContract = new PagingContract();
 
-        pagingBooking.setContractResponseList(contractResponse);
-        pagingBooking.setTotalPage(page.getTotalPages());
-        pagingBooking.setNumberPage(page.getNumber()+1);
+        pagingContract.setContractResponseList(contractResponse);
+        pagingContract.setTotalPage(page.getTotalPages());
+        pagingContract.setNumberPage(page.getNumber() + 1);
 
 
         if (!page.isEmpty()) {
-            return new ResponseEntity<>(pagingBooking, HttpStatus.OK);
+            return new ResponseEntity<>(pagingContract, HttpStatus.OK);
         } else {
             ReposMesses messes = new ReposMesses();
             messes.setMess("K có dữ liệu bảng Booking");
@@ -143,5 +141,86 @@ public class ContractServiceImpl implements ContractService {
         }
 
 
+    }
+
+    public Integer CheckNullPaging(Integer p) {
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        }
+        return p;
+    }
+
+    public ResponseEntity<?> responseResultContract(List<ContractEntity> contractEntities, List<ContractEntity> contractEntities1, Integer size, Integer p) {
+        List<ContractResponse> contractResponses = new ArrayList<>();
+        contractEntities.forEach(ContractEntity -> {
+            ContractResponse contractResponse;
+            contractResponse = ContractEntity.convertToBookingResponse(ContractEntity);
+            contractResponses.add(contractResponse);
+        });
+        PagingContract pagingContract = new PagingContract();
+
+
+        if (contractEntities1.size() % size == 0) {
+            pagingContract.setTotalPage(contractEntities1.size() / size);
+        } else {
+            pagingContract.setTotalPage(contractEntities1.size() / size + 1);
+        }
+        pagingContract.setNumberPage(p + 1);
+        pagingContract.setContractResponseList(contractResponses);
+
+        if (contractEntities1.isEmpty()) {
+            ReposMesses messes = new ReposMesses();
+            messes.setMess("Không tìm thấy ! ");
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(pagingContract, HttpStatus.OK);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByName(String name, Integer p) {
+
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageable = PageRequest.of(p, size);
+        List<ContractEntity> contractEntities = br.FilterByName(name, pageable);
+        List<ContractEntity> contractEntities1 = br.FilterByName1(name);
+
+        return responseResultContract(contractEntities, contractEntities1, size, p);
+
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByPhone(String phone, Integer p) {
+
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageable = PageRequest.of(p, size);
+        List<ContractEntity> contractEntities = br.FilterByPhone(phone,pageable);
+        List<ContractEntity> contractEntities1 = br.FilterByPhone1(phone);
+
+        return responseResultContract(contractEntities, contractEntities1, size, p);
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByHadDriver(Integer p) {
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageable = PageRequest.of(p, size);
+        List<ContractEntity> contractEntities = br.FilterByHadDriver(pageable);
+        List<ContractEntity> contractEntities1 = br.FilterByHadDriver1();
+        return responseResultContract(contractEntities, contractEntities1, size, p);
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByNotHadDriver(Integer p) {
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageable = PageRequest.of(p, size);
+        List<ContractEntity> contractEntities = br.FilterByNotHadDriver(pageable);
+        List<ContractEntity> contractEntities1 = br.FilterByNotHadDriver1();
+        return responseResultContract(contractEntities, contractEntities1, size, p);
     }
 }

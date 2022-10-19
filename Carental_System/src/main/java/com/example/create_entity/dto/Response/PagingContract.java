@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PagingBooking {
+public class PagingContract {
  private    List<ContractResponse> contractResponseList;
  private int NumberPage;
  private int TotalPage;
