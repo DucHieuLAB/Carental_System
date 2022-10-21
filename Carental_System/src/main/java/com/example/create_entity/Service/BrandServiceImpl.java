@@ -2,8 +2,10 @@ package com.example.create_entity.Service;
 
 import com.example.create_entity.Entity.BrandEntity;
 import com.example.create_entity.Repository.BrandRepository;
+import com.example.create_entity.Repository.CarRepository;
 import com.example.create_entity.dto.Request.BrandRequest;
-import com.example.create_entity.dto.Response.BrandReponse;
+import com.example.create_entity.dto.Response.BrandResponse;
+import com.example.create_entity.dto.Response.ListBrandReponse;
 import com.example.create_entity.dto.Response.ResponseVo;
 import com.example.create_entity.untils.ResponseVeConvertUntil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ import java.util.Map;
 public class BrandServiceImpl implements BrandService {
     @Autowired
     BrandRepository brandRepository;
+
+    @Autowired
+    CarRepository carRepository;
 
     @Override
     public ResponseEntity<?> addBrand(BrandRequest brandEntity) {
@@ -91,7 +96,7 @@ public class BrandServiceImpl implements BrandService {
             responseVo.setData(responseData);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        responseData.put("brands", BrandReponse.createResponseData(brandPage.getContent()));
+        responseData.put("brands", ListBrandReponse.createResponseData(brandPage.getContent()));
         responseData.put("brandName", brandName);
         responseData.put("currentPage", pageIndex);
         responseData.put("totalRecord", brandPage.getTotalElements());
@@ -108,28 +113,39 @@ public class BrandServiceImpl implements BrandService {
             responseVo.setStatus(false);
             responseVo.setMessage("Invalid input");
         }
-        BrandEntity exsitBrand = brandRepository.findBrandEntityById(brandEntity.getId());
-        if (ObjectUtils.isEmpty(exsitBrand)) {
-            responseVo.setStatus(false);
-            responseVo.setMessage("Tên Thương Hiệu đã tồn tại");
+        if (ObjectUtils.isEmpty(brandEntity.getId())) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Server không tìm thấy thông tin ID brand", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         try {
-            BrandEntity newBrandEntity = new BrandEntity();
-            newBrandEntity.setId(brandEntity.getId());
-            newBrandEntity.setName(brandEntity.getName());
-            newBrandEntity.setImg(brandEntity.getImg());
-            newBrandEntity.setDescription(brandEntity.getDescription());
-            newBrandEntity.setStatus(1);
-            brandRepository.save(newBrandEntity);
+            BrandEntity entity = brandRepository.findBrandEntityById(brandEntity.getId());
+            if (ObjectUtils.isEmpty(entity)) {
+                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin ID chưa chính xác", null);
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            if (brandEntity.getName() != entity.getName()) {
+                BrandEntity exsitBrand = brandRepository.findBrandEntityByName(brandEntity.getName());
+                if (ObjectUtils.isEmpty(exsitBrand)) {
+                    responseVo.setStatus(false);
+                    responseVo.setMessage("Tên Thương Hiệu đã tồn tại");
+                }
+            }
+            entity.setImg(brandEntity.getImg());
+            entity.setStatus(1);
+            entity.setName(brandEntity.getName());
+            entity.setDescription(brandEntity.getDescription());
+
+            brandRepository.save(entity);
+            entity = brandRepository.findBrandEntityById(brandEntity.getId());
             responseVo.setStatus(true);
             responseVo.setMessage("Cập nhật thành công !!");
-            responseVo.setData(newBrandEntity);
+            BrandResponse response = BrandEntity.convertToBrandResponse(entity);
+            responseVo.setData(response);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (Exception e) {
-            responseVo = ResponseVeConvertUntil.createResponseVo(true, "lỗi khi sửa thông tin Brand", e.getMessage());
+            responseVo = ResponseVeConvertUntil.createResponseVo(true, "lỗi khi tương tác với database", e.getMessage());
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @Override
@@ -164,6 +180,23 @@ public class BrandServiceImpl implements BrandService {
             }
         }
         return new ResponseEntity<>("1", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> findOnedByID(long id) {
+        ResponseVo responseVo = null;
+        if (id <= 0) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin ID không đúng", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        BrandEntity entity = brandRepository.findBrandEntityById(id);
+        if (ObjectUtils.isEmpty(entity)) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy kết quả", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        BrandResponse response = BrandEntity.convertToBrandResponse(entity);
+        responseVo = ResponseVeConvertUntil.createResponseVo(true, "Thông tin thương hiệu id = " + id + "", response);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
 

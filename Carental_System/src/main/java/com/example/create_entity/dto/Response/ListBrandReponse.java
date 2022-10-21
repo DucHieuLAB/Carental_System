@@ -12,20 +12,20 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BrandReponse {
+public class ListBrandReponse {
     private long id;
     private String name;
     private String img;
     private String description;
 
-    public static List<BrandReponse> createResponseData(List<BrandEntity> brandEntityList){
-        List<BrandReponse> result = new ArrayList<>();
+    public static List<ListBrandReponse> createResponseData(List<BrandEntity> brandEntityList){
+        List<ListBrandReponse> result = new ArrayList<>();
         if(ObjectUtils.isEmpty(brandEntityList)){
             return null;
         }
 
         for (BrandEntity brandEntity : brandEntityList) {
-            result.add(new BrandReponse(brandEntity.getId(), brandEntity.getName(), brandEntity.getImg(), brandEntity.getDescription()));
+            result.add(new ListBrandReponse(brandEntity.getId(), brandEntity.getName(), brandEntity.getImg(), brandEntity.getDescription()));
         }
         return result;
     }

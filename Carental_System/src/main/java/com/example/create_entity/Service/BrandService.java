@@ -26,4 +26,5 @@ public interface BrandService {
     ResponseEntity<?> findById(Long brandId, int pageIndex, int pageSize);
 
 
+    ResponseEntity<?> findOnedByID(long id);
 }

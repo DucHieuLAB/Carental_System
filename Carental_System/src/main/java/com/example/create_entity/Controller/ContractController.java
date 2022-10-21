@@ -1,6 +1,7 @@
 package com.example.create_entity.Controller;
 
 import com.example.create_entity.Service.ContractServiceImpl;
+import com.example.create_entity.dto.Request.CarRequest;
 import com.example.create_entity.dto.Request.ContractRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,11 @@ public class ContractController {
     public ResponseEntity<?> add(@RequestBody ContractRequest contractRequest)
     {
         return contractService.add(contractRequest);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> update(@RequestBody ContractRequest contractRequest) {
+        return contractService.update(contractRequest);
     }
 
 
@@ -58,4 +64,6 @@ public class ContractController {
     public ResponseEntity<?> getCar(@PathVariable long id){
         return contractService.getContractById(id);
     }
+
+
 }

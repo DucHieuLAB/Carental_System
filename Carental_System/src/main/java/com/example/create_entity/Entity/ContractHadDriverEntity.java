@@ -1,10 +1,12 @@
 package com.example.create_entity.Entity;
 
+import com.example.create_entity.dto.Response.ContractHadDriverReponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,14 +17,15 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class ContractHadDriver {
+public class ContractHadDriverEntity {
     @Id
-    @Column(name = "HadDriver_id")
+    @GeneratedValue(strategy= GenerationType.IDENTITY )
+    @Column(name = "id")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id", nullable = false)
-    private ContractEntity bookingEntity;
+    private ContractEntity ContractEntity;
 
     @Column(name = "pickup_district_id")
     private long pickup_district_id;
@@ -43,4 +46,15 @@ public class ContractHadDriver {
     @LastModifiedDate
     @Column(name = "last_modified_date", nullable = false)
     private Date lastModifiedDate;
+    public static ContractHadDriverReponse convertToContractHadDriverResponse(ContractHadDriverEntity entity){
+        if(ObjectUtils.isEmpty(entity)){
+            return null;
+        }
+        ContractHadDriverReponse result = new ContractHadDriverReponse();
+        result.setId(entity.getId());
+        result.setPickupAddress(entity.getPickup_address());
+        result.setReturnAddress(entity.getReturn_address());
+        result.setOneWay(entity.is_one_way());
+        return result;
+    }
 }

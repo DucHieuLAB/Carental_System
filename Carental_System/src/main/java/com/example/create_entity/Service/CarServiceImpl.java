@@ -2,15 +2,13 @@ package com.example.create_entity.Service;
 
 import com.example.create_entity.Entity.BrandEntity;
 import com.example.create_entity.Entity.CarEntity;
+import com.example.create_entity.Entity.CarImageEntity;
 import com.example.create_entity.Entity.ParkingEntity;
 import com.example.create_entity.Repository.BrandRepository;
 import com.example.create_entity.Repository.CarRepository;
 import com.example.create_entity.Repository.ParkingRepository;
 import com.example.create_entity.dto.Request.CarRequest;
-import com.example.create_entity.dto.Response.CarResponseDetailResponse;
-import com.example.create_entity.dto.Response.ListCarImageResponse;
-import com.example.create_entity.dto.Response.ListCarResponse;
-import com.example.create_entity.dto.Response.ResponseVo;
+import com.example.create_entity.dto.Response.*;
 import com.example.create_entity.untils.ResponseVeConvertUntil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -86,9 +84,13 @@ public class CarServiceImpl implements CarService {
             newCarEntity.setParking(parkingEntity.get());
             carRepository.save(newCarEntity);
             carImageService.addList(carRequest.getImgs(), newCarEntity);
+            CarEntity newCar = carRepository.findCarEntityByPlateNumber(newCarEntity.getPlateNumber());
+            List<CarImageEntity> lsCar = carImageService.getListCarByPlateNumber(newCarEntity.getPlateNumber());
+            newCar.setCarImageEntities(lsCar);
+            CarResponseDetailResponse response = CarEntity.createCarResponseDetailResponse(newCar);
             responseVo.setStatus(true);
             responseVo.setMessage("Tạo mới thành công");
-            responseVo.setData(carRequest);
+            responseVo.setData(response);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (Exception e) {
             responseVo.setStatus(false);
@@ -150,6 +152,14 @@ public class CarServiceImpl implements CarService {
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         try {
+            if(!carRequest.getPlateNumber().equals(exsitCar.getPlateNumber())){
+                CarEntity checkPlateNumber = carRepository.findCarEntityByPlateNumber(carRequest.getPlateNumber());
+
+                if(!ObjectUtils.isEmpty(checkPlateNumber)){
+                    responseVo = ResponseVeConvertUntil.createResponseVo(false,"Biển số xe đã tông tại trong CSDL",null);
+                    return new ResponseEntity<>(responseVo,HttpStatus.OK);
+                }
+            }
             exsitCar = CarEntity.createCarEntity(carRequest);
             BrandEntity brandEntity = brandRepository.findBrandEntityById(carRequest.getBrandId());
             Optional<ParkingEntity> parkingEntity = parkingRepository.findById(carRequest.getParkingId());
@@ -164,9 +174,12 @@ public class CarServiceImpl implements CarService {
             exsitCar.setBrand(brandEntity);
             exsitCar.setParking(parkingEntity.get());
             carRepository.save(exsitCar);
+            carImageService.updateList(carRequest.getImgs(),exsitCar);
+            exsitCar = carRepository.findCarEntityByPlateNumber(carRequest.getPlateNumber());
+            CarResponseDetailResponse response = CarEntity.createCarResponseDetailResponse(exsitCar);
             responseVo.setStatus(true);
             responseVo.setMessage("Cập nhật thông tin thành công");
-            responseVo.setData(carRequest);
+            responseVo.setData(response);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (Exception e) {
             responseVo = ResponseVeConvertUntil.createResponseVo(true, "lỗi khi sửa thông tin Car", e.getMessage());

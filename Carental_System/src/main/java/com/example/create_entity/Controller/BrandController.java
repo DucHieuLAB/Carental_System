@@ -22,7 +22,7 @@ public class BrandController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updatCategory(@RequestBody BrandRequest brandRequest) {
+    public ResponseEntity<?> update(@RequestBody BrandRequest brandRequest) {
         return brandService.updateBrand(brandRequest);
     }
 
@@ -43,4 +43,10 @@ public class BrandController {
         }
         return brandService.findAll(pageIndex, pageSize, brandName);
     }
+
+    @GetMapping("/Detail/{id}")
+    public ResponseEntity<?> getById(@PathVariable long id){
+        return brandService.findOnedByID(id);
+    }
+
 }

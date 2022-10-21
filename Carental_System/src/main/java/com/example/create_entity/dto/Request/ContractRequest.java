@@ -26,7 +26,12 @@ public class ContractRequest {
     private long customerId;
     private int status;
     List<String> listCarPlateNumber;
-    public static ContractEntity convertToBookingEntity(ContractRequest br){
+    private boolean oneWay;
+    private String pickUpAddress;
+    private DistricRequest districPickUpAddress;
+    private String returnAddress;
+    private DistricRequest districReturnAddress;
+    public static ContractEntity convertToContractEntity(ContractRequest br){
         ContractEntity result = new ContractEntity();
         if (ObjectUtils.isEmpty(br)){
             return null;

@@ -21,7 +21,7 @@ public class CarResponseDetailResponse {
     private double depositAmount;
     private String plateNumber;
     private int capacity;
-    private long Fuel;
+    private String Fuel;
     private String gears;
     private int status;
     private String description;

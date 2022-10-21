@@ -14,5 +14,4 @@ public class BrandRequest {
     private String name;
     private String img;
     private String description;
-
 }

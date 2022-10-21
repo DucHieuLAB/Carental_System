@@ -19,9 +19,6 @@ public class CarImageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "plate_number" ,  nullable = false ,length = 100)
-    private String plateNumber;
-
     @Column(name = "img",length = 4000)
     private String img;
 

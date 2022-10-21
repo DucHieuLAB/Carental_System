@@ -36,12 +36,14 @@ public class CarImageServiceImpl implements CarImageService{
         boolean result = false;
         try {
             for (String imgUrl : imgUrls) {
-                CarImageEntity carImageEntity = new CarImageEntity();
-                carImageEntity.setPlateNumber(carEntity.getPlateNumber());
-                carImageEntity.setImg(imgUrl);
-                carImageEntity.setCar(carEntity);
-                carImageEntity.setStatus(true);
-                carImageRepository.save(carImageEntity);
+                CarImageEntity checkImg = carImageRepository.getCarImageEntityByImgUrlAndCarPlateNumber(imgUrl,carEntity.getPlateNumber());
+                if (ObjectUtils.isEmpty(checkImg)){
+                    CarImageEntity carImageEntity = new CarImageEntity();
+                    carImageEntity.setImg(imgUrl);
+                    carImageEntity.setCar(carEntity);
+                    carImageEntity.setStatus(true);
+                    carImageRepository.save(carImageEntity);
+                }
             }
             result = true;
         }catch (Exception e){
@@ -69,5 +71,43 @@ public class CarImageServiceImpl implements CarImageService{
         }finally {
             return result;
         }
+    }
+
+    @Override
+    public boolean updateList(List<String> imgUrls, CarEntity carEntity) {
+        List<CarImageEntity> carImageEntities = carImageRepository.findCarImageEntitiesByPlateNumber(carEntity.getPlateNumber());
+        if (imgUrls.isEmpty()){
+            return false;
+        }
+        if(!carImageEntities.isEmpty()){
+
+            for (CarImageEntity img:carImageEntities
+            ) {
+                boolean esxit = false;
+                for(String imgUrl: imgUrls){
+                    if(img.getImg().equals(imgUrl)){
+                        esxit = true;
+                    }
+                }
+                if(esxit == false){
+                    img.setStatus(false);
+                    carImageRepository.save(img);
+                }else {
+                    for(String imgUrl: imgUrls){
+                        if(img.getImg().equals(imgUrl)){
+                            imgUrls.remove(imgUrl);
+                        }
+                    }
+                }
+            }
+        }
+        for (String imgUrl : imgUrls) {
+            CarImageEntity carImageEntity = new CarImageEntity();
+            carImageEntity.setImg(imgUrl);
+            carImageEntity.setCar(carEntity);
+            carImageEntity.setStatus(true);
+            carImageRepository.save(carImageEntity);
+        }
+        return true;
     }
 }

@@ -19,4 +19,7 @@ public interface CarImageService {
 
    @Transactional
    boolean deleteList(Long carId);
+
+   @Transactional
+   boolean updateList(List<String> imgUrls,CarEntity carEntity);
 }

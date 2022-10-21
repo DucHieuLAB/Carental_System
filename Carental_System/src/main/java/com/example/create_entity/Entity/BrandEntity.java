@@ -1,9 +1,11 @@
 package com.example.create_entity.Entity;
 
+import com.example.create_entity.dto.Response.BrandResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -38,4 +40,15 @@ public class BrandEntity {
     )
     private List<CarEntity> carEntities = new ArrayList<>();
 
+    public static BrandResponse convertToBrandResponse(BrandEntity brandEntity){
+        BrandResponse response = new BrandResponse();
+        if(ObjectUtils.isEmpty(brandEntity)){
+            return null;
+        }
+        response.setId(brandEntity.getId());
+        response.setName(brandEntity.getName());
+        response.setImg(brandEntity.getImg());
+        response.setDescription(brandEntity.getDescription());
+        return response;
+    }
 }

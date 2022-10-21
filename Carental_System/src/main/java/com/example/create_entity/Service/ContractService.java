@@ -21,4 +21,6 @@ public interface ContractService {
     ResponseEntity<?> FilterByNotHadDriver(Integer p);
 
     ResponseEntity<?> getContractById(Long id);
+
+    ResponseEntity<?> update(ContractRequest contractRequest);
 }

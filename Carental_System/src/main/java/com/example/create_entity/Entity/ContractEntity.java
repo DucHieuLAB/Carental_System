@@ -21,6 +21,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class ContractEntity {
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY )
     @Column(name = "booking_id", unique = true)
     private long id;
 

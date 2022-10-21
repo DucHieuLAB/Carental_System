@@ -42,5 +42,8 @@ public interface CarRepository extends JpaRepository<CarEntity,Long> {
             + "AND c.capacity = CASE WHEN ?2 IS NULL THEN c.capacity ELSE ?2 END "
             + "AND c.status > 0")
     Page<CarEntity> findAllBySearch(Long parkingId, int capacity, Pageable pageable);
+
+    @Query("SELECT c FROM CarEntity c WHERE c.modelName = ?1 and c.status > 0 ")
+    CarEntity findCarEntityByModelName(String modelName);
 }
 

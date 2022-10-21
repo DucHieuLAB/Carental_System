@@ -71,10 +71,6 @@ public class ParkingServiceImpl implements ParkingService {
                 districRequest.getDistrictName());
         if (ObjectUtils.isEmpty(existDistric)) {
             existDistric = DistrictsEntity.createDistricEntity(districRequest);
-            if (existDistric == null) {
-                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Địa chỉ bạn nhập không đúng vui lòng nhập lại", null);
-                return new ResponseEntity<>(responseVo, HttpStatus.OK);
-            }
             districtRepository.save(existDistric);
         }
         DistrictsEntity parkingDistric = districtRepository.check_districts(districRequest.getCity(),

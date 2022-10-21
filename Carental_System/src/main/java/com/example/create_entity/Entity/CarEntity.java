@@ -58,7 +58,7 @@ public class CarEntity {
     private int capacity;
 
     @Column(name = "fuel")
-    private long Fuel;
+    private String Fuel;
 
     @Column(name = "gears")
     private String gears;

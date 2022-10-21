@@ -26,13 +26,15 @@ public class ParkingController {
     }
 
     @PostMapping(value = "/add")
-    public ResponseEntity<?> add(@RequestBody ParkingRequest parkingRequest){
+    public ResponseEntity<?> add(@RequestBody ParkingRequest parkingRequest) {
         return parkingService.add(parkingRequest);
     }
+
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody ParkingRequest parkingRequest) {
         return parkingService.update(parkingRequest);
     }
+
     @DeleteMapping("/delete/{parkingId}")
     public ResponseEntity<?> delete(@PathVariable Long parkingId) {
         return parkingService.delete(parkingId);
@@ -40,7 +42,7 @@ public class ParkingController {
 
     @GetMapping
     public ResponseEntity<?> getlistPaging(@RequestParam(required = false) Integer pageIndex,
-                                     @RequestParam(required = false) Integer pageSize) {
+                                           @RequestParam(required = false) Integer pageSize) {
         if (pageIndex == null) {
             pageIndex = defaultPage;
         }
@@ -51,7 +53,7 @@ public class ParkingController {
     }
 
     @GetMapping("/Detail/{id}")
-    public ResponseEntity<?> getCar(@PathVariable long id){
+    public ResponseEntity<?> getCar(@PathVariable long id) {
         return parkingService.findById(id);
     }
 }

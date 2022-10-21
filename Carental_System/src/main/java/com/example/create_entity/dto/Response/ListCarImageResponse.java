@@ -17,6 +17,7 @@ public class ListCarImageResponse {
     private long id;
     private String plateNumber;
     private String imgUrl;
+
     public static List<ListCarImageResponse> createListCarImagePesponse(List<CarImageEntity> carImageEntities){
         List<ListCarImageResponse> result = new ArrayList<>();
         if(carImageEntities.isEmpty()){
@@ -25,9 +26,11 @@ public class ListCarImageResponse {
         for (CarImageEntity carimage : carImageEntities){
             ListCarImageResponse tmp = new ListCarImageResponse();
             tmp.setId(carimage.getId());
-            tmp.setPlateNumber(carimage.getPlateNumber());
+            tmp.setPlateNumber(carimage.getCar().getPlateNumber());
             tmp.setImgUrl(carimage.getImg());
-            result.add(tmp);
+            if (carimage.isStatus()){
+                result.add(tmp);
+            }
         }
         return result;
     }
