@@ -34,10 +34,6 @@ public interface ContractService {
 
     ResponseEntity<?> FilterByCancel(Integer p);
 
-
-
-
-
     ResponseEntity<?> getContractById(Long id);
 
 }

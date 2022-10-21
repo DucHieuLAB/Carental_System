@@ -61,7 +61,7 @@ public class TestDemo {
     @Test
     public void testAccount() throws ParseException {
 
-        RoleEntity roleEntity = roleRepository.GetRoleDriver();
+        RoleEntity roleEntity = roleRepository.GetRoleDriver("Driver");
 
 
         AccountEntity accountEntity = new AccountEntity();

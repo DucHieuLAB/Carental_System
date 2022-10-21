@@ -52,6 +52,11 @@
             <artifactId>spring-security-crypto</artifactId>
             <version>5.7.3</version>
         </dependency>
+        <dependency>
+            <groupId>io.awspring.cloud</groupId>
+            <artifactId>spring-cloud-aws-core</artifactId>
+            <version>2.3.1</version>
+        </dependency>
     </dependencies>
 
     <build>

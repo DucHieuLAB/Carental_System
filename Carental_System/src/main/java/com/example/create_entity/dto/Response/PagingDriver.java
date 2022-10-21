@@ -1,4 +1,4 @@
-package com.example.create_entity.dto.Request;
+package com.example.create_entity.dto.Response;
 
 import com.example.create_entity.Entity.DriverEntity;
 import com.example.create_entity.dto.Response.DriverInfoResponse;

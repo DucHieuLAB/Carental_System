@@ -3,7 +3,7 @@ package com.example.create_entity.Service;
 import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.*;
 import com.example.create_entity.dto.Request.DriverInfoRequest;
-import com.example.create_entity.dto.Request.PagingDriver;
+import com.example.create_entity.dto.Response.PagingDriver;
 import com.example.create_entity.dto.Response.DriverInfoDetailResponse;
 import com.example.create_entity.dto.Response.DriverInfoResponse;
 import com.example.create_entity.dto.Response.LicenseInfoResponse;
@@ -291,7 +291,7 @@ public class DriverService {
         DriverEntity driver = new DriverEntity();
         AccountEntity accountEntity = new AccountEntity();
         DistrictsEntity districtsEntity = new DistrictsEntity();
-        RoleEntity roleEntity = roleRepository.GetRoleDriver();
+        RoleEntity roleEntity = roleRepository.GetRoleDriver("Driver");
 
 
         if (!accountRepository.Check_email(infoRequest.getEmail()).isEmpty()) {

@@ -1,6 +1,8 @@
 package com.example.create_entity.Repository;
 
 import com.example.create_entity.Entity.AccountEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -26,4 +28,8 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
     @Query(value = "SELECT a FROM AccountEntity  a WHERE a.ID = ?1 ")
     AccountEntity getCustomerById(long customerId);
+
+
+    @Query(value = "SELECT * FROM accounts where role_id = ?",nativeQuery = true)
+    Page<AccountEntity> List_Staff(Integer id_role, Pageable pageable);
 }
