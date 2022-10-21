@@ -20,7 +20,24 @@ public interface ContractService {
 
     ResponseEntity<?> FilterByNotHadDriver(Integer p);
 
+
+    ResponseEntity<?> FilterByWaitingForProgressing(Integer p);
+
+    ResponseEntity<?> FilterByWaitForConfirmation(Integer p);
+
+    ResponseEntity<?> FilterByEffective(Integer p);
+
+    ResponseEntity<?> FilterByActivate(Integer p);
+
+
+    ResponseEntity<?> FilterByClose(Integer p);
+
+    ResponseEntity<?> FilterByCancel(Integer p);
+
+
+
+
+
     ResponseEntity<?> getContractById(Long id);
 
-    ResponseEntity<?> update(ContractRequest contractRequest);
 }
