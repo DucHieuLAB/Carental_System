@@ -7,6 +7,7 @@ import com.example.create_entity.Repository.RoleRepository;
 import com.example.create_entity.dto.Request.StaffRequest;
 import com.example.create_entity.dto.Response.PagingResponse;
 import com.example.create_entity.dto.Response.ReposMesses;
+import com.example.create_entity.dto.Response.StaffDetailResponse;
 import com.example.create_entity.dto.Response.StaffResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class AccountServiceIml implements AccountService {
     @Autowired
     AccountRepository accountRepository;
 
-
+    StaffResponse staffResponse = new StaffResponse();
     @Autowired
     DistrictRepository districtRepository;
 
@@ -47,40 +48,10 @@ public class AccountServiceIml implements AccountService {
     public ResponseEntity<?> getListByNameRole(Integer p) {
 
         p = CheckNullPaging(p);
-
-        List<StaffResponse> staffResponseList = new ArrayList<>();
         Integer id = roleRepository.GetIDRoleByNameRole("Staff");
-
         Pageable pageable = PageRequest.of(p, 5);
         Page<AccountEntity> accountEntities = accountRepository.List_Staff(id, pageable);
-        try {
-            accountEntities.forEach(AccountEntity -> {
-                StaffResponse staffResponse = new StaffResponse();
-                staffResponse.setPhone(AccountEntity.getPhone());
-                staffResponse.setStatus(AccountEntity.getStatus());
-                staffResponse.setFullName(AccountEntity.getFullName());
-                staffResponse.setIdentity_number(AccountEntity.getIdentity_Number());
-                staffResponse.setDOB(AccountEntity.getDOB());
-                staffResponse.setUserName(AccountEntity.getUsername());
-                staffResponse.setEmail(AccountEntity.getEmail());
-                staffResponse.setAddress(AccountEntity.getAddress());
-                staffResponseList.add(staffResponse);
-            });
-            PagingResponse pagingResponse = new PagingResponse();
-            pagingResponse.setDriverInfoResponsesList(staffResponseList);
-            pagingResponse.setTotalPage(accountEntities.getTotalPages());
-            pagingResponse.setNumberPage(accountEntities.getNumber() + 1);
-
-            if (accountEntities.isEmpty()) {
-                ReposMesses messes = new ReposMesses();
-                messes.setMess("NOT FOUND");
-                return new ResponseEntity<>(messes, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(pagingResponse, HttpStatus.OK);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
-        }
+        return responseEntity(accountEntities);
 
     }
 
@@ -160,4 +131,94 @@ public class AccountServiceIml implements AccountService {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    private ResponseEntity<?> responseEntity(Page<AccountEntity> accountEntities) {
+
+        try {
+            List<StaffResponse> staffResponseList = staffResponse.staffResponseList(accountEntities);
+
+            PagingResponse pagingResponse = new PagingResponse();
+            pagingResponse.setObjects(staffResponseList);
+            pagingResponse.setTotalPage(accountEntities.getTotalPages());
+            pagingResponse.setNumberPage(accountEntities.getNumber() + 1);
+
+            if (staffResponseList.isEmpty()) {
+                ReposMesses messes = new ReposMesses();
+                messes.setMess("NOT FOUND");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>(pagingResponse, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByName(String Name, Integer p) {
+        p = CheckNullPaging(p);
+        Integer Role_id = roleRepository.GetIDRoleByNameRole("Staff");
+        Pageable pageable = PageRequest.of(p, 5);
+        Page<AccountEntity> accountEntities = accountRepository.FilterByName(Name.trim(), Role_id, pageable);
+        return responseEntity(accountEntities);
+
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByPhone(String Phone, Integer p) {
+        p = CheckNullPaging(p);
+        Integer Role_id = roleRepository.GetIDRoleByNameRole("Staff");
+        Pageable pageable = PageRequest.of(p, 5);
+        Page<AccountEntity> accountEntities = accountRepository.FilterByPhone(Phone.trim(), Role_id, pageable);
+        return responseEntity(accountEntities);
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByIdentity_Number(String Identity_Number, Integer p) {
+        p = CheckNullPaging(p);
+        Integer Role_id = roleRepository.GetIDRoleByNameRole("Staff");
+        Pageable pageable = PageRequest.of(p, 5);
+        Page<AccountEntity> accountEntities = accountRepository.FilterByIdentity_Number(Identity_Number.trim(),Role_id, pageable);
+        return responseEntity(accountEntities);
+    }
+
+    @Override
+    public ResponseEntity<?> ChangeStatus(String UserName) {
+        ReposMesses messes = new ReposMesses();
+        StaffResponse staffResponse = new StaffResponse();
+        try {
+            AccountEntity accountEntity = accountRepository.GetAccountByName(UserName.trim());
+            if (accountEntity != null && accountEntity.getStatus() == 1) {
+                accountEntity.setStatus(0);
+                staffResponse = staffResponse.staffResponseList(accountEntity);
+                accountRepository.save(accountEntity);
+                return new ResponseEntity<>(staffResponse, HttpStatus.OK);
+            } else if (accountEntity != null && accountEntity.getStatus() == 0) {
+                accountEntity.setStatus(1);
+                staffResponse = staffResponse.staffResponseList(accountEntity);
+                accountRepository.save(accountEntity);
+                return new ResponseEntity<>(staffResponse, HttpStatus.OK);
+            }
+
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> GetDetail(String UserName) {
+        StaffDetailResponse detailResponse = new StaffDetailResponse();
+        try {
+            AccountEntity accountEntity = accountRepository.GetAccountByName(UserName);
+            detailResponse=detailResponse.staffDetailResponse(accountEntity);
+            return new ResponseEntity<>(detailResponse,HttpStatus.OK);
+        }catch (Exception e){
+            ReposMesses messes = new ReposMesses();
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes,HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

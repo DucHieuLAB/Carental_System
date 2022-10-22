@@ -12,4 +12,14 @@ public interface AccountService {
 
    ResponseEntity<?> Create_Staff(StaffRequest staffRequest);
 
+   ResponseEntity<?>FilterByName(String Name,Integer p);
+
+   ResponseEntity<?>FilterByPhone(String Phone,Integer p);
+
+   ResponseEntity<?>FilterByIdentity_Number(String Identity_Number,Integer p);
+
+   ResponseEntity<?>ChangeStatus(String UserName);
+
+   ResponseEntity<?>GetDetail(String UserName);
+
 }

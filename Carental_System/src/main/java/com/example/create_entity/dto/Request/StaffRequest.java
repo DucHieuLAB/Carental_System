@@ -16,29 +16,20 @@ import java.util.Date;
 public class StaffRequest {
 
     private String Address;
-    private String Create_Date;
     private Date Dob;
     private String Email;
     private String FullName;
     private int Gender;
     private String Identity_Picture_Front;
     private String Identity_Number;
-
     private String Identity_Picture_Back;
-
-    private String Modified_Date;
     private String Phone;
     private String User_Name;
     private String Img;
     private int Status;
     private String Password;
-
     private String District_Name;
-
     private String wards;
-
     private String City;
-
-    private int Role_id;
 
 }

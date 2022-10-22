@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PagingResponse {
 
-    private List<?> driverInfoResponsesList;
+    private List<?> objects;
     private int TotalPage;
     private int numberPage;
 }
