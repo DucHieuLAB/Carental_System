@@ -65,7 +65,7 @@ public class CarServiceImpl implements CarService {
         CarEntity exsitCar = carRepository.findCarEntityByPlateNumber(carRequest.getPlateNumber());
         if (!ObjectUtils.isEmpty(exsitCar)) {
             responseVo.setStatus(false);
-            responseVo.setMessage("Xe đã tồn tại");
+            responseVo.setMessage("Biển số xe đã tồn tại");
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         try {

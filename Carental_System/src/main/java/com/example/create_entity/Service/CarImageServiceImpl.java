@@ -96,6 +96,7 @@ public class CarImageServiceImpl implements CarImageService{
                     for(String imgUrl: imgUrls){
                         if(img.getImg().equals(imgUrl)){
                             imgUrls.remove(imgUrl);
+                            break;
                         }
                     }
                 }

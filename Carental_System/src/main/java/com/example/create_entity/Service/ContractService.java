@@ -29,12 +29,11 @@ public interface ContractService {
 
     ResponseEntity<?> FilterByActivate(Integer p);
 
+    ResponseEntity<?> update(ContractRequest contractRequest);
 
     ResponseEntity<?> FilterByClose(Integer p);
 
     ResponseEntity<?> FilterByCancel(Integer p);
 
     ResponseEntity<?> getContractById(Long id);
-
-    ResponseEntity<?> update(ContractRequest contractRequest);
 }

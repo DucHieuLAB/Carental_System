@@ -17,7 +17,9 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public class ContractDetailEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contract_detail_id",unique = true)
+
     private long id;
     @Column
     private Date real_pick_up_date;
