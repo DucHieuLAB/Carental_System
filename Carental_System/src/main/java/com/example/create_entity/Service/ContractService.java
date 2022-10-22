@@ -36,4 +36,5 @@ public interface ContractService {
 
     ResponseEntity<?> getContractById(Long id);
 
+    ResponseEntity<?> update(ContractRequest contractRequest);
 }

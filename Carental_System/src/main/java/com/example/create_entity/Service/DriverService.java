@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -283,103 +284,109 @@ public class DriverService {
     }
 
 
+    @Transactional
     public ResponseEntity<?> Create(DriverInfoRequest infoRequest) {
-        ReposMesses messes = new ReposMesses();
-        Date date = new Date(System.currentTimeMillis());
-        String regexPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        ReposMesses messes = null;
+        try {
+            messes = new ReposMesses();
+            Date date = new Date(System.currentTimeMillis());
+            String regexPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
 
-        DriverEntity driver = new DriverEntity();
-        AccountEntity accountEntity = new AccountEntity();
-        DistrictsEntity districtsEntity = new DistrictsEntity();
-        RoleEntity roleEntity = roleRepository.GetRoleDriver("Driver");
-
-
-        if (!accountRepository.Check_email(infoRequest.getEmail()).isEmpty()) {
-            messes.setMess("Email đã tồn tại  !");
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-        } else if (!accountRepository.Check_username(infoRequest.getUsername()).isEmpty()) {
-            messes.setMess("UserName đã tồn tại !");
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-        } else if (!infoRequest.getEmail().matches(regexPattern)) {
-            messes.setMess("Email k đúng định dạng !");
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-        } else if (!accountRepository.Check_Phone(infoRequest.getPhone().trim()).isEmpty()) {
-            messes.setMess("Số điện thoại đã được đăng kí trong hệ thống  !");
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-        } else if (!accountRepository.Check_Identity(infoRequest.getIdentity_Number().trim()).isEmpty()) {
-            messes.setMess("Số Chứng minh thư đã được đăng kí trong hệ thống !");
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-        } else if (!driverRepository.Check_diver_number_license(infoRequest.getDriver_Number_License().trim()).isEmpty()) {
-            messes.setMess("Số Bằng lái xe đã được đăng kí trong hệ thống  !");
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-        }
-
-        accountEntity.setFullName(infoRequest.getFullName().trim());
-        accountEntity.setEmail(infoRequest.getEmail().trim());
-        accountEntity.setUsername(infoRequest.getUsername().trim());
-        accountEntity.setGender(infoRequest.getGender());
-        accountEntity.setDOB(infoRequest.getDob());
-        accountEntity.setIdentity_Number(infoRequest.getIdentity_Number().trim());
-        accountEntity.setIdentity_Picture_Back(infoRequest.getIdentity_Picture_Back().trim());
-        accountEntity.setIdentity_Picture_Front(infoRequest.getIdentity_Picture_Front().trim());
-        accountEntity.setAddress(infoRequest.getAddress());
-        accountEntity.setCreateDate(date);
-        accountEntity.setImg(infoRequest.getImg());
-
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(infoRequest.getPassword());
-        accountEntity.setPassword(encodedPassword.trim());
-
-        accountEntity.setPhone(infoRequest.getPhone().trim());
-        accountEntity.setStatus(1);
-        accountEntity.setRoleEntity(roleEntity);
-
-        String city = infoRequest.getCity().trim();
-        String district_name = infoRequest.getDistrict_Name().trim();
-        String wards = infoRequest.getWards().trim();
+            DriverEntity driver = new DriverEntity();
+            AccountEntity accountEntity = new AccountEntity();
+            DistrictsEntity districtsEntity = new DistrictsEntity();
+            RoleEntity roleEntity = roleRepository.GetRoleDriver("Driver");
 
 
-        List<DistrictsEntity> districtsEntities = districtRepository.check_district(city, wards, district_name);
+            if (!accountRepository.Check_email(infoRequest.getEmail()).isEmpty()) {
+                messes.setMess("Email đã tồn tại  !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!accountRepository.Check_username(infoRequest.getUsername()).isEmpty()) {
+                messes.setMess("UserName đã tồn tại !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!infoRequest.getEmail().matches(regexPattern)) {
+                messes.setMess("Email k đúng định dạng !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!accountRepository.Check_Phone(infoRequest.getPhone().trim()).isEmpty()) {
+                messes.setMess("Số điện thoại đã được đăng kí trong hệ thống  !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!accountRepository.Check_Identity(infoRequest.getIdentity_Number().trim()).isEmpty()) {
+                messes.setMess("Số Chứng minh thư đã được đăng kí trong hệ thống !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!driverRepository.Check_diver_number_license(infoRequest.getDriver_Number_License().trim()).isEmpty()) {
+                messes.setMess("Số Bằng lái xe đã được đăng kí trong hệ thống  !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }
+
+            accountEntity.setFullName(infoRequest.getFullName().trim());
+            accountEntity.setEmail(infoRequest.getEmail().trim());
+            accountEntity.setUsername(infoRequest.getUsername().trim());
+            accountEntity.setGender(infoRequest.getGender());
+            accountEntity.setDOB(infoRequest.getDob());
+            accountEntity.setIdentity_Number(infoRequest.getIdentity_Number().trim());
+            accountEntity.setIdentity_Picture_Back(infoRequest.getIdentity_Picture_Back().trim());
+            accountEntity.setIdentity_Picture_Front(infoRequest.getIdentity_Picture_Front().trim());
+            accountEntity.setAddress(infoRequest.getAddress());
+            accountEntity.setCreateDate(date);
+            accountEntity.setImg(infoRequest.getImg());
+
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String encodedPassword = passwordEncoder.encode(infoRequest.getPassword());
+            accountEntity.setPassword(encodedPassword.trim());
+
+            accountEntity.setPhone(infoRequest.getPhone().trim());
+            accountEntity.setStatus(1);
+            accountEntity.setRoleEntity(roleEntity);
+
+            String city = infoRequest.getCity().trim();
+            String district_name = infoRequest.getDistrict_Name().trim();
+            String wards = infoRequest.getWards().trim();
 
 
-        if (districtsEntities.isEmpty()) {
-            districtsEntity.setCity(city);
-            districtsEntity.setDistrict_Name(district_name);
-            districtsEntity.setWards(wards);
-            accountEntity.setDistrictsEntity(districtsEntity);
+            List<DistrictsEntity> districtsEntities = districtRepository.check_district(city, wards, district_name);
 
-            districtRepository.save(districtsEntity);
 
-        } else {
+            if (districtsEntities.isEmpty()) {
+                districtsEntity.setCity(city);
+                districtsEntity.setDistrict_Name(district_name);
+                districtsEntity.setWards(wards);
+                accountEntity.setDistrictsEntity(districtsEntity);
 
-            DistrictsEntity districts = districtRepository.check_districts(city, wards, district_name);
-            accountEntity.setDistrictsEntity(districts);
+                districtRepository.save(districtsEntity);
 
-        }
+            } else {
 
-        LicenseTypeEntity licenseTypeEntity;
-        licenseTypeEntity = licenseRepository.Get_License_By_Name(infoRequest.getName_License());
+                DistrictsEntity districts = districtRepository.check_districts(city, wards, district_name);
+                accountEntity.setDistrictsEntity(districts);
+
+            }
+
+            LicenseTypeEntity licenseTypeEntity;
+            licenseTypeEntity = licenseRepository.Get_License_By_Name(infoRequest.getName_License());
 //        if (licenseTypeEntity.equals(null)) {
 //            messes.setMess("K tồn tại List LicenseType !");
 //            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
 //        }
 
-        driver.setAccountEntity(accountEntity);
-        driver.setLicenseTypeEntity(licenseTypeEntity);
-        driver.setDriver_Number_License(infoRequest.getDriver_Number_License());
-        driver.setDriving_license_image_Front(infoRequest.getDriving_license_image_Front());
-        driver.setDriving_license_image_back(infoRequest.getDriving_license_image_back());
-        driver.setYear_Experience(infoRequest.getYearExperience());
-        driver.setStatus(1);
+            driver.setAccountEntity(accountEntity);
+            driver.setLicenseTypeEntity(licenseTypeEntity);
+            driver.setDriver_Number_License(infoRequest.getDriver_Number_License());
+            driver.setDriving_license_image_Front(infoRequest.getDriving_license_image_Front());
+            driver.setDriving_license_image_back(infoRequest.getDriving_license_image_back());
+            driver.setYear_Experience(infoRequest.getYearExperience());
+            driver.setStatus(1);
 
 
-        driver.setStart_Date(date);
+            driver.setStart_Date(date);
 
-        accountRepository.save(accountEntity);
-        DriverEntity driverEntity = driverRepository.save(driver);
+            accountRepository.save(accountEntity);
+            DriverEntity driverEntity = driverRepository.save(driver);
 
-        return new ResponseEntity<>(driverEntity, HttpStatus.OK);
-
+            return new ResponseEntity<>(driverEntity, HttpStatus.OK);
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.OK);
+        }
     }
 
 
