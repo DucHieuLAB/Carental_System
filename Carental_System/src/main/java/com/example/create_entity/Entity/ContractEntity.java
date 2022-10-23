@@ -96,6 +96,7 @@ public class ContractEntity {
         if (ObjectUtils.isEmpty(be)){
             return null;
         }
+        result.setBookingId(be.getId());
         result.setCustomerId(be.getId());
         result.setPickupParkingId(be.getPickup_parking().getId());
         result.setReturnParkingId(be.getReturn_parking().getId());
