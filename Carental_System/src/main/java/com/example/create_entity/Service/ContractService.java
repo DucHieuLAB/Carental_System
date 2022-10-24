@@ -12,6 +12,9 @@ public interface ContractService {
     @Transactional
     ResponseEntity<?> add(ContractRequest contractRequest);
 
+    @Transactional
+    ResponseEntity<?> updateDriver(ContractHadDriverRequest contractHadDriverRequest);
+
     ResponseEntity<?> ListContract(Integer p);
 
     ResponseEntity<?> FilterByName(String name, Integer p);
@@ -21,7 +24,6 @@ public interface ContractService {
     ResponseEntity<?> FilterByHadDriver(Integer p);
 
     ResponseEntity<?> FilterByNotHadDriver(Integer p);
-
 
     ResponseEntity<?> FilterByWaitingForProgressing(Integer p);
 
@@ -39,5 +41,5 @@ public interface ContractService {
 
     ResponseEntity<?> getContractById(Long id);
 
-    ResponseEntity<?> updateDriver(ContractHadDriverRequest contractHadDriverRequest);
+
 }
