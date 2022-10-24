@@ -227,7 +227,7 @@ public class ContractServiceImpl implements ContractService {
     public ResponseEntity<?> FilterByName(String name, Integer HadDriver,Integer Status,Integer p) {
 
         p = CheckNullPaging(p);
-        Integer size = 1;
+        Integer size = 5;
         Pageable pageable = PageRequest.of(p, size);
         List<ContractEntity> contractEntities = br.FilterByName(name,HadDriver,Status,pageable);
         List<ContractEntity> contractEntities1 = br.FilterByName1(name,HadDriver,Status);
