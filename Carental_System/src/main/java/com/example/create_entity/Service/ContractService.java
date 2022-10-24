@@ -17,27 +17,11 @@ public interface ContractService {
 
     ResponseEntity<?> ListContract(Integer p);
 
-    ResponseEntity<?> FilterByName(String name, Integer p);
-
-    ResponseEntity<?> FilterByPhone(String phone, Integer p);
-
-    ResponseEntity<?> FilterByHadDriver(Integer p);
-
-    ResponseEntity<?> FilterByNotHadDriver(Integer p);
-
-    ResponseEntity<?> FilterByWaitingForProgressing(Integer p);
-
-    ResponseEntity<?> FilterByWaitForConfirmation(Integer p);
-
-    ResponseEntity<?> FilterByEffective(Integer p);
-
-    ResponseEntity<?> FilterByActivate(Integer p);
+    ResponseEntity<?> FilterByName(String name,Integer HadDriver,Integer Status,Integer p);
+    ResponseEntity<?> FilterByPhone(String name, Integer HadDriver,Integer Status,Integer p);
 
     ResponseEntity<?> update(ContractRequest contractRequest);
 
-    ResponseEntity<?> FilterByClose(Integer p);
-
-    ResponseEntity<?> FilterByCancel(Integer p);
 
     ResponseEntity<?> getContractById(Long id);
 

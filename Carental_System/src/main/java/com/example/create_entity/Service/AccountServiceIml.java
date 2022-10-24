@@ -189,11 +189,16 @@ public class AccountServiceIml implements AccountService {
         try {
             AccountEntity accountEntity = accountRepository.GetAccountByName(UserName.trim());
             if (accountEntity != null && accountEntity.getStatus() == 1) {
+                Date date = new Date(System.currentTimeMillis());
+                accountEntity.setModifiedDate(date);
                 accountEntity.setStatus(0);
+
                 staffResponse = staffResponse.staffResponseList(accountEntity);
                 accountRepository.save(accountEntity);
                 return new ResponseEntity<>(staffResponse, HttpStatus.OK);
             } else if (accountEntity != null && accountEntity.getStatus() == 0) {
+                Date date = new Date(System.currentTimeMillis());
+                accountEntity.setModifiedDate(date);
                 accountEntity.setStatus(1);
                 staffResponse = staffResponse.staffResponseList(accountEntity);
                 accountRepository.save(accountEntity);

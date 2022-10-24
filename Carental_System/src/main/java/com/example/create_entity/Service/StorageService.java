@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 
 @Service
 @Slf4j
@@ -25,12 +26,23 @@ public class StorageService {
     @Autowired
     private AmazonS3 s3Client;
 
+//    public String uploadFile(MultipartFile file) {
+//        File fileObj = convertMultiPartFileToFile(file);
+//        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+//        s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+//        fileObj.delete();
+//        return "File uploaded : " + fileName;
+//    }
+
     public String uploadFile(MultipartFile file) {
         File fileObj = convertMultiPartFileToFile(file);
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
-        return "File uploaded : " + fileName;
+        Date date = new Date();
+        URL ExpiresIn1 = s3Client.generatePresignedUrl(bucketName,fileName,date);
+
+        return "File uploaded : " + ExpiresIn1;
     }
 
 

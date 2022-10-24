@@ -25,72 +25,39 @@ public interface ContractRepository extends JpaRepository<ContractEntity,Long> {
 
 
 
-    @Query(value = "select * from contracts " +
-            "left join accounts " +
-            "on contracts.customer_id=accounts.account_id " +
-            "where accounts.full_name " +
-            "like %?% order by " +
-            "contracts.expected_start_date asc",nativeQuery = true)
-    List<ContractEntity> FilterByName(String name,Pageable pageable);
+    @Query(value = "  select * from contracts left join accounts  \n" +
+            "            on contracts.customer_id=accounts.account_id \n" +
+            "            where accounts.full_name like %?1% \n" +
+            "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END\n" +
+            "            ",nativeQuery = true)
+    List<ContractEntity> FilterByName(String name,Integer HadDriver,Integer Status,Pageable pageable);
 
 
-    @Query(value = "select * from contracts " +
-            "left join accounts " +
-            "on contracts.customer_id=accounts.account_id " +
-            "where accounts.full_name " +
-            "like %?% order by " +
-            "contracts.expected_start_date asc",nativeQuery = true)
-    List<ContractEntity> FilterByName1(String name);
+    @Query(value = "  select * from contracts left join accounts  \n" +
+            "            on contracts.customer_id=accounts.account_id \n" +
+            "            where accounts.full_name like %?1% \n" +
+            "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END\n" +
+            "            ",nativeQuery = true)
+    List<ContractEntity> FilterByName1(String name,Integer HadDriver,Integer Status);
 
-    @Query(value = "select * from contracts " +
-            "left join accounts " +
-            "on contracts.customer_id=accounts.account_id " +
-            "where accounts.phone " +
-            "like %?% order by " +
-            "contracts.expected_start_date asc",nativeQuery = true)
-    List<ContractEntity> FilterByPhone(String phone,Pageable pageable);
-
-
-    @Query(value = "select * from contracts " +
-            "left join accounts " +
-            "on contracts.customer_id=accounts.account_id " +
-            "where accounts.phone " +
-            "like %?% order by " +
-            "contracts.expected_start_date asc",nativeQuery = true)
-    List<ContractEntity> FilterByPhone1(String phone);
+    @Query(value = "  select * from contracts left join accounts  \n" +
+            "            on contracts.customer_id=accounts.account_id \n" +
+            "            where accounts.phone like %?1% \n" +
+            "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END\n" +
+            "            ",nativeQuery = true)
+    List<ContractEntity> FilterByPhone(String name,Integer HadDriver,Integer Status,Pageable pageable);
 
 
-    @Query(value = "select * from contracts  where contracts.had_driver=1 order by contracts.expected_start_date asc",nativeQuery = true)
-    List<ContractEntity> FilterByHadDriver(Pageable pageable);
-    @Query(value = "select * from contracts  where contracts.had_driver=1 order by contracts.expected_start_date asc",nativeQuery = true)
-    List<ContractEntity> FilterByHadDriver1();
-
-    @Query(value = "select * from contracts  where contracts.had_driver=0 order by contracts.expected_start_date asc",nativeQuery = true)
-    List<ContractEntity> FilterByNotHadDriver(Pageable pageable);
-    @Query(value = "select * from contracts  where contracts.had_driver=0 order by contracts.expected_start_date asc",nativeQuery = true)
-    List<ContractEntity> FilterByNotHadDriver1();
-
-
-    @Query(value ="select * from contracts  where status=1 order by contracts.expected_start_date asc" ,nativeQuery = true)
-    Page<ContractEntity> FilterByWaitingForProgressing(Pageable pageable);
-
-    @Query(value ="select * from contracts  where status=2 order by contracts.expected_start_date asc" ,nativeQuery = true)
-    Page<ContractEntity> FilterByWaitForConfirmation(Pageable pageable);
-
-    @Query(value ="select * from contracts  where status=3 order by contracts.expected_start_date asc" ,nativeQuery = true)
-    Page<ContractEntity> FilterByEffective(Pageable pageable);
-
-
-    @Query(value ="select * from contracts  where status=4 order by contracts.expected_start_date asc" ,nativeQuery = true)
-    Page<ContractEntity> FilterByActivate(Pageable pageable);
-
-
-    @Query(value ="select * from contracts  where status=5 order by contracts.expected_start_date asc" ,nativeQuery = true)
-    Page<ContractEntity> FilterByClose(Pageable pageable);
-
-
-    @Query(value ="select * from contracts  where status=6 order by contracts.expected_start_date asc" ,nativeQuery = true)
-    Page<ContractEntity> FilterByCancel(Pageable pageable);
+    @Query(value = "  select * from contracts left join accounts  \n" +
+            "            on contracts.customer_id=accounts.account_id \n" +
+            "            where accounts.phone like %?1% \n" +
+            "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END\n" +
+            "            ",nativeQuery = true)
+    List<ContractEntity> FilterByPhone1(String name,Integer HadDriver,Integer Status);
 
 
 
