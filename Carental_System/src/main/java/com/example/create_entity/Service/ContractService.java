@@ -1,6 +1,8 @@
 package com.example.create_entity.Service;
 
+import com.example.create_entity.dto.Request.ContractHadDriverRequest;
 import com.example.create_entity.dto.Request.ContractRequest;
+import com.example.create_entity.dto.Request.ListContractDetailDriverRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,4 +38,6 @@ public interface ContractService {
     ResponseEntity<?> FilterByCancel(Integer p);
 
     ResponseEntity<?> getContractById(Long id);
+
+    ResponseEntity<?> updateDriver(ContractHadDriverRequest contractHadDriverRequest);
 }

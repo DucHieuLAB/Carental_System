@@ -19,14 +19,13 @@ public class ListContractDetailResponse {
     private Date realPickUpDate;
     private Date realReturnDate;
     private long driverId;
-    private long driverName;
-    private long driverNumber;
+    private String driverName;
     private long carId;
     private long bookingId;
     private String plateNumber;
     private int capacity;
     private String modelName;
-    private long yearOfManufacture;
+    private String Color;
     private double rentalPrice;
 
     public static List<ListContractDetailResponse> createListBookingDetailResponse(List<ContractDetailEntity> bdes) {
@@ -44,8 +43,9 @@ public class ListContractDetailResponse {
             tmp.setBookingId(entity.getBooking().getId());
             tmp.setModelName(entity.getCar().getModelName());
             tmp.setCapacity(entity.getCar().getCapacity());
-            tmp.setYearOfManufacture(entity.getCar().getYearOfManufacture());
+            tmp.setColor(entity.getCar().getColor());
             tmp.setRentalPrice(entity.getCar().getRentalPrice());
+            tmp.setCarId(entity.getCar().getId());
             result.add(tmp);
         }
         return result;

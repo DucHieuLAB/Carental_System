@@ -69,6 +69,10 @@ public class CarEntity {
     @Column(name = "description ")
     private String description;
 
+    @Column(name = "color")
+    private String color;
+
+
     @ManyToOne
     @JoinColumn(name = "parking_id",nullable = false, foreignKey = @ForeignKey(name = "FK_Car_parking_id"))
     ParkingEntity parking;

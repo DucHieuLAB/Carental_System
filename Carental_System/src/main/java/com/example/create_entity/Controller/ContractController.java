@@ -1,8 +1,9 @@
 package com.example.create_entity.Controller;
 
 import com.example.create_entity.Service.ContractServiceImpl;
-import com.example.create_entity.dto.Request.CarRequest;
+import com.example.create_entity.dto.Request.ContractHadDriverRequest;
 import com.example.create_entity.dto.Request.ContractRequest;
+import com.example.create_entity.dto.Request.ListContractDetailDriverRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -105,10 +106,12 @@ public class ContractController {
 //        return null;
 
     @GetMapping("/Detail/{id}")
-    public ResponseEntity<?> getCar(@PathVariable long id){
+    public ResponseEntity<?> getContract(@PathVariable long id){
         return contractService.getContractById(id);
-
     }
-
+    @PutMapping("/update/driver")
+    public ResponseEntity<?> updateDriver(@RequestBody ContractHadDriverRequest contractHadDriverRequest){
+        return contractService.updateDriver(contractHadDriverRequest);
+    }
 
 }
