@@ -192,7 +192,7 @@ public class ContractServiceImpl implements ContractService {
             for (ListContractDetailDriverRequest l : listContractDetailDriverRequests) {
                 ContractDetailEntity contractDetailEntity = bdr.BookingDetail(l.getBookingDetailId());
                 if (ObjectUtils.isEmpty(contractDetailEntity)) {
-                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin tài xế ID= " + l.getDriverId() + "", null);
+                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đông ", null);
                     return new ResponseEntity<>(responseVo, HttpStatus.OK);
                 }
                 DriverEntity entity = dr.GetDriverById(l.getDriverId());
@@ -368,7 +368,6 @@ public class ContractServiceImpl implements ContractService {
         }
     }
 
-
     @Override
     public ResponseEntity<?> update(ContractRequest contractRequest) {
         ResponseVo responseVo = null;
@@ -386,6 +385,7 @@ public class ContractServiceImpl implements ContractService {
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         // Check if car valid from start date to end date
+
         //End
         if(checkIdEsxit.isHad_driver() != contractRequest.isHad_driver()){
 
