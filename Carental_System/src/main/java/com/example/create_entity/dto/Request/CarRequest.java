@@ -25,5 +25,6 @@ public class CarRequest {
     private int status;
     private String description;
     private long parkingId;
+    private long licenseId;
     private List<String> imgs;
 }

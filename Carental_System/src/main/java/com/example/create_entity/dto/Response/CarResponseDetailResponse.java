@@ -28,5 +28,6 @@ public class CarResponseDetailResponse {
     private long parkingId;
     private String parkingName;
     private String parkingAddress;
+    private String licenseName;
     private List<ListCarImageResponse> imgs;
 }

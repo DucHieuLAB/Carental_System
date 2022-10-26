@@ -72,6 +72,10 @@ public class CarEntity {
     @Column(name = "color")
     private String color;
 
+    @ManyToOne
+    @JoinColumn(name = "license_id",nullable = false,foreignKey= @ForeignKey(name = "FK_Car_license_id") )
+     LicenseTypeEntity licenseTypeEntity;
+
 
     @ManyToOne
     @JoinColumn(name = "parking_id",nullable = false, foreignKey = @ForeignKey(name = "FK_Car_parking_id"))
@@ -117,6 +121,7 @@ public class CarEntity {
         crdp.setImgs(carImageResponses);
         crdp.setParkingName(car.getParking().getName());
         crdp.setParkingAddress(car.getParking().getAddress());
+        crdp.setLicenseName(car.getLicenseTypeEntity().getName_License());
         return crdp;
     }
 }

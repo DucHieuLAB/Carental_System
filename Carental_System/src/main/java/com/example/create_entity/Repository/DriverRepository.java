@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -64,6 +65,14 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long>, Pag
 
     @Query(value = "SELECT * From driver where driver.diver_number_license=? ", nativeQuery = true)
     List<DriverEntity> Check_diver_number_license(String diver_number_license);
+
+    @Query(value = "SELECT * \n" +
+            "FROM driver d\n" +
+            "LEFT JOIN contract_details c on d.id_diver = c.driver_id\n" +
+            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
+            "WHERE ct.expected_start_date >= ?2 AND ct.expected_end_date <= ?3\n" +
+            "AND d.id_diver = ?1 * From driver where driver.diver_number_license=? ", nativeQuery = true)
+    DriverEntity findDriverValidDate(Long id, Date expected_start_date, Date expected_end_date);
 
 ////    @Modifying
 ////    @Transactional

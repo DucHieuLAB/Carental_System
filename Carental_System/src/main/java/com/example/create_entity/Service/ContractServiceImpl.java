@@ -6,6 +6,7 @@ import com.example.create_entity.Repository.*;
 import com.example.create_entity.dto.Request.ContractHadDriverRequest;
 import com.example.create_entity.dto.Request.ContractRequest;
 import com.example.create_entity.dto.Request.DistricRequest;
+import com.example.create_entity.dto.Request.ListContractDetailDriverRequest;
 import com.example.create_entity.dto.Response.*;
 
 import com.example.create_entity.Repository.AccountRepository;
@@ -46,6 +47,8 @@ public class ContractServiceImpl implements ContractService {
     DistrictRepository districtRepository;
     @Autowired
     DriverRepository dr;
+    @Autowired
+    LicenseRepository licenseRepository;
 
 
     public ResponseEntity<?> add(ContractRequest contractRequest) {
@@ -159,7 +162,65 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public ResponseEntity<?> updateDriver(ContractHadDriverRequest contractHadDriverRequest) {
-        return null;
+        ResponseVo responseVo = null;
+        //getContact Entiti
+        if (contractHadDriverRequest.getContractId() <= 0) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Mã hợp đồng không hợp lệ ID = " + contractHadDriverRequest.getContractId(), null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        List<ListContractDetailDriverRequest> listContractDetailDriverRequests = contractHadDriverRequest.getListContractDetailDriverRequests();
+        for (ListContractDetailDriverRequest l : listContractDetailDriverRequests) {
+            if (l.getDriverId() <= 0) {
+                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Mã tài xế không hợp lệ", l.getDriverId());
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            if (l.getBookingDetailId() <= 0) {
+                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Mã tài xế không hợp lệ", l.getBookingDetailId());
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+        }
+        ContractEntity contractEntity = br.FindByID(contractHadDriverRequest.getContractId());
+        if (ObjectUtils.isEmpty(contractEntity)) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng ID = " + contractHadDriverRequest.getContractId(), null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        if (!contractEntity.isHad_driver()) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Hợp đồng trên không thuộc hợp đồng có tài xế", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        try {
+            for (ListContractDetailDriverRequest l : listContractDetailDriverRequests) {
+                ContractDetailEntity contractDetailEntity = bdr.BookingDetail(l.getBookingDetailId());
+                if (ObjectUtils.isEmpty(contractDetailEntity)) {
+                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin tài xế ID= " + l.getDriverId() + "", null);
+                    return new ResponseEntity<>(responseVo, HttpStatus.OK);
+                }
+                DriverEntity entity = dr.GetDriverById(l.getDriverId());
+                if (ObjectUtils.isEmpty(entity)) {
+                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin tài xế ID= " + l.getDriverId() + "", null);
+                    return new ResponseEntity<>(responseVo, HttpStatus.OK);
+                }
+                DriverEntity checkValidDate = dr.findDriverValidDate(entity.getId(),contractEntity.getExpected_start_date(),contractEntity.getExpected_end_date());
+                if (!ObjectUtils.isEmpty(checkValidDate)){
+                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Tài Xế: "+entity.getAccountEntity().getFullName()+" Hiện Đang Có Hợp Đồng Khác", null);
+                    return new ResponseEntity<>(responseVo, HttpStatus.OK);
+                }
+                CarEntity carEntity = contractDetailEntity.getCar();
+                LicenseTypeEntity licenseTypeEntity = licenseRepository.getLicenseById(carEntity.getLicenseTypeEntity().getID());
+                if(licenseTypeEntity.getID() > entity.getLicenseTypeEntity().getID()){
+                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Tài xế " +entity.getAccountEntity().getFullName()+ " không đủ điều kiện lái loại xe hạng " + licenseTypeEntity.getName_License(), null);
+                    return new ResponseEntity<>(responseVo, HttpStatus.OK);
+                }
+                contractDetailEntity.setDriver_id(entity.getId());
+                bdr.save(contractDetailEntity);
+            }
+            responseVo = ResponseVeConvertUntil.createResponseVo(true, "Cập Nhật Tài Xế Thành Công", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+
+        } catch (Exception e) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(true, "Lỗi Khi Cập Nhật Tài Xế", e.getMessage());
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override

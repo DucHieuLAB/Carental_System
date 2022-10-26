@@ -10,5 +10,6 @@ public interface LicenseRepository  extends JpaRepository<LicenseTypeEntity,Long
 
     @Query(value = "SELECT * from carrental.license_types where license_name=? ", nativeQuery = true)
     LicenseTypeEntity Get_License_By_Name(String license);
-
+    @Query("SELECT l FROM LicenseTypeEntity l where l.ID = ?1")
+    LicenseTypeEntity getLicenseById(long licenseId);
 }

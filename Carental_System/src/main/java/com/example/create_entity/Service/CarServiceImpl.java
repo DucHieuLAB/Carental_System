@@ -1,11 +1,9 @@
 package com.example.create_entity.Service;
 
-import com.example.create_entity.Entity.BrandEntity;
-import com.example.create_entity.Entity.CarEntity;
-import com.example.create_entity.Entity.CarImageEntity;
-import com.example.create_entity.Entity.ParkingEntity;
+import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.BrandRepository;
 import com.example.create_entity.Repository.CarRepository;
+import com.example.create_entity.Repository.LicenseRepository;
 import com.example.create_entity.Repository.ParkingRepository;
 import com.example.create_entity.dto.Request.CarRequest;
 import com.example.create_entity.dto.Response.*;
@@ -37,6 +35,9 @@ public class CarServiceImpl implements CarService {
 
     @Autowired
     CarImageServiceImpl carImageService;
+
+    @Autowired
+    LicenseRepository licenseRepository;
 
     @Override
     public ResponseEntity<?> getListCapacity() {
@@ -72,6 +73,7 @@ public class CarServiceImpl implements CarService {
             CarEntity newCarEntity = CarEntity.createCarEntity(carRequest);
             BrandEntity brandEntity = brandRepository.findBrandEntityById(carRequest.getBrandId());
             Optional<ParkingEntity> parkingEntity = parkingRepository.findById(carRequest.getParkingId());
+            LicenseTypeEntity licenseTypeEntity = licenseRepository.getLicenseById(carRequest.getLicenseId());
             if (ObjectUtils.isEmpty(brandEntity)) {
                 responseVo.setMessage("Hãng xe không hợp lệ");
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -80,8 +82,13 @@ public class CarServiceImpl implements CarService {
                 responseVo.setMessage("Bãi đỗ xe không hợp lệ");
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
+            if(ObjectUtils.isEmpty(licenseTypeEntity)){
+                responseVo.setMessage("Thông tin bằng lái chưa hợp lệ");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
             newCarEntity.setBrand(brandEntity);
             newCarEntity.setParking(parkingEntity.get());
+            newCarEntity.setLicenseTypeEntity(licenseTypeEntity);
             carRepository.save(newCarEntity);
             carImageService.addList(carRequest.getImgs(), newCarEntity);
             CarEntity newCar = carRepository.findCarEntityByPlateNumber(newCarEntity.getPlateNumber());
@@ -154,7 +161,6 @@ public class CarServiceImpl implements CarService {
         try {
             if(!carRequest.getPlateNumber().equals(exsitCar.getPlateNumber())){
                 CarEntity checkPlateNumber = carRepository.findCarEntityByPlateNumber(carRequest.getPlateNumber());
-
                 if(!ObjectUtils.isEmpty(checkPlateNumber)){
                     responseVo = ResponseVeConvertUntil.createResponseVo(false,"Biển số xe đã tông tại trong CSDL",null);
                     return new ResponseEntity<>(responseVo,HttpStatus.OK);

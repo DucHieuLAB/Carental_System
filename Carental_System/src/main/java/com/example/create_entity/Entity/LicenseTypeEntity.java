@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,4 +27,10 @@ public class LicenseTypeEntity {
 
     @Column(name = "license_description")
     private String Description;
+
+    @OneToMany(
+            mappedBy = "licenseTypeEntity"
+    )
+    List<CarEntity> carEntities;
+
 }
