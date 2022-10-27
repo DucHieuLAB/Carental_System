@@ -20,7 +20,7 @@ public class EmailSenderService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("fromemail@gmail.com");
         message.setTo(toEmail);
-        message.setText(body);
+        message.setText("Mã OTP : " + body);
         message.setSubject(subject);
         mailSender.send(message);
         System.out.println("Mail Send...");
