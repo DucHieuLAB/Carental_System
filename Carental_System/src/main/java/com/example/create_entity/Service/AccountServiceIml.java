@@ -4,11 +4,13 @@ import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.AccountRepository;
 import com.example.create_entity.Repository.DistrictRepository;
 import com.example.create_entity.Repository.RoleRepository;
+import com.example.create_entity.dto.Request.RegisterInfoRequest;
 import com.example.create_entity.dto.Request.StaffRequest;
 import com.example.create_entity.dto.Response.PagingResponse;
 import com.example.create_entity.dto.Response.ReposMesses;
 import com.example.create_entity.dto.Response.StaffDetailResponse;
 import com.example.create_entity.dto.Response.StaffResponse;
+import com.example.create_entity.untils.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -178,7 +180,7 @@ public class AccountServiceIml implements AccountService {
         p = CheckNullPaging(p);
         Integer Role_id = roleRepository.GetIDRoleByNameRole("Staff");
         Pageable pageable = PageRequest.of(p, 5);
-        Page<AccountEntity> accountEntities = accountRepository.FilterByIdentity_Number(Identity_Number.trim(),Role_id, pageable);
+        Page<AccountEntity> accountEntities = accountRepository.FilterByIdentity_Number(Identity_Number.trim(), Role_id, pageable);
         return responseEntity(accountEntities);
     }
 
@@ -217,13 +219,66 @@ public class AccountServiceIml implements AccountService {
         StaffDetailResponse detailResponse = new StaffDetailResponse();
         try {
             AccountEntity accountEntity = accountRepository.GetAccountByName(UserName);
-            detailResponse=detailResponse.staffDetailResponse(accountEntity);
-            return new ResponseEntity<>(detailResponse,HttpStatus.OK);
-        }catch (Exception e){
+            detailResponse = detailResponse.staffDetailResponse(accountEntity);
+            return new ResponseEntity<>(detailResponse, HttpStatus.OK);
+        } catch (Exception e) {
             ReposMesses messes = new ReposMesses();
             messes.setMess(e.getMessage());
-            return new ResponseEntity<>(messes,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         }
     }
+
+    private RegisterInfoRequest registerInfoRequest;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
+     @Autowired
+    private RandomString randomString;
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> sendOTPEmail(RegisterInfoRequest REQUEST) {
+        String regexPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        ReposMesses messes = new ReposMesses();
+        AccountEntity accountEntity = new AccountEntity();
+        try {
+            if (!accountRepository.Check_email(REQUEST.getEmail().trim()).isEmpty()) {
+                messes.setMess("Email đã tồn tại  !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!accountRepository.Check_username(REQUEST.getUserName().trim()).isEmpty()) {
+                messes.setMess("UserName đã tồn tại !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!REQUEST.getEmail().matches(regexPattern)) {
+                messes.setMess("Email k đúng định dạng !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }
+            String Code_OTP = randomString.generateRandomString();
+            accountEntity.setEmail(REQUEST.getEmail());
+            accountEntity.setFullName(REQUEST.getFullName());
+            accountEntity.setUsername(REQUEST.getUserName());
+            accountEntity.setPassword(REQUEST.getPassword());
+            accountEntity.setOtpRequestedTime(new Date());
+            accountEntity.setStatus(0);
+
+            accountEntity.setOTP(Code_OTP);
+            emailSenderService.sendSimpleEmail(REQUEST.getEmail(), Code_OTP, "Here's your One Time Password (OTP) - Expire in 5 minutes!");
+            messes.setMess("Vui Lòng Kiểm tra mã OTP ở Email !");
+            accountRepository.save(accountEntity);
+            return new ResponseEntity<>(messes, HttpStatus.OK);
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public void clearOTP(RegisterInfoRequest REQUEST) {
+    }
+
+//    @Override
+//    public void CreateAccountCustomer() {
+//
+//
+//    }
 
 }

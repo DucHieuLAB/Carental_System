@@ -1,7 +1,9 @@
 package com.example.create_entity.untils;
 
-import java.util.Random;
+import org.springframework.stereotype.Component;
 
+import java.util.Random;
+@Component
 public class RandomString {
     private static final String CHAR_LIST = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
