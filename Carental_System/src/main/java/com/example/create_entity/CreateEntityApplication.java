@@ -1,5 +1,7 @@
 package com.example.create_entity;
 
+import com.example.create_entity.Service.EmailSenderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -14,9 +16,15 @@ import java.util.Arrays;
 @SpringBootApplication
 public class CreateEntityApplication extends SpringBootServletInitializer {
 
+
+    @Autowired
+    private EmailSenderService senderService;
+
     public static void main(String[] args) {
         SpringApplication.run(CreateEntityApplication.class, args);
     }
+
+
 
     @Bean
     public CorsFilter corsFilter() {
