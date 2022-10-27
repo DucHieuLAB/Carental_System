@@ -114,6 +114,7 @@ public class ContractEntity {
         result.setCreateDate(be.getCreatedDate());
         result.setLastModifiedDate(be.getLastModifiedDate());
         result.setReal_price(be.getReal_price());
+        result.setCustomerEmail(be.customer.getEmail());
         return result;
     }
 

@@ -22,6 +22,7 @@ public class CarRequest {
     private int capacity;
     private String Fuel;
     private String gears;
+    private String color;
     private int status;
     private String description;
     private long parkingId;

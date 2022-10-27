@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LicenseInfoResponse {
-
+   private Long ID;
    private String description;
    private String name_license;
 }

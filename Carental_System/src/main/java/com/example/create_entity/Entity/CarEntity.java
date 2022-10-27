@@ -63,14 +63,14 @@ public class CarEntity {
     @Column(name = "gears")
     private String gears;
 
+    @Column(name = "color")
+    private String color;
+
     @Column(name = "status",nullable = false)
     private int status;
 
     @Column(name = "description ")
     private String description;
-
-    @Column(name = "color")
-    private String color;
 
     @ManyToOne
     @JoinColumn(name = "license_id",nullable = false,foreignKey= @ForeignKey(name = "FK_Car_license_id") )
@@ -92,6 +92,7 @@ public class CarEntity {
         result.setCapacity(carRequest.getCapacity());
         result.setFuel(carRequest.getFuel());
         result.setGears(carRequest.getGears());
+        result.setColor(carRequest.getColor());
         result.setDescription(carRequest.getDescription());
         result.setStatus(carRequest.getStatus());
         return result;
@@ -112,9 +113,11 @@ public class CarEntity {
         crdp.setDepositAmount(car.getDepositAmount());
         crdp.setPlateNumber(car.getPlateNumber());
         crdp.setCapacity(car.getCapacity());
+        crdp.setColor(car.getColor());
         crdp.setFuel(car.getFuel());
         crdp.setGears(car.getGears());
         crdp.setStatus(car.getStatus());
+        crdp.setLicenseId(car.getLicenseTypeEntity().getID());
         crdp.setDescription(car.getDescription());
         crdp.setParkingId(car.getParking().getId());
         List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(car.carImageEntities);

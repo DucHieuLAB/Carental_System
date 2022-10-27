@@ -134,7 +134,7 @@ public class ContractServiceImpl implements ContractService {
                 contractDetailEntity.setBooking(newContract);
                 contractDetailEntity.setCar(carEntity);
                 contractDetailEntity.setLastModifiedDate(date);
-                contractDetailEntity.setId(0);
+
                 expectedRentalPrice += carEntity.getRentalPrice()*diff;
                 depositAmount += carEntity.getDepositAmount();
                 bookingDetailEntities.add(contractDetailEntity);

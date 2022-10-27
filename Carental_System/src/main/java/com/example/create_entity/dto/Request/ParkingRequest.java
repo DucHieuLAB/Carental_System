@@ -16,6 +16,6 @@ public class ParkingRequest {
     private String phone;
     private int status;
     private String location;
-    private DistricRequest distric;
+    private DistricRequest district;
 
 }

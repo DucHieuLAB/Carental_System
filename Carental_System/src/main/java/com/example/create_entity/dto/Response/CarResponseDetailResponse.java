@@ -21,11 +21,13 @@ public class CarResponseDetailResponse {
     private double depositAmount;
     private String plateNumber;
     private int capacity;
+    private String color;
     private String Fuel;
     private String gears;
     private int status;
     private String description;
     private long parkingId;
+    private long licenseId;
     private String parkingName;
     private String parkingAddress;
     private String licenseName;

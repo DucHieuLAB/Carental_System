@@ -203,6 +203,7 @@ public class DriverService {
         List<LicenseInfoResponse> licenseInfoResponses = new ArrayList<>();
         licenseTypeEntities.forEach(LicenseTypeEntity -> {
             LicenseInfoResponse licenseTypeEntity = new LicenseInfoResponse();
+            licenseTypeEntity.setID(LicenseTypeEntity.getID());
             licenseTypeEntity.setName_license(LicenseTypeEntity.getName_License());
             licenseTypeEntity.setDescription(LicenseTypeEntity.getDescription());
             licenseInfoResponses.add(licenseTypeEntity);

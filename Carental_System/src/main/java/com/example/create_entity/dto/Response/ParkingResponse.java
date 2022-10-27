@@ -19,7 +19,7 @@ public class ParkingResponse {
     private String phone;
     private int status;
     private String location;
-    private DistrictReponse distric;
+    private DistrictReponse district;
 
     public static ParkingResponse createParkingResponse(ParkingEntity parkingEntity){
         ParkingResponse result = new ParkingResponse();
@@ -31,7 +31,7 @@ public class ParkingResponse {
         result.setAddress(parkingEntity.getAddress());
         result.setPhone(parkingEntity.getPhone());
         result.setStatus(parkingEntity.getStatus());
-        result.setDistric(DistrictReponse.createDistricReponse(parkingEntity.getDistrictsEntity()));
+        result.setDistrict(DistrictReponse.createDistricReponse(parkingEntity.getDistrictsEntity()));
         result.setLocation(parkingEntity.getLocation());
         return result;
     }

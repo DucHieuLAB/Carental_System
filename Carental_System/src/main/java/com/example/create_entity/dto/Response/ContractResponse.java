@@ -27,6 +27,7 @@ public class ContractResponse {
     private Date lastModifiedDate;
     private Date CreateDate;
     private double real_price;
+    private String customerEmail;
 }
 
 

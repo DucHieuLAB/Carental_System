@@ -60,12 +60,12 @@ public class ParkingServiceImpl implements ParkingService {
             responseVo.setMessage("invialid input, parking is empty");
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        if (ObjectUtils.isEmpty(parkingRequest.getDistric())) {
+        if (ObjectUtils.isEmpty(parkingRequest.getDistrict())) {
             responseVo.setStatus(false);
             responseVo.setMessage("Địa chỉ bãi đỗ xe không hợp lệ");
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        DistricRequest districRequest = parkingRequest.getDistric();
+        DistricRequest districRequest = parkingRequest.getDistrict();
         DistrictsEntity existDistric = districtRepository.check_districts(districRequest.getCity(),
                 districRequest.getWards(),
                 districRequest.getDistrictName());
@@ -122,7 +122,7 @@ public class ParkingServiceImpl implements ParkingService {
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         try {
-            DistricRequest districRequest = parkingRequest.getDistric();
+            DistricRequest districRequest = parkingRequest.getDistrict();
             DistrictsEntity existDistric = districtRepository.check_districts(districRequest.getCity(),
                     districRequest.getWards(),
                     districRequest.getDistrictName());
