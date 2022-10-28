@@ -329,6 +329,8 @@ public class DriverService {
             accountEntity.setIdentity_Picture_Front(infoRequest.getIdentity_Picture_Front().trim());
             accountEntity.setAddress(infoRequest.getAddress());
             accountEntity.setCreateDate(date);
+            accountEntity.setOtpRequestedTime(new Date());
+            accountEntity.setModifiedDate(date);
             accountEntity.setImg(infoRequest.getImg());
 
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

@@ -100,6 +100,7 @@ public class AccountServiceIml implements AccountService {
                 accountEntity.setImg(infoRequest.getImg());
                 accountEntity.setDOB(infoRequest.getDob());
                 accountEntity.setGender(infoRequest.getGender());
+                accountEntity.setOtpRequestedTime(new Date());
                 accountEntity.setIdentity_Number(infoRequest.getIdentity_Number().trim());
 
                 String encodedPassword = passwordEncoder.encode(infoRequest.getPassword());
@@ -160,7 +161,7 @@ public class AccountServiceIml implements AccountService {
     public ResponseEntity<?> FilterByName(String Name, Integer p) {
         p = CheckNullPaging(p);
         Integer Role_id = roleRepository.GetIDRoleByNameRole("Staff");
-        Pageable pageable = PageRequest.of(p, 5);
+        Pageable pageable = PageRequest.of(p, 1);
         Page<AccountEntity> accountEntities = accountRepository.FilterByName(Name.trim(), Role_id, pageable);
         return responseEntity(accountEntities);
 
