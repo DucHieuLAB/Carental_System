@@ -2,6 +2,7 @@ package com.example.create_entity.Controller;
 
 import com.example.create_entity.Service.ContractServiceImpl;
 import com.example.create_entity.dto.Request.ContractHadDriverRequest;
+import com.example.create_entity.dto.Request.ContractRealPriceRequest;
 import com.example.create_entity.dto.Request.ContractRequest;
 import com.example.create_entity.dto.Request.ListContractDetailDriverRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +60,20 @@ public class ContractController {
     public ResponseEntity<?> getContract(@PathVariable long id){
         return contractService.getContractById(id);
     }
+
     @PutMapping("/update/driver")
     public ResponseEntity<?> updateDriver(@RequestBody ContractHadDriverRequest contractHadDriverRequest){
         return contractService.updateDriver(contractHadDriverRequest);
+    }
+
+    @PutMapping("/update/realprice")
+    public ResponseEntity<?> updateDriver(@RequestBody ContractRealPriceRequest contractRealPriceRequest){
+        return contractService.updateRealPrice(contractRealPriceRequest);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> updateContract(ContractRequest contractRequest){
+        return contractService.update(contractRequest);
     }
 
 }

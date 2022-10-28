@@ -43,6 +43,7 @@ public class ParkingServiceImpl implements ParkingService {
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
             List<ListParkingResponse> listParkingResponses = ListParkingResponse.CreateListParkinkResponse(parkingServices);
+            responseVo.setStatus(true);
             responseVo.setData(listParkingResponses);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (Exception e) {

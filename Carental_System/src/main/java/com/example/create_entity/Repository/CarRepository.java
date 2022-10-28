@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -45,5 +46,14 @@ public interface CarRepository extends JpaRepository<CarEntity,Long> {
 
     @Query("SELECT c FROM CarEntity c WHERE c.modelName = ?1 and c.status > 0 ")
     CarEntity findCarEntityByModelName(String modelName);
+
+    @Query(value = "SELECT * \n" +
+            "FROM cars \n" +
+            "LEFT JOIN contract_details c on cars.id = c.car_id\n" +
+            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
+            "WHERE ct.expected_start_date >= ?1 AND ct.expected_start_date <= ?2\n" +
+            "OR ct.expected_start_date < ?1 AND ct.expected_end_date >  ?1 \n" +
+            "AND cars.plate_number = ?3 LIMIT 1", nativeQuery = true)
+    CarEntity checkCarValidInTime(Date expectedStartDate, Date expectedEndDate, String carPlateNumber);
 }
 

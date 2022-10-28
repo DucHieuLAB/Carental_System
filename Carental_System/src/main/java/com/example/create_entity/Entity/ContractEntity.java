@@ -91,7 +91,7 @@ public class ContractEntity {
     @Column(name = "real_price")
     private double real_price;
 
-    public static ContractResponse convertToBookingResponse(ContractEntity be){
+    public static ContractResponse convertToContractResponse(ContractEntity be){
         ContractResponse result = new ContractResponse();
         if (ObjectUtils.isEmpty(be)){
             return null;

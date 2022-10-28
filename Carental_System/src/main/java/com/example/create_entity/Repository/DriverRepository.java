@@ -32,7 +32,6 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long>, Pag
     @Query(value = "select * from driver where driver.status=1 ", nativeQuery = true)
     List<DriverEntity> GetDriverByStatus1();
 
-
     @Transactional
     @Query(value = "select * from driver left join accounts on driver.account_id=accounts.account_id where accounts.full_name like  %?%  ", nativeQuery = true)
     List<DriverEntity> GetDriverBy_fullName(String name, Pageable pageable);
@@ -66,12 +65,13 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long>, Pag
     @Query(value = "SELECT * From driver where driver.diver_number_license=? ", nativeQuery = true)
     List<DriverEntity> Check_diver_number_license(String diver_number_license);
 
-    @Query(value = "SELECT * \n" +
+    @Query(value = "SELECT *" +
             "FROM driver d\n" +
             "LEFT JOIN contract_details c on d.id_diver = c.driver_id\n" +
             "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
-            "WHERE ct.expected_start_date >= ?2 AND ct.expected_end_date <= ?3\n" +
-            "AND d.id_diver = ?1", nativeQuery = true)
+            "WHERE ct.expected_start_date >= ?2 AND ct.expected_start_date <= ?3\n" +
+            "OR ct.expected_start_date < ?2 AND ct.expected_end_date >  ?2\n" +
+            "AND d.id_diver = ?1\n", nativeQuery = true)
     DriverEntity findDriverValidDate(Long id, Date expected_start_date, Date expected_end_date);
 
 ////    @Modifying
