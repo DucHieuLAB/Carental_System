@@ -240,6 +240,10 @@ public class CarServiceImpl implements CarService {
     @Override
     public ResponseEntity<?> getListDriverByCarPlateNumber(DriverByCarByContractRequest driverByCarByContractRequest) {
         ResponseVo responseVo = null;
+//        if(ObjectUtils.isEmpty(driverByCarByContractRequest)){
+//            responseVo = ResponseVeConvertUntil.createResponseVo(false,"Thông tin gửi đi trống",null);
+//            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+//        }
         CarEntity carEntity = carRepository.findCarEntityByPlateNumber(driverByCarByContractRequest.getPlateNumber());
         if(ObjectUtils.isEmpty(carEntity)){
             responseVo = ResponseVeConvertUntil.createResponseVo(false,"Biển số xe không đúng Xe:" + driverByCarByContractRequest.getPlateNumber() ,null);

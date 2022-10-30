@@ -65,7 +65,7 @@ public class CarController {
     }
 
     @GetMapping("/listDriver")
-    public ResponseEntity<?> getListDriver(DriverByCarByContractRequest driverByCarByContractRequest){
+    public ResponseEntity<?> getListDriver(@RequestBody DriverByCarByContractRequest driverByCarByContractRequest){
         return carService.getListDriverByCarPlateNumber(driverByCarByContractRequest);
     }
 
