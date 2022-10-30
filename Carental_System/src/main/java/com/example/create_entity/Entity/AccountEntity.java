@@ -75,26 +75,6 @@ public class AccountEntity   {
     @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "role_Id")
     private RoleEntity roleEntity;
-    private static final long OTP_VALID_DURATION = 5 * 60 * 1000;
-    @Column(name = "otp_requested_time")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date otpRequestedTime;
-
-    @Column(name = "OTP")
-    private String OTP;
-
-    public boolean isOTPRequired() {
-
-        long currentTimeInMillis = System.currentTimeMillis();
-        long otpRequestedTimeInMillis = this.otpRequestedTime.getTime();
-
-        if (otpRequestedTimeInMillis + OTP_VALID_DURATION < currentTimeInMillis) {
-            // OTP expires
-            return false;
-        }
-
-        return true;
-    }
 
     @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "district_id")

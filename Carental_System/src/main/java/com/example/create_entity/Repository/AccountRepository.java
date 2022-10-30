@@ -32,6 +32,15 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     AccountEntity getCustomerById(long customerId);
 
 
+    //SELECT * FROM carrental.accounts where user_name="hieu123" AND status=2 AND otp="KNaJDU";
+
+    @Query(value = "SELECT * FROM carrental.accounts where user_name= ?  AND status=1 ",nativeQuery = true)
+    AccountEntity Check_ConfirmOTP(String username);
+
+    @Query(value = "SELECT * FROM carrental.accounts where status=2 AND otp = ?",nativeQuery = true)
+    AccountEntity Check_ConfirmOTP_Ex(String otp);
+
+
 
 
     @Query(value = "SELECT * FROM accounts where role_id = ?",nativeQuery = true)

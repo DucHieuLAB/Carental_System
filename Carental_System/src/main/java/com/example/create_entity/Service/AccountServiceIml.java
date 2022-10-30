@@ -6,6 +6,7 @@ import com.example.create_entity.Repository.DistrictRepository;
 import com.example.create_entity.Repository.RoleRepository;
 import com.example.create_entity.dto.Request.RegisterInfoRequest;
 import com.example.create_entity.dto.Request.StaffRequest;
+import com.example.create_entity.dto.Request.UpdateInfoCustomerRequest;
 import com.example.create_entity.dto.Response.PagingResponse;
 import com.example.create_entity.dto.Response.ReposMesses;
 import com.example.create_entity.dto.Response.StaffDetailResponse;
@@ -15,11 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,7 +104,7 @@ public class AccountServiceIml implements AccountService {
                 accountEntity.setImg(infoRequest.getImg());
                 accountEntity.setDOB(infoRequest.getDob());
                 accountEntity.setGender(infoRequest.getGender());
-                accountEntity.setOtpRequestedTime(new Date());
+
                 accountEntity.setIdentity_Number(infoRequest.getIdentity_Number().trim());
 
                 String encodedPassword = passwordEncoder.encode(infoRequest.getPassword());
@@ -233,20 +237,22 @@ public class AccountServiceIml implements AccountService {
 
     @Autowired
     private EmailSenderService emailSenderService;
-     @Autowired
+    @Autowired
     private RandomString randomString;
 
     @Override
     @Transactional
-    public ResponseEntity<?> sendOTPEmail(RegisterInfoRequest REQUEST) {
+    public ResponseEntity<?> sendOTPEmail(RegisterInfoRequest REQUEST, HttpServletResponse response) {
+
         String regexPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
         ReposMesses messes = new ReposMesses();
+        RoleEntity roleEntity = roleRepository.GetRoleDriver("Customer");
         AccountEntity accountEntity = new AccountEntity();
         try {
             if (!accountRepository.Check_email(REQUEST.getEmail().trim()).isEmpty()) {
                 messes.setMess("Email đã tồn tại  !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-            } else if (!accountRepository.Check_username(REQUEST.getUserName().trim()).isEmpty()) {
+            } else if (!accountRepository.Check_username(REQUEST.getUserName().trim()).isEmpty() || REQUEST.getUserName() == "error") {
                 messes.setMess("UserName đã tồn tại !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else if (!REQUEST.getEmail().matches(regexPattern)) {
@@ -258,13 +264,26 @@ public class AccountServiceIml implements AccountService {
             accountEntity.setFullName(REQUEST.getFullName());
             accountEntity.setUsername(REQUEST.getUserName());
             accountEntity.setPassword(REQUEST.getPassword());
-            accountEntity.setOtpRequestedTime(new Date());
-            accountEntity.setStatus(0);
+            accountEntity.setCreateDate(new Date());
+            accountEntity.setModifiedDate(new Date());
+            accountEntity.setRoleEntity(roleEntity);
+            accountEntity.setStatus(1);
 
-            accountEntity.setOTP(Code_OTP);
-            emailSenderService.sendSimpleEmail(REQUEST.getEmail(), Code_OTP, "Here's your One Time Password (OTP) - Expire in 5 minutes!");
-            messes.setMess("Vui Lòng Kiểm tra mã OTP ở Email !");
+            Cookie cookie = new Cookie("username", REQUEST.getUserName());
+            cookie.setMaxAge(5 * 60);
+//            cookie.setSecure(true);
+//            cookie.setHttpOnly(true);
+            cookie.setPath("http://localhost:8080/api/account/CfOTP");
+            response.addCookie(cookie);
+
+            Cookie cookieOTP = new Cookie("OTP", Code_OTP);
+            cookie.setMaxAge(5 * 60);
+            cookie.setPath("http://localhost:8080/api/account/CfOTP");
+            response.addCookie(cookieOTP);
+
             accountRepository.save(accountEntity);
+            emailSenderService.sendSimpleEmail(REQUEST.getEmail(), "Here's your One Time Password (OTP) - Expire in 5 minutes!", Code_OTP);
+            messes.setMess("Vui Lòng Kiểm tra mã OTP ở Email !");
             return new ResponseEntity<>(messes, HttpStatus.OK);
         } catch (Exception e) {
             messes.setMess(e.getMessage());
@@ -273,13 +292,32 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public void clearOTP(RegisterInfoRequest REQUEST) {
+    public ResponseEntity<?> ConfirmOTPEmail(String username, String OTP,String OTP_ck) {
+        ReposMesses messes = new ReposMesses();
+        try {
+            AccountEntity accountEntity = accountRepository.Check_ConfirmOTP(username);
+            System.out.println(accountEntity);
+            if (!accountEntity.equals(null) && OTP.trim().equals(OTP_ck.trim())) {
+                accountEntity.setStatus(2);
+                accountRepository.save(accountEntity);
+                messes.setMess("Xác thực tài khoản thành công !");
+                return new ResponseEntity<>(messes, HttpStatus.OK);
+            }else{
+                messes.setMess("Mã OTP không tồn tại !");
+                return new ResponseEntity<>(messes,HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes,HttpStatus.BAD_REQUEST);
+        }
     }
 
-//    @Override
-//    public void CreateAccountCustomer() {
-//
-//
-//    }
+    @Override
+    public ResponseEntity<?> UpdateCustomer(String username, UpdateInfoCustomerRequest updateInfoCustomerRequest) {
+        AccountEntity accountEntity = accountRepository.GetAccountByName(username);
+
+        return null;
+    }
+
 
 }
