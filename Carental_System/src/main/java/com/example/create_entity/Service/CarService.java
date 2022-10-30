@@ -2,6 +2,7 @@ package com.example.create_entity.Service;
 
 import com.example.create_entity.dto.Request.BrandRequest;
 import com.example.create_entity.dto.Request.CarRequest;
+import com.example.create_entity.dto.Request.DriverByCarByContractRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +14,10 @@ public interface CarService {
     public ResponseEntity<?> add(CarRequest carRequest);
 
     ResponseEntity<?> findAll(int pageIndex, int pageSize,
-                              String modelName,Long parkingId,Integer capacity);
+                              String modelName, Long parkingId, Integer capacity);
+
     @Transactional
-    public ResponseEntity<?> update( CarRequest carRequest);
+    public ResponseEntity<?> update(CarRequest carRequest);
 
     @Transactional
     public ResponseEntity<?> delete(Long carId);
@@ -24,4 +26,5 @@ public interface CarService {
 
     ResponseEntity<?> findByPlateNumber(String carPlateNumber);
 
+    public ResponseEntity<?> getListDriverByCarPlateNumber(DriverByCarByContractRequest driverByCarByContractRequest);
 }

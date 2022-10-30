@@ -1,11 +1,9 @@
 package com.example.create_entity.Service;
 
 import com.example.create_entity.Entity.*;
-import com.example.create_entity.Repository.BrandRepository;
-import com.example.create_entity.Repository.CarRepository;
-import com.example.create_entity.Repository.LicenseRepository;
-import com.example.create_entity.Repository.ParkingRepository;
+import com.example.create_entity.Repository.*;
 import com.example.create_entity.dto.Request.CarRequest;
+import com.example.create_entity.dto.Request.DriverByCarByContractRequest;
 import com.example.create_entity.dto.Response.*;
 import com.example.create_entity.untils.ResponseVeConvertUntil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +36,9 @@ public class CarServiceImpl implements CarService {
 
     @Autowired
     LicenseRepository licenseRepository;
+
+    @Autowired
+    DriverRepository driverRepository;
 
     @Override
     public ResponseEntity<?> getListCapacity() {
@@ -169,16 +170,22 @@ public class CarServiceImpl implements CarService {
             exsitCar = CarEntity.createCarEntity(carRequest);
             BrandEntity brandEntity = brandRepository.findBrandEntityById(carRequest.getBrandId());
             Optional<ParkingEntity> parkingEntity = parkingRepository.findById(carRequest.getParkingId());
+            LicenseTypeEntity licenseTypeEntity = licenseRepository.getLicenseById(carRequest.getLicenseId());
             if (ObjectUtils.isEmpty(brandEntity)) {
                 responseVo.setMessage("Hãng xe không hợp lệ");
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
             if (!parkingEntity.isPresent()) {
-                responseVo.setMessage("Bãi đỗ xe không hợp lệ");
+                responseVo.setMessage("Bãi đỗ xe không hợp lệ ");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            if(ObjectUtils.isEmpty(licenseTypeEntity)){
+                responseVo.setMessage("Không tìm thấy bằng lái Id = " +carRequest.getLicenseId() );
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
             exsitCar.setBrand(brandEntity);
             exsitCar.setParking(parkingEntity.get());
+            exsitCar.setLicenseTypeEntity(licenseTypeEntity);
             carRepository.save(exsitCar);
             carImageService.updateList(carRequest.getImgs(),exsitCar);
             exsitCar = carRepository.findCarEntityByPlateNumber(carRequest.getPlateNumber());
@@ -229,4 +236,20 @@ public class CarServiceImpl implements CarService {
         responseVo = ResponseVeConvertUntil.createResponseVo(true,"Get dữ liệu thành công",response);
         return new ResponseEntity<>(responseVo,HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<?> getListDriverByCarPlateNumber(DriverByCarByContractRequest driverByCarByContractRequest) {
+        ResponseVo responseVo = null;
+        CarEntity carEntity = carRepository.findCarEntityByPlateNumber(driverByCarByContractRequest.getPlateNumber());
+        if(ObjectUtils.isEmpty(carEntity)){
+            responseVo = ResponseVeConvertUntil.createResponseVo(false,"Biển số xe không đúng Xe:" + driverByCarByContractRequest.getPlateNumber() ,null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        List<DriverEntity> driverEntityList = driverRepository.getDriverByPlateNumberExpectedStartDateExpectedEnđate(driverByCarByContractRequest.getExpectedStartDate(),
+                driverByCarByContractRequest.getExpectedEndDate(),
+                driverByCarByContractRequest.getPlateNumber());
+        List<ListDriverByCarAndContractResponse> listDriverByCarAndContractResponses = ListDriverByCarAndContractResponse.createResponse(driverEntityList);
+        responseVo = ResponseVeConvertUntil.createResponseVo(true,"Danh sách tài xế xe :" + driverByCarByContractRequest.getPlateNumber(),listDriverByCarAndContractResponses);
+        return new ResponseEntity<>(responseVo,HttpStatus.OK);
+ }
 }

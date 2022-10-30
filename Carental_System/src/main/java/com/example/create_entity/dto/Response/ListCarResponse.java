@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ListCarResponse {
+    private long id;
     private String plateNumber;
     private String modelName;
     private String brandName;
@@ -27,6 +28,7 @@ public class ListCarResponse {
         List<ListCarResponse> result = new ArrayList<>();
         for (CarEntity carEntity : carEntities){
             ListCarResponse listCarResponse = new ListCarResponse();
+            listCarResponse.setId(carEntity.getId());
             listCarResponse.setPlateNumber(carEntity.getPlateNumber());
             listCarResponse.setModelName(carEntity.getModelName());
             listCarResponse.setBrandName(carEntity.getBrand().getName());

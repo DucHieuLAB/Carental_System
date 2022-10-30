@@ -4,6 +4,7 @@ import com.example.create_entity.Service.CarService;
 import com.example.create_entity.Service.CarServiceImpl;
 import com.example.create_entity.dto.Request.BrandRequest;
 import com.example.create_entity.dto.Request.CarRequest;
+import com.example.create_entity.dto.Request.DriverByCarByContractRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +63,12 @@ public class CarController {
     public ResponseEntity<?> getCar(@PathVariable String CarPlateNumber){
         return carService.findByPlateNumber(CarPlateNumber);
     }
+
+    @GetMapping("/listDriver")
+    public ResponseEntity<?> getListDriver(DriverByCarByContractRequest driverByCarByContractRequest){
+        return carService.getListDriverByCarPlateNumber(driverByCarByContractRequest);
+    }
+
 
 
 
