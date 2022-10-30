@@ -113,7 +113,7 @@ public class AccountServiceIml implements AccountService {
                 accountEntity.setPhone(infoRequest.getPhone().trim());
                 accountEntity.setModifiedDate(date);
                 accountEntity.setRoleEntity(roleEntity);
-                accountEntity.setStatus(1);
+                accountEntity.setStatus(2);
 
 
                 String city = infoRequest.getCity().trim();

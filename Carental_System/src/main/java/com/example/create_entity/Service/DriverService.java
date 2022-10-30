@@ -338,7 +338,7 @@ public class DriverService {
             accountEntity.setPassword(encodedPassword.trim());
 
             accountEntity.setPhone(infoRequest.getPhone().trim());
-            accountEntity.setStatus(1);
+            accountEntity.setStatus(2);
             accountEntity.setRoleEntity(roleEntity);
 
             String city = infoRequest.getCity().trim();
