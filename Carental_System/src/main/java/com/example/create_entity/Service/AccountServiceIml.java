@@ -132,7 +132,8 @@ public class AccountServiceIml implements AccountService {
                     districtRepository.save(districtsEntity);
                 }
                 accountRepository.save(accountEntity);
-                return new ResponseEntity<>(accountEntity, HttpStatus.OK);
+                messes.setMess("Đã Tạo Thành Công ! ");
+                return new ResponseEntity<>(messes, HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -195,7 +196,7 @@ public class AccountServiceIml implements AccountService {
         StaffResponse staffResponse = new StaffResponse();
         try {
             AccountEntity accountEntity = accountRepository.GetAccountByName(UserName.trim());
-            if (accountEntity != null && accountEntity.getStatus() == 1) {
+            if (accountEntity != null && accountEntity.getStatus() == 2) {
                 Date date = new Date(System.currentTimeMillis());
                 accountEntity.setModifiedDate(date);
                 accountEntity.setStatus(0);
@@ -206,7 +207,7 @@ public class AccountServiceIml implements AccountService {
             } else if (accountEntity != null && accountEntity.getStatus() == 0) {
                 Date date = new Date(System.currentTimeMillis());
                 accountEntity.setModifiedDate(date);
-                accountEntity.setStatus(1);
+                accountEntity.setStatus(2);
                 staffResponse = staffResponse.staffResponseList(accountEntity);
                 accountRepository.save(accountEntity);
                 return new ResponseEntity<>(staffResponse, HttpStatus.OK);

@@ -221,14 +221,14 @@ public class DriverService {
         ReposMesses reposMesses = new ReposMesses();
         DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
         DriverEntity driverEntities = driverRepository.GetByUsername(username.trim());
-        if (driverEntities != null && driverEntities.getStatus() == 1 && driverEntities.getAccountEntity().getStatus() == 1) {
+        if (driverEntities != null && driverEntities.getStatus() == 1 && driverEntities.getAccountEntity().getStatus() == 2) {
             driverEntities.getAccountEntity().setStatus(0);
             driverEntities.setStatus(0);
             driverRepository.save(driverEntities);
             driverInfoDetailResponse = driverInfoDetailResponse.driverInfoResponses(driverEntities, driverInfoDetailResponse);
 
         } else if (driverEntities != null && driverEntities.getStatus() == 0 && driverEntities.getAccountEntity().getStatus() == 0) {
-            driverEntities.getAccountEntity().setStatus(1);
+            driverEntities.getAccountEntity().setStatus(2);
             driverEntities.setStatus(1);
             driverRepository.save(driverEntities);
             driverInfoDetailResponse = driverInfoDetailResponse.driverInfoResponses(driverEntities, driverInfoDetailResponse);
@@ -385,7 +385,8 @@ public class DriverService {
             accountRepository.save(accountEntity);
             DriverEntity driverEntity = driverRepository.save(driver);
 
-            return new ResponseEntity<>(driverEntity, HttpStatus.OK);
+            messes.setMess("Đã Tạo Thành Công ! ");
+            return new ResponseEntity<>(messes, HttpStatus.OK);
         } catch (Exception e) {
             messes.setMess(e.getMessage());
             return new ResponseEntity<>(messes, HttpStatus.OK);
