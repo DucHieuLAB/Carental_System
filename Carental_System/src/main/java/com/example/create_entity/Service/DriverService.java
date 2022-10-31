@@ -50,7 +50,7 @@ public class DriverService {
         driverInfoResponses.forEach(DriverEntity -> {
             DriverInfoResponse infoResponse = new DriverInfoResponse();
             infoResponse.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
-            infoResponse.setStatus(DriverEntity.getStatus());
+            infoResponse.setStatus(DriverEntity.getAccountEntity().getStatus());
             infoResponse.setPhone(DriverEntity.getAccountEntity().getPhone());
             infoResponse.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
             infoResponse.setFullName(DriverEntity.getAccountEntity().getFullName());
@@ -257,7 +257,7 @@ public class DriverService {
             DriverInfoResponse infoResponse = new DriverInfoResponse();
             infoResponse.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
             infoResponse.setYearExperience(DriverEntity.getYear_Experience());
-            infoResponse.setStatus(DriverEntity.getStatus());
+            infoResponse.setStatus(DriverEntity.getAccountEntity().getStatus());
             infoResponse.setPhone(DriverEntity.getAccountEntity().getPhone());
             infoResponse.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
             infoResponse.setFullName(DriverEntity.getAccountEntity().getFullName());
