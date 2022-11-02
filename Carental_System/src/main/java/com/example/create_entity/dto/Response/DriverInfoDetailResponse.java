@@ -69,7 +69,7 @@ public class DriverInfoDetailResponse {
         driverInfoDetailResponse.setDistrict_Name(driverEntities.getAccountEntity().getDistrictsEntity().getDistrict_Name());
         driverInfoDetailResponse.setImg(driverEntities.getAccountEntity().getImg());
         driverInfoDetailResponse.setDriving_license_image_back(driverEntities.getDriving_license_image_back());
-        driverInfoDetailResponse.setStatus(driverEntities.getStatus());
+        driverInfoDetailResponse.setStatus(driverEntities.getAccountEntity().getStatus());
         driverInfoDetailResponse.setEmail(driverEntities.getAccountEntity().getEmail());
         driverInfoDetailResponse.setIdentity_Picture_Front(driverEntities.getAccountEntity().getIdentity_Picture_Front());
         driverInfoDetailResponse.setIdentity_Picture_Back(driverEntities.getAccountEntity().getIdentity_Picture_Back());

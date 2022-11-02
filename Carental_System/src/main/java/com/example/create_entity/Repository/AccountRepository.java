@@ -17,6 +17,11 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
     @Query(value = "SELECT * FROM accounts where user_name = ? ", nativeQuery = true)
     AccountEntity GetAccountByName(String username);
+
+
+    @Query(value = "    SELECT * FROM carrental.accounts where email = ? and  (accounts.status=1 or accounts.status=2) ", nativeQuery = true)
+    AccountEntity GetAccountByEmail(String email);
+
     @Query(value = "SELECT * FROM accounts where  email =?", nativeQuery = true)
     List<AccountEntity> Check_email(String email);
 //    @Query(value = "SELECT * FROM AccountEntity WHERE email = ?1 ", nativeQuery = true)
@@ -30,7 +35,6 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
     @Query(value = "SELECT a FROM AccountEntity  a WHERE a.ID = ?1 ")
     AccountEntity getCustomerById(long customerId);
-
 
     //SELECT * FROM carrental.accounts where user_name="hieu123" AND status=2 AND otp="KNaJDU";
 
