@@ -6,25 +6,32 @@ import com.example.create_entity.dto.Request.DriverByCarByContractRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 public interface CarService {
-    public ResponseEntity<?> getListCapacity();
+    ResponseEntity<?> getListCapacity();
 
-    public ResponseEntity<?> add(CarRequest carRequest);
+    ResponseEntity<?> add(CarRequest carRequest);
 
     ResponseEntity<?> findAll(int pageIndex, int pageSize,
                               String modelName, Long parkingId, Integer capacity);
 
     @Transactional
-    public ResponseEntity<?> update(CarRequest carRequest);
+    ResponseEntity<?> update(CarRequest carRequest);
 
     @Transactional
-    public ResponseEntity<?> delete(Long carId);
+    ResponseEntity<?> delete(Long carId);
 
     ResponseEntity<?> findById(Long brandId, int pageIndex, int pageSize);
 
     ResponseEntity<?> findByPlateNumber(String carPlateNumber);
 
-    public ResponseEntity<?> getListDriverByCarPlateNumber(DriverByCarByContractRequest driverByCarByContractRequest);
+    ResponseEntity<?> getListDriverByCarPlateNumber(DriverByCarByContractRequest driverByCarByContractRequest);
+
+    ResponseEntity<?> getListBestSeller();
+
+    ResponseEntity<?> getListCarSelfDriver(Integer pageIndex, Integer pageSize, Date startDate, Date endDate, Long parkingId);
+
+    ResponseEntity<?> getListCarHadDriverContract(Integer pageIndex, Integer pageSize, Date startDate, Date endDate, Long parkingId, String cityName);
 }

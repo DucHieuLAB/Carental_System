@@ -244,7 +244,7 @@ public class ContractServiceImpl implements ContractService {
 
         page.forEach(BookingEntity -> {
 
-            ContractResponse contractResponse1 = BookingEntity.convertToContractResponse(BookingEntity);
+            ContractResponse contractResponse1 = ContractEntity.convertToContractResponse(BookingEntity);
             contractResponse.add(contractResponse1);
         });
 
@@ -279,7 +279,7 @@ public class ContractServiceImpl implements ContractService {
         List<ContractResponse> contractResponses = new ArrayList<>();
         contractEntities.forEach(ContractEntity -> {
             ContractResponse contractResponse;
-            contractResponse = ContractEntity.convertToContractResponse(ContractEntity);
+            contractResponse = com.example.create_entity.Entity.ContractEntity.convertToContractResponse(ContractEntity);
             contractResponses.add(contractResponse);
         });
         PagingContract pagingContract = new PagingContract();
@@ -442,6 +442,4 @@ public class ContractServiceImpl implements ContractService {
 
         return null;
     }
-
-
 }

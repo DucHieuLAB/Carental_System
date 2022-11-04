@@ -11,17 +11,17 @@ import java.util.List;
 
 public interface BrandService {
 
-    public ResponseEntity<?> addBrand(BrandRequest brandEntity);
+    ResponseEntity<?> addBrand(BrandRequest brandEntity);
 
-    public List<BrandEntity> getAll();
+    List<BrandEntity> getAll();
 
     ResponseEntity<?> findAll(int pageIndex, int pageSize,
                               String brandName);
     @Transactional
-    public ResponseEntity<?> updateBrand( BrandRequest brandEntity);
+    ResponseEntity<?> updateBrand(BrandRequest brandEntity);
 
     @Transactional
-    public ResponseEntity<?> deleteBrand(Long brandId);
+    ResponseEntity<?> deleteBrand(Long brandId);
 
     ResponseEntity<?> findById(Long brandId, int pageIndex, int pageSize);
 

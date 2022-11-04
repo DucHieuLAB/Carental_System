@@ -1,10 +1,7 @@
 package com.example.create_entity.Controller;
 
 import com.example.create_entity.Service.ContractServiceImpl;
-import com.example.create_entity.dto.Request.ContractHadDriverRequest;
-import com.example.create_entity.dto.Request.ContractRealPriceRequest;
-import com.example.create_entity.dto.Request.ContractRequest;
-import com.example.create_entity.dto.Request.ListContractDetailDriverRequest;
+import com.example.create_entity.dto.Request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,12 +47,6 @@ public class ContractController {
         return contractService.FilterByName(name,HadDriver,Status,p);
     }
 
-
-//    @GetMapping(value = "Detail/{id}")
-//    public ResponseEntity<?> getContractDetail(@RequestParam(name = "id") Long id ){
-////        return bookingService.getContractById();
-//        return null;
-
     @GetMapping("/Detail/{id}")
     public ResponseEntity<?> getContract(@PathVariable long id){
         return contractService.getContractById(id);
@@ -76,4 +67,36 @@ public class ContractController {
         return contractService.update(contractRequest);
     }
 
+//    @PutMapping("/update/startContract")
+//    public ResponseEntity<?> updateContractStatus(@RequestBody StartContractRequest startContractRequest){
+//        return contractService.startRenting(startContractRequest);
+//    }
+//
+//    @PutMapping("/confirmByCustomer/{id}")
+//    public ResponseEntity<?> confirmContractByCustomer(@PathVariable long id){
+//        return contractService.confirmContract(id,1);
+//    }
+//
+//    @PutMapping("/confirmByStaff/{id}")
+//    public ResponseEntity<?> confirmContractByStaff(@PathVariable long id){
+//        return contractService.confirmContract(id,2);
+//    }
+//
+//    @PutMapping("/startRenting/{id}")
+//    public ResponseEntity<?> startRenting(@PathVariable long id){
+//        return contractService.startRenting(id);
+//    }
+//    @PutMapping("/closeContract")
+//    public ResponseEntity<?> closeContract(@RequestBody StartContractRequest startContractRequest){
+//        return contractService.close();
+//    }
+//
+//    @DeleteMapping("/cancelContractByStaff/{id}")
+//    public ResponseEntity<?> cancelContract(@PathVariable long id){
+//        return contractService.cancelRenting(id,1);
+//    }
+//    @DeleteMapping("/cancelContractByCustomer/{id}")
+//    public ResponseEntity<?> cancelContract(@PathVariable long id){
+//        return contractService.cancelRenting(id,2);
+//    }
 }

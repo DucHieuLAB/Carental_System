@@ -7,10 +7,13 @@ import com.example.create_entity.dto.Request.CarRequest;
 import com.example.create_entity.dto.Request.DriverByCarByContractRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/v1/car")
@@ -60,16 +63,46 @@ public class CarController {
     }
 
     @GetMapping("/Detail/{CarPlateNumber}")
-    public ResponseEntity<?> getCar(@PathVariable String CarPlateNumber){
+    public ResponseEntity<?> getCar(@PathVariable String CarPlateNumber) {
         return carService.findByPlateNumber(CarPlateNumber);
     }
 
     @GetMapping("/listDriver")
-    public ResponseEntity<?> getListDriver(@RequestBody DriverByCarByContractRequest driverByCarByContractRequest){
+    public ResponseEntity<?> getListDriver(@RequestBody DriverByCarByContractRequest driverByCarByContractRequest) {
         return carService.getListDriverByCarPlateNumber(driverByCarByContractRequest);
     }
+//
+//    @GetMapping("/TopSeller")
+//    public ResponseEntity<?> getListBestSeller() {
+//        return carService.getListBestSeller();
+//    }
 
+    @GetMapping("/SearchCarNoDriver")
+    public ResponseEntity<?> searchCarForContract(@RequestParam(required = false) Integer pageIndex,
+                                                  @RequestParam(required = false) Integer pageSize,
+                                                  @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+                                                  @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
+                                                  @RequestParam(required = false) Long parkingId) {
+        if (pageIndex == null) {
+            pageIndex = defaultPage;
+        }
+        if (pageSize == null) {
+            pageSize = defaultSize;
+        }
+        return carService.getListCarSelfDriver(pageIndex, pageSize, startDate, endDate, parkingId);
+    }
 
+    @GetMapping("/SearchCarHadDriver")
+    public ResponseEntity<?> searchCarForDadDriverContract(@RequestParam(required = false) Integer pageIndex,
+                                                           @RequestParam(required = false) Integer pageSize,
+                                                           @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+                                                           @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
+                                                           @RequestParam(required = false) Long parkingId,
+                                                           @RequestParam(required = false) String CityName) {
+
+        return carService.getListCarHadDriverContract(pageIndex, pageSize,startDate,endDate,parkingId,CityName);
+
+    }
 
 
 }

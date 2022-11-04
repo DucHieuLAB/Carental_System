@@ -15,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CarServiceImpl implements CarService {
@@ -83,7 +80,7 @@ public class CarServiceImpl implements CarService {
                 responseVo.setMessage("Bãi đỗ xe không hợp lệ");
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
-            if(ObjectUtils.isEmpty(licenseTypeEntity)){
+            if (ObjectUtils.isEmpty(licenseTypeEntity)) {
                 responseVo.setMessage("Thông tin bằng lái chưa hợp lệ");
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
@@ -132,6 +129,7 @@ public class CarServiceImpl implements CarService {
             List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(carImageService.getListCarByPlateNumber(c.getPlateNumber()));
             c.setListImg(carImageResponses);
         }
+        responseVo.setStatus(true);
         responseVo.setMessage("List Car By Search");
         responseData.put("cars", cars);
         responseData.put("modelName", modelName);
@@ -160,11 +158,11 @@ public class CarServiceImpl implements CarService {
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         try {
-            if(!carRequest.getPlateNumber().equals(exsitCar.getPlateNumber())){
+            if (!carRequest.getPlateNumber().equals(exsitCar.getPlateNumber())) {
                 CarEntity checkPlateNumber = carRepository.findCarEntityByPlateNumber(carRequest.getPlateNumber());
-                if(!ObjectUtils.isEmpty(checkPlateNumber)){
-                    responseVo = ResponseVeConvertUntil.createResponseVo(false,"Biển số xe đã tông tại trong CSDL",null);
-                    return new ResponseEntity<>(responseVo,HttpStatus.OK);
+                if (!ObjectUtils.isEmpty(checkPlateNumber)) {
+                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Biển số xe đã tông tại trong CSDL", null);
+                    return new ResponseEntity<>(responseVo, HttpStatus.OK);
                 }
             }
             exsitCar = CarEntity.createCarEntity(carRequest);
@@ -179,15 +177,15 @@ public class CarServiceImpl implements CarService {
                 responseVo.setMessage("Bãi đỗ xe không hợp lệ ");
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
-            if(ObjectUtils.isEmpty(licenseTypeEntity)){
-                responseVo.setMessage("Không tìm thấy bằng lái Id = " +carRequest.getLicenseId() );
+            if (ObjectUtils.isEmpty(licenseTypeEntity)) {
+                responseVo.setMessage("Không tìm thấy bằng lái Id = " + carRequest.getLicenseId());
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
             exsitCar.setBrand(brandEntity);
             exsitCar.setParking(parkingEntity.get());
             exsitCar.setLicenseTypeEntity(licenseTypeEntity);
             carRepository.save(exsitCar);
-            carImageService.updateList(carRequest.getImgs(),exsitCar);
+            carImageService.updateList(carRequest.getImgs(), exsitCar);
             exsitCar = carRepository.findCarEntityByPlateNumber(carRequest.getPlateNumber());
             CarResponseDetailResponse response = CarEntity.createCarResponseDetailResponse(exsitCar);
             responseVo.setStatus(true);
@@ -228,32 +226,112 @@ public class CarServiceImpl implements CarService {
     public ResponseEntity<?> findByPlateNumber(String carPlateNumber) {
         ResponseVo responseVo = null;
         CarEntity entity = carRepository.findCarEntityByPlateNumber(carPlateNumber);
-        if(ObjectUtils.isEmpty(entity)){
-           responseVo = ResponseVeConvertUntil.createResponseVo(false,"Không tìm thấy dữ liệu",null);
-            return new ResponseEntity<>(responseVo,HttpStatus.OK);
+        if (ObjectUtils.isEmpty(entity)) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy dữ liệu", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         CarResponseDetailResponse response = CarEntity.createCarResponseDetailResponse(entity);
-        responseVo = ResponseVeConvertUntil.createResponseVo(true,"Get dữ liệu thành công",response);
-        return new ResponseEntity<>(responseVo,HttpStatus.OK);
+        responseVo = ResponseVeConvertUntil.createResponseVo(true, "Get dữ liệu thành công", response);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<?> getListDriverByCarPlateNumber(DriverByCarByContractRequest driverByCarByContractRequest) {
         ResponseVo responseVo = null;
-//        if(ObjectUtils.isEmpty(driverByCarByContractRequest)){
-//            responseVo = ResponseVeConvertUntil.createResponseVo(false,"Thông tin gửi đi trống",null);
-//            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
-//        }
         CarEntity carEntity = carRepository.findCarEntityByPlateNumber(driverByCarByContractRequest.getPlateNumber());
-        if(ObjectUtils.isEmpty(carEntity)){
-            responseVo = ResponseVeConvertUntil.createResponseVo(false,"Biển số xe không đúng Xe:" + driverByCarByContractRequest.getPlateNumber() ,null);
-            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        if (ObjectUtils.isEmpty(carEntity)) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Biển số xe không đúng Xe:" + driverByCarByContractRequest.getPlateNumber(), null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         List<DriverEntity> driverEntityList = driverRepository.getDriverByPlateNumberExpectedStartDateExpectedEnđate(driverByCarByContractRequest.getExpectedStartDate(),
                 driverByCarByContractRequest.getExpectedEndDate(),
                 driverByCarByContractRequest.getPlateNumber());
+        if (driverEntityList.isEmpty()) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không có tài xế nào khả dụng", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
         List<ListDriverByCarAndContractResponse> listDriverByCarAndContractResponses = ListDriverByCarAndContractResponse.createResponse(driverEntityList);
-        responseVo = ResponseVeConvertUntil.createResponseVo(true,"Danh sách tài xế xe :" + driverByCarByContractRequest.getPlateNumber(),listDriverByCarAndContractResponses);
-        return new ResponseEntity<>(responseVo,HttpStatus.OK);
- }
+        responseVo = ResponseVeConvertUntil.createResponseVo(true, "Danh sách tài xế xe :" + driverByCarByContractRequest.getPlateNumber(), listDriverByCarAndContractResponses);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> getListBestSeller() {
+        ResponseVo responseVo = null;
+        List<CarEntity> listCar = carRepository.getListCarBestSeller();
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> getListCarSelfDriver(Integer pageIndex, Integer pageSize, Date startDate, Date endDate, Long parkingId) {
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Page<CarEntity> carPage = null;
+        if(ObjectUtils.isEmpty(startDate)){
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thời gian lấy xe lỗi", startDate);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        if(ObjectUtils.isEmpty(endDate)){
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thời gian trả xe lỗi", endDate);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        carPage = carRepository.findByStartDateAndEndDateAndParkingId(startDate,endDate,parkingId,pageable);
+        Map<String, Object> responseData = new HashMap<>();
+        if (carPage.isEmpty()) {
+            responseData.put("cars", carPage.getContent());
+            responseData.put("Total Record", 0);
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "không tìm thấy danh sách", responseData);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        List<ListCarResponse> cars = ListCarResponse.createListCarPesponse(carPage.getContent());
+        for (ListCarResponse c : cars) {
+            List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(carImageService.getListCarByPlateNumber(c.getPlateNumber()));
+            c.setListImg(carImageResponses);
+        }
+
+        responseData.put("cars", cars);
+        responseData.put("startDate", startDate);
+        responseData.put("endDate", endDate);
+        responseData.put("parkingId", parkingId);
+        responseData.put("currentPage", pageIndex);
+        responseData.put("totalRecord", carPage.getTotalElements());
+        responseData.put("pageSize", carPage.getSize());
+        responseData.put("totalPage", carPage.getTotalPages());
+        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "Danh sách xe", responseData);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> getListCarHadDriverContract(Integer pageIndex, Integer pageSize, Date startDate, Date endDate, Long parkingId, String cityName) {
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Page<CarEntity> carPage = null;
+        if(cityName.length() <= 0 || cityName.equals("")){
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false,"",null);
+        }
+        carPage = carRepository.findByStartDateAndEndDateAndParkingIdAndCitiName(startDate,endDate,parkingId,cityName,pageable);
+        Map<String, Object> responseData = new HashMap<>();
+        if (carPage.isEmpty()) {
+            responseData.put("cars", carPage.getContent());
+            responseData.put("Total Record", 0);
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "không tìm thấy danh sách", responseData);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        List<ListCarResponse> cars = ListCarResponse.createListCarPesponse(carPage.getContent());
+        for (ListCarResponse c : cars) {
+            List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(carImageService.getListCarByPlateNumber(c.getPlateNumber()));
+            c.setListImg(carImageResponses);
+        }
+        responseData.put("cars", cars);
+        responseData.put("startDate", startDate);
+        responseData.put("endDate", endDate);
+        responseData.put("parkingId", parkingId);
+        responseData.put("cityName", cityName);
+        responseData.put("currentPage", pageIndex);
+        responseData.put("totalRecord", carPage.getTotalElements());
+        responseData.put("pageSize", carPage.getSize());
+        responseData.put("totalPage", carPage.getTotalPages());
+        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "Danh sách xe", responseData);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+
 }

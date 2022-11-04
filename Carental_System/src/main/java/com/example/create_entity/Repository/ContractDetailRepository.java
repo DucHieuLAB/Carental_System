@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface ContractDetailRepository extends JpaRepository<ContractDetailEntity, Long> {
 
     @Query("SELECT b FROM ContractDetailEntity b WHERE b.booking.id = ?1")
-    public List<ContractDetailEntity> getListBookingDetailEntitiesByBookingId(Long id);
+    List<ContractDetailEntity> getListBookingDetailEntitiesByBookingId(Long id);
 
 
     @Query(value = "SELECT * FROM carrental.contract_details where contract_detail_id = ?1 ORDER BY contract_detail_id LIMIT 1", nativeQuery = true)

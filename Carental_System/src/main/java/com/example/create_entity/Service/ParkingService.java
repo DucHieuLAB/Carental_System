@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface ParkingService {
-    public ResponseEntity<?> getAll();
+    ResponseEntity<?> getAll();
 
     @Transactional
-    public ResponseEntity<?> add(ParkingRequest parkingRequest);
+    ResponseEntity<?> add(ParkingRequest parkingRequest);
 
 
     ResponseEntity<?> findById(long id);

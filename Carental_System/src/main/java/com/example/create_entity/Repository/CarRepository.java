@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface CarRepository extends JpaRepository<CarEntity,Long> {
     @Query("SELECT DISTINCT(c.capacity)  FROM CarEntity c  ")
-    public List<Integer> getListCapacity();
+    List<Integer> getListCapacity();
 
     @Query("SELECT c FROM CarEntity c WHERE c.id = ?1 and c.status > 0")
     CarEntity findCarEntityById(Long id);
@@ -49,11 +49,32 @@ public interface CarRepository extends JpaRepository<CarEntity,Long> {
 
     @Query(value = "SELECT * \n" +
             "FROM cars \n" +
-            "LEFT JOIN contract_details c on cars.id = c.car_id\n" +
+            "LEFT JOIN contract_details c on cars.id = c.car_id AND cars.plate_number = ?3\n" +
             "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
             "WHERE ct.expected_start_date >= ?1 AND ct.expected_start_date <= ?2\n" +
             "OR ct.expected_start_date < ?1 AND ct.expected_end_date >  ?1 \n" +
-            "AND cars.plate_number = ?3 LIMIT 1", nativeQuery = true)
+            "LIMIT 1", nativeQuery = true)
     CarEntity checkCarValidInTime(Date expectedStartDate, Date expectedEndDate, String carPlateNumber);
+
+    @Query(value = "SELECT * FROM cars",nativeQuery = true)
+    List<CarEntity> getListCarBestSeller();
+
+    @Query(value = "SELECT * \n" +
+            "FROM cars \n" +
+            "LEFT JOIN contract_details c on cars.id = c.car_id AND cars.parking_id = CASE WHEN (?3) IS NULL THEN cars.parking_id ELSE ?3 END\n" +
+            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
+            "WHERE ct.expected_start_date > ?2 \n" +
+            "OR ct.expected_end_date < ?1\n",nativeQuery = true)
+    Page<CarEntity> findByStartDateAndEndDateAndParkingId(Date startDate, Date endDate, Long parkingId, Pageable pageable);
+
+    @Query(value = "SELECT *\n" +
+            "FROM cars\n" +
+            "JOIN parkings on parkings.id = cars.parking_id And cars.parking_id = CASE WHEN (?3) IS NULL THEN cars.parking_id ELSE ?3 END\n" +
+            "JOIN districts on districts.district_id = parkings.district_id AND districts.city = CASE WHEN (?4) IS NULL THEN districts.city ELSE ?4 END\n" +
+            "LEFT JOIN contract_details c on cars.id = c.car_id\n" +
+            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
+            "WHERE ct.expected_start_date > ?2 \n" +
+            "OR ct.expected_end_date < ?1 ",nativeQuery = true)
+    Page<CarEntity> findByStartDateAndEndDateAndParkingIdAndCitiName(Date startDate, Date endDate, Long parkingId, String cityName, Pageable pageable);
 }
 

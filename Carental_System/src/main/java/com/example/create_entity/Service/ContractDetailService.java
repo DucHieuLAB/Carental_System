@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ContractDetailService {
     @Transactional
-    public ResponseEntity<?> addList(List<ListBookingDetailRequest> listBookingDetailRequests);
+    ResponseEntity<?> addList(List<ListBookingDetailRequest> listBookingDetailRequests);
 
     ResponseEntity<?>  ListBookingDetail(Long id);
 }
