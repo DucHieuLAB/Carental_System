@@ -8,13 +8,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/")
 public class ContractDetailController {
-
-
     @Autowired
     ContractDetailService bookingService;
 
-
-    @RequestMapping(value = "/BookingDetail/View")
+    @RequestMapping(value = "/Contracts_Detail/View")
     public ResponseEntity<?> BookingDetail(@RequestParam(name = "id", required = false) Long id) {
         return bookingService.ListBookingDetail(id);
     }
