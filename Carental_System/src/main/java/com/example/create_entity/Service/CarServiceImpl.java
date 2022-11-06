@@ -304,9 +304,6 @@ public class CarServiceImpl implements CarService {
     public ResponseEntity<?> getListCarHadDriverContract(Integer pageIndex, Integer pageSize, Date startDate, Date endDate, Long parkingId, String cityName) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
         Page<CarEntity> carPage = null;
-        if(cityName.length() <= 0 || cityName.equals("")){
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false,"",null);
-        }
         carPage = carRepository.findByStartDateAndEndDateAndParkingIdAndCitiName(startDate,endDate,parkingId,cityName,pageable);
         Map<String, Object> responseData = new HashMap<>();
         if (carPage.isEmpty()) {
@@ -332,6 +329,5 @@ public class CarServiceImpl implements CarService {
         ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "Danh sách xe", responseData);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
-
 
 }

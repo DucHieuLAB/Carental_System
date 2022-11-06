@@ -58,6 +58,7 @@ public class ContractServiceImpl implements ContractService {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn chưa chọn xe", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
+        try {
         ContractEntity exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
         if (!ObjectUtils.isEmpty(exsitBooking)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn đã đặt booking tương tự", null);
@@ -79,7 +80,7 @@ public class ContractServiceImpl implements ContractService {
         newContract.setReturn_parking(returnParking.get());
         newContract.setCustomer(customer);
         newContract.setQuantity(contractRequest.getListCarPlateNumber().size());
-        try {
+
             Date date = new Date(System.currentTimeMillis());
             newContract.setLastModifiedDate(date);
             newContract.setCreatedDate(date);
@@ -131,8 +132,8 @@ public class ContractServiceImpl implements ContractService {
                 if(ObjectUtils.isEmpty(carEntity)){
                     throw new Exception("Không tìm thấy xe biển " + carPlateNumber);
                 }
-                carEntity = cr.checkCarValidInTime(contractRequest.getExpectedStartDate(),contractRequest.getExpectedEndDate(),carPlateNumber);
-                if(ObjectUtils.isEmpty(carEntity)){
+                CarEntity exsitCarEntity = cr.checkCarValidInTime(contractRequest.getExpectedStartDate(),contractRequest.getExpectedEndDate(),carPlateNumber);
+                if(!ObjectUtils.isEmpty(exsitCarEntity)){
                     throw new Exception("Xe Bạn chọn hiện không khả dụng trong thời gian mong muốn");
                 }
                 contractDetailEntity.setBooking(newContract);
@@ -159,7 +160,7 @@ public class ContractServiceImpl implements ContractService {
             responseVo = ResponseVeConvertUntil.createResponseVo(true, "Tạo Hợp đồng thành công", reponse);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (Exception e) {
-            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Lỗi Khi Tạo Mới Hợp đồng", null);
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Lỗi Khi Tạo Mới Hợp đồng", e.getMessage());
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }

@@ -53,6 +53,7 @@ public interface CarRepository extends JpaRepository<CarEntity,Long> {
             "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
             "WHERE ct.expected_start_date >= ?1 AND ct.expected_start_date <= ?2\n" +
             "OR ct.expected_start_date < ?1 AND ct.expected_end_date >  ?1 \n" +
+            "OR ct.expected_start_date >=  ?1 AND ct.expected_end_date >  ?2 \n" +
             "LIMIT 1", nativeQuery = true)
     CarEntity checkCarValidInTime(Date expectedStartDate, Date expectedEndDate, String carPlateNumber);
 
@@ -61,20 +62,17 @@ public interface CarRepository extends JpaRepository<CarEntity,Long> {
 
     @Query(value = "SELECT * \n" +
             "FROM cars \n" +
-            "LEFT JOIN contract_details c on cars.id = c.car_id AND cars.parking_id = CASE WHEN (?3) IS NULL THEN cars.parking_id ELSE ?3 END\n" +
-            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
-            "WHERE ct.expected_start_date > ?2 \n" +
-            "OR ct.expected_end_date < ?1\n",nativeQuery = true)
+            "JOIN parkings on parkings.id = cars.parking_id And cars.parking_id = CASE WHEN (?3) IS NULL THEN cars.parking_id ELSE ?3 END\n" +
+            "LEFT JOIN contract_details c on cars.id = c.car_id \n" +
+            "LEFT JOIN contracts ct on c.contract_id = ct.booking_id AND  ct.expected_start_date = NULl  AND ct.expected_end_date = NULL  OR  c.contract_id = ct.booking_id AND ct.expected_start_date > ?2 OR c.contract_id = ct.booking_id AND ct.expected_end_date < ?1",nativeQuery = true)
     Page<CarEntity> findByStartDateAndEndDateAndParkingId(Date startDate, Date endDate, Long parkingId, Pageable pageable);
 
     @Query(value = "SELECT *\n" +
             "FROM cars\n" +
             "JOIN parkings on parkings.id = cars.parking_id And cars.parking_id = CASE WHEN (?3) IS NULL THEN cars.parking_id ELSE ?3 END\n" +
             "JOIN districts on districts.district_id = parkings.district_id AND districts.city = CASE WHEN (?4) IS NULL THEN districts.city ELSE ?4 END\n" +
-            "LEFT JOIN contract_details c on cars.id = c.car_id\n" +
-            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
-            "WHERE ct.expected_start_date > ?2 \n" +
-            "OR ct.expected_end_date < ?1 ",nativeQuery = true)
+            "LEFT JOIN contract_details c on cars.id = c.car_id \n" +
+            "LEFT JOIN contracts ct on c.contract_id = ct.booking_id AND  ct.expected_start_date = NULl  AND ct.expected_end_date = NULL  OR  c.contract_id = ct.booking_id AND ct.expected_start_date > ?2 OR c.contract_id = ct.booking_id AND ct.expected_end_date < ?1",nativeQuery = true)
     Page<CarEntity> findByStartDateAndEndDateAndParkingIdAndCitiName(Date startDate, Date endDate, Long parkingId, String cityName, Pageable pageable);
 }
 

@@ -99,7 +99,12 @@ public class CarController {
                                                            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
                                                            @RequestParam(required = false) Long parkingId,
                                                            @RequestParam(required = false) String CityName) {
-
+        if (pageIndex == null) {
+            pageIndex = defaultPage;
+        }
+        if (pageSize == null) {
+            pageSize = defaultSize;
+        }
         return carService.getListCarHadDriverContract(pageIndex, pageSize,startDate,endDate,parkingId,CityName);
 
     }
