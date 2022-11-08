@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class ScheduleResponse {
     private Long id;
+    private Long id_driver;
     private String nameCar;
     private String plateNumber;
     private Integer capacity;
@@ -36,6 +37,7 @@ public class ScheduleResponse {
         response.setExpected_start_date(contractDetailEntity.getBooking().getExpected_start_date());
         response.setNameCar(contractDetailEntity.getCar().getModelName());
         response.setId(contractDetailEntity.getId());
+        response.setId_driver(contractDetailEntity.getDriver_id());
         return response;
     }
 

@@ -27,7 +27,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
     @Query(value = "SELECT * FROM carrental.contract_details \n" +
             "left join contracts on contract_details.contract_id = contracts.booking_id\n" +
             "join cars on contract_details.car_id=cars.id \n" +
-            "where contracts.expected_start_date > now()" +
+            "where contracts.expected_start_date > now() and contracts.status = 4 " +
             " order by contracts.expected_start_date asc ", nativeQuery = true)
 //    @Query("select c from ContractDetailEntity c" +
 //            " JOIN ContractEntity CE on c.booking.id = CE.id " +
@@ -40,14 +40,14 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
     @Query(value = "SELECT * FROM carrental.contract_details \n" +
             "left join contracts on contract_details.contract_id = contracts.booking_id\n" +
             "join cars on contract_details.car_id=cars.id \n" +
-            "where contracts.expected_start_date > now()", nativeQuery = true)
+            "where contracts.expected_start_date > now() and contracts.status = 4 ", nativeQuery = true)
     List<ContractDetailEntity> Schedule_count();
 
     //AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END
     @Query("select c from ContractDetailEntity c " +
             " JOIN ContractEntity ce on c.booking.id = ce.id " +
             "JOIN CarEntity ca on c.car.id = ca.id " +
-            "WHERE ce.expected_start_date > CURRENT_DATE " +
+            "WHERE ce.expected_start_date > CURRENT_DATE AND ce.status=4" +
             "AND ca.modelName  LIKE ?1 " +
             "ORDER BY ce.expected_start_date ASC ")
 
@@ -65,7 +65,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
             "            join contracts on contract_details.contract_id = contracts.booking_id\n" +
             "            join cars on contract_details.car_id=cars.id \n" +
             "            where contracts.expected_start_date > now() " +
-            "            and cars.model_name Like %?1% " +
+            "            and cars.model_name Like %?1% and contracts.status = 4 " +
             "            AND expected_start_date  BETWEEN ?2 and ?3 " +
             "            order by expected_start_date asc  " ,nativeQuery = true )
 
@@ -75,7 +75,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
             "            join contracts on contract_details.contract_id = contracts.booking_id\n" +
             "            join cars on contract_details.car_id=cars.id \n" +
             "            where contracts.expected_start_date > now() " +
-            "            and cars.model_name Like %?1% " +
+            "            and cars.model_name Like %?1% and contracts.status = 4 " +
             "            AND expected_start_date  BETWEEN ?2 and ?3 ",nativeQuery = true )
 
     List<ContractDetailEntity> SearchName_schedule_Date1(String name,String date1,String date2);
@@ -86,7 +86,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
             " JOIN ContractEntity ce on c.booking.id = ce.id " +
             "JOIN CarEntity ca on c.car.id = ca.id " +
             "WHERE ce.expected_start_date > CURRENT_DATE " +
-            "AND ca.plateNumber  LIKE ?1 " +
+            "AND ca.plateNumber  LIKE ?1 AND ce.status=4" +
             "ORDER BY ce.expected_start_date ASC ")
 
     Page<ContractDetailEntity> SearchPlateNumber_schedule(String name,Pageable pageable);
@@ -103,7 +103,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
             "            join contracts on contract_details.contract_id = contracts.booking_id\n" +
             "            join cars on contract_details.car_id=cars.id \n" +
             "            where contracts.expected_start_date > now() " +
-            "            and cars.plate_number Like %?1% " +
+            "            and cars.plate_number Like %?1% and contracts.status = 4 " +
             "            AND expected_start_date  BETWEEN ?2 and ?3 " +
             "            order by expected_start_date asc  " ,nativeQuery = true )
 
@@ -113,7 +113,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
             "            join contracts on contract_details.contract_id = contracts.booking_id\n" +
             "            join cars on contract_details.car_id=cars.id \n" +
             "            where contracts.expected_start_date > now() " +
-            "            and cars.plate_number Like %?1% " +
+            "            and cars.plate_number Like %?1% and contracts.status = 4 " +
             "            AND expected_start_date  BETWEEN ?2 and ?3 ",nativeQuery = true )
 
     List<ContractDetailEntity>SearchPlateNumber_schedule_Date1(String name,String date1,String date2);
