@@ -29,6 +29,8 @@ public interface ContractService {
 
     ResponseEntity<?> updateRealPrice(ContractRealPriceRequest contractRealPriceRequest);
 
+    ResponseEntity<?> getListContractByCustomerId(long customerId);
+
 //    @Transactional
 //    ResponseEntity<?> updateRentailPrice()
 }

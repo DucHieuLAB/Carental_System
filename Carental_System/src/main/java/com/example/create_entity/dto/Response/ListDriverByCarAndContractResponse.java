@@ -27,13 +27,14 @@ public class ListDriverByCarAndContractResponse {
     private String licenseName;
     public static List<ListDriverByCarAndContractResponse> createResponse(List<DriverEntity> driverEntityList) {
         List<ListDriverByCarAndContractResponse> result = new ArrayList<>();
+
         for (DriverEntity entity:driverEntityList
              ) {
             ListDriverByCarAndContractResponse tmp = new ListDriverByCarAndContractResponse();
             tmp.setId(entity.getId());
             tmp.setYearExperience(entity.getYear_Experience());
                     tmp.setFullName(entity.getAccountEntity().getFullName());
-                    tmp.setAge(Validate.calculateAge(entity.getAccountEntity().getDOB().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()));
+                    tmp.setAge(Validate.calculateAge(Validate.convertToLocalDateViaMilisecond(entity.getAccountEntity().getDOB()), LocalDate.now()));
                 tmp.setLicenseName(entity.getLicenseTypeEntity().getName_License());
             result.add(tmp);
         }

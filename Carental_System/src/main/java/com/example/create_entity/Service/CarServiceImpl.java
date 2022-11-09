@@ -37,6 +37,9 @@ public class CarServiceImpl implements CarService {
     @Autowired
     DriverRepository driverRepository;
 
+    @Autowired
+    AccountRepository accountRepository;
+
     @Override
     public ResponseEntity<?> getListCapacity() {
         ResponseVo responseVo = new ResponseVo();

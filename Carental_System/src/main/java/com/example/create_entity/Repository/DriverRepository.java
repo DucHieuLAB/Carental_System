@@ -77,10 +77,10 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long>, Pag
     @Query(value = "SELECT *\n" +
             "FROM driver d\n" +
             "LEFT JOIN contract_details c on d.id_diver = c.driver_id\n" +
-            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
-            "JOIN cars on cars.plate_number = ?3 AND d.license_id >= cars.license_id \n" +
-            "WHERE ct.expected_start_date >= ?1 AND ct.expected_start_date <= ?2  \n" +
-            "OR ct.expected_start_date < ?1 AND ct.expected_end_date >  ?1", nativeQuery = true)
+            "LEFT JOIN contracts ct on  c.contract_id = ct.booking_id AND  ct.expected_start_date = NULl  AND ct.expected_end_date = NULL  \n" +
+            " OR  c.contract_id = ct.booking_id AND ct.expected_start_date > ?2 \n" +
+            " OR c.contract_id = ct.booking_id AND ct.expected_end_date < ?1\n" +
+            "JOIN cars on cars.plate_number = ?3 AND d.license_id >= cars.license_id ", nativeQuery = true)
     List<DriverEntity> getDriverByPlateNumberExpectedStartDateExpectedEnđate(Date expectedStartDate, Date expectedEndDate, String plateNumber);
 
 

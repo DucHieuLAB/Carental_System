@@ -63,10 +63,14 @@ public class ContractController {
     }
 
     @GetMapping
-    public ResponseEntity<?> updateContract(ContractRequest contractRequest){
+    public ResponseEntity<?> updateContract(@RequestBody ContractRequest contractRequest){
         return contractService.update(contractRequest);
     }
 
+    @GetMapping("/ListContract/{CustomerId}")
+    public ResponseEntity<?> getListResponseEntityByCustomerId(@PathVariable long CustomerId){
+        return contractService.getListContractByCustomerId(CustomerId);
+    }
 //    @PutMapping("/update/startContract")
 //    public ResponseEntity<?> updateContractStatus(@RequestBody StartContractRequest startContractRequest){
 //        return contractService.startRenting(startContractRequest);
