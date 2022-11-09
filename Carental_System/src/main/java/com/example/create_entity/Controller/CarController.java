@@ -67,8 +67,11 @@ public class CarController {
         return carService.findByPlateNumber(CarPlateNumber);
     }
 
-    @GetMapping("/listDriver")
-    public ResponseEntity<?> getListDriver(@RequestBody DriverByCarByContractRequest driverByCarByContractRequest) {
+    @GetMapping("/listDriver/")
+    public ResponseEntity<?> getListDriver(@RequestParam String plateNumber,
+                                           @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date expectedStartDate,
+                                           @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date expectedEndDate) {
+        DriverByCarByContractRequest driverByCarByContractRequest = new DriverByCarByContractRequest(plateNumber,expectedStartDate,expectedEndDate);
         return carService.getListDriverByCarPlateNumber(driverByCarByContractRequest);
     }
 //

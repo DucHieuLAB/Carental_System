@@ -64,4 +64,6 @@ public interface ContractRepository extends JpaRepository<ContractEntity,Long> {
     @Query("SELECT c FROM ContractEntity c WHERE c.id = ?1 and c.status > 0 ")
     ContractEntity FindByID(Long id);
 
+    @Query("SELECT c FROM ContractEntity c WHERE c.customer.ID = ?1 ORDER BY c.expected_start_date DESC")
+    List<ContractEntity> getByCustomerId(long customerId);
 }

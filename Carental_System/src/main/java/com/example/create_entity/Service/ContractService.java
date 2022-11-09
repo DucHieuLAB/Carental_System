@@ -1,9 +1,6 @@
 package com.example.create_entity.Service;
 
-import com.example.create_entity.dto.Request.ContractHadDriverRequest;
-import com.example.create_entity.dto.Request.ContractRealPriceRequest;
-import com.example.create_entity.dto.Request.ContractRequest;
-import com.example.create_entity.dto.Request.ListContractDetailDriverRequest;
+import com.example.create_entity.dto.Request.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +27,12 @@ public interface ContractService {
     ResponseEntity<?> updateRealPrice(ContractRealPriceRequest contractRealPriceRequest);
 
     ResponseEntity<?> getListContractByCustomerId(long customerId);
+
+    @Transactional
+    ResponseEntity<?> cancelRenting(long id, int i);
+
+    @Transactional
+    ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest);
 
 //    @Transactional
 //    ResponseEntity<?> updateRentailPrice()

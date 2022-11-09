@@ -62,10 +62,15 @@ public class ContractController {
         return contractService.updateRealPrice(contractRealPriceRequest);
     }
 
-    @GetMapping
+    @PutMapping("/update/UpdateDriverAndRealPrice")
+    public ResponseEntity<?> updateDriverAndRealPrice(@RequestBody ContractDriverRealPriceRequest contractDriverRealPriceRequest){
+        return contractService.updateDriverAndRealPrice(contractDriverRealPriceRequest);
+    }
+    @PutMapping
     public ResponseEntity<?> updateContract(@RequestBody ContractRequest contractRequest){
         return contractService.update(contractRequest);
     }
+
 
     @GetMapping("/ListContract/{CustomerId}")
     public ResponseEntity<?> getListResponseEntityByCustomerId(@PathVariable long CustomerId){
@@ -99,8 +104,8 @@ public class ContractController {
 //    public ResponseEntity<?> cancelContract(@PathVariable long id){
 //        return contractService.cancelRenting(id,1);
 //    }
-//    @DeleteMapping("/cancelContractByCustomer/{id}")
-//    public ResponseEntity<?> cancelContract(@PathVariable long id){
-//        return contractService.cancelRenting(id,2);
-//    }
+    @DeleteMapping("/cancelContractByCustomer/{id}")
+    public ResponseEntity<?> cancelContract(@PathVariable long id){
+        return contractService.cancelRenting(id,2);
+    }
 }
