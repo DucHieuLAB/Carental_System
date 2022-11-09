@@ -1,8 +1,8 @@
 cloud:
   aws:
     credentials:
-      access-key: AKIAUJGTDGEPZXAO3AW7
-      secret-key: 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
+      access-key: AKIAZEO5FGDYERQT3PBM
+      secret-key: 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
     region:
       static: ap-southeast-1
     stack:
@@ -10,7 +10,7 @@ cloud:
 
 application:
   bucket:
-    name: carrentalmanagementsystem
+    name: carrentalsystem
 
 
 spring:

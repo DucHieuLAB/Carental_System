@@ -39,7 +39,7 @@ public class StorageService {
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
-        String URL = "https://carrentalmanagementsystem.s3.ap-southeast-1.amazonaws.com/" + fileName;
+        String URL = "https://carrentalsystem.s3.ap-southeast-1.amazonaws.com/" + fileName;
         return URL ;
     }
 
