@@ -27,7 +27,9 @@ public class CreateEntityApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(CreateEntityApplication.class, args);
+        System.out.println("Add row");
     }
+
 
 //    @EventListener(ApplicationReadyEvent.class)
 //    public void triggerMail() throws MessagingException {
