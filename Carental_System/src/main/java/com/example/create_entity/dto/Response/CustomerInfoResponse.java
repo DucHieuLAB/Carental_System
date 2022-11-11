@@ -44,25 +44,25 @@ public class CustomerInfoResponse {
     private String img;
 
     private String RoleName;
-
-
-    public CustomerInfoResponse customerInfoResponse(AccountEntity accountEntity, CustomerInfoResponse customerInfoResponse) {
-
-        customerInfoResponse.setUserName(accountEntity.getUsername());
-        customerInfoResponse.setDob(accountEntity.getDOB());
-        customerInfoResponse.setEmail(accountEntity.getEmail());
-        customerInfoResponse.setGender(accountEntity.getStatus());
-        customerInfoResponse.setAddress(accountEntity.getAddress());
-        customerInfoResponse.setIdentity_Number(accountEntity.getIdentity_Number());
-        customerInfoResponse.setIdentity_Picture_Back(accountEntity.getIdentity_Picture_Back());
-        customerInfoResponse.setIdentity_Picture_Front(accountEntity.getIdentity_Picture_Front());
-        customerInfoResponse.setStatus(accountEntity.getStatus());
-        customerInfoResponse.setDistrict_Name(accountEntity.getDistrictsEntity().getDistrict_Name());
-        customerInfoResponse.setCity(accountEntity.getDistrictsEntity().getCity());
-        customerInfoResponse.setWards(accountEntity.getDistrictsEntity().getWards());
-        customerInfoResponse.setImg(accountEntity.getImg());
-        customerInfoResponse.setRoleName(accountEntity.getRoleEntity().getRole_Title());
-
-        return customerInfoResponse;
-    }
+//
+//
+//    public CustomerInfoResponse customerInfoResponse(AccountEntity accountEntity, CustomerInfoResponse customerInfoResponse) {
+//
+//        customerInfoResponse.setUserName(accountEntity.getUsername());
+//        customerInfoResponse.setDob(accountEntity.getDOB());
+//        customerInfoResponse.setEmail(accountEntity.getEmail());
+//        customerInfoResponse.setGender(accountEntity.getStatus());
+//        customerInfoResponse.setAddress(accountEntity.getAddress());
+//        customerInfoResponse.setIdentity_Number(accountEntity.getIdentity_Number());
+//        customerInfoResponse.setIdentity_Picture_Back(accountEntity.getIdentity_Picture_Back());
+//        customerInfoResponse.setIdentity_Picture_Front(accountEntity.getIdentity_Picture_Front());
+//        customerInfoResponse.setStatus(accountEntity.getStatus());
+//        customerInfoResponse.setDistrict_Name(accountEntity.getDistrictsEntity().getDistrict_Name());
+//        customerInfoResponse.setCity(accountEntity.getDistrictsEntity().getCity());
+//        customerInfoResponse.setWards(accountEntity.getDistrictsEntity().getWards());
+//        customerInfoResponse.setImg(accountEntity.getImg());
+//        customerInfoResponse.setRoleName(accountEntity.getRoleEntity().getRole_Title());
+//
+//        return customerInfoResponse;
+//    }
 }

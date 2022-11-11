@@ -7,32 +7,32 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 public interface ContractService {
-    @Transactional
-    ResponseEntity<?> add(ContractRequest contractRequest);
+//    @Transactional
+//    ResponseEntity<?> add(ContractRequest contractRequest);
+//
+////    @Transactional
+////    ResponseEntity<?> updateDriver(ContractHadDriverRequest contractHadDriverRequest);
+//
+//    ResponseEntity<?> ListContract(Integer p);
+//
+//    ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p);
+//
+//    ResponseEntity<?> FilterByPhone(String name, Integer HadDriver, Integer Status, Integer p);
+//
+//    @Transactional
+//    ResponseEntity<?> update(ContractRequest contractRequest);
+//
+////    ResponseEntity<?> getContractById(Long id);
+//
+//    ResponseEntity<?> updateRealPrice(ContractRealPriceRequest contractRealPriceRequest);
+//
+//    ResponseEntity<?> getListContractByCustomerId(long customerId);
+//
+//    @Transactional
+//    ResponseEntity<?> cancelRenting(long id, int i);
 
-    @Transactional
-    ResponseEntity<?> updateDriver(ContractHadDriverRequest contractHadDriverRequest);
-
-    ResponseEntity<?> ListContract(Integer p);
-
-    ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p);
-
-    ResponseEntity<?> FilterByPhone(String name, Integer HadDriver, Integer Status, Integer p);
-
-    @Transactional
-    ResponseEntity<?> update(ContractRequest contractRequest);
-
-    ResponseEntity<?> getContractById(Long id);
-
-    ResponseEntity<?> updateRealPrice(ContractRealPriceRequest contractRealPriceRequest);
-
-    ResponseEntity<?> getListContractByCustomerId(long customerId);
-
-    @Transactional
-    ResponseEntity<?> cancelRenting(long id, int i);
-
-    @Transactional
-    ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest);
+//    @Transactional
+//    ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest);
 
 //    @Transactional
 //    ResponseEntity<?> updateRentailPrice()
