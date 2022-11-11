@@ -9,7 +9,9 @@ import org.apache.commons.logging.Log;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,7 +24,7 @@ public class DriverEntity implements Serializable {
 
 
     @Id
-    @Column(name = "ID_Driver",nullable = false)
+    @Column(name = "ID",nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -90,4 +92,9 @@ public class DriverEntity implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "district_id")
     private DistrictsEntity districtsEntity;
+
+    @OneToMany(mappedBy = "driverEntity", cascade = CascadeType.ALL)
+    private List<ContractDetailEntity> contractDetailEntityList =new ArrayList<>();
+
+
 }

@@ -19,16 +19,17 @@ public class ContractDetailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contract_detail_id",unique = true)
-
     private long id;
+
     @Column
     private Date real_pick_up_date;
     @Column
     private Date real_return_date;
 
 
-    @Column
-    private long driver_id;
+    @ManyToOne
+    @JoinColumn(name = "ID_Driver",nullable = false, foreignKey = @ForeignKey(name = "FK_Driver"))
+    private DriverEntity driverEntity;
 
     @ManyToOne
     @JoinColumn(name = "car_id",nullable = false, foreignKey = @ForeignKey(name = "FK_BookingDetail_Car"))

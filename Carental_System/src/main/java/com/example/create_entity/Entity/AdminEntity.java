@@ -13,12 +13,12 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class AdminEntity implements Serializable {
+public class AdminEntity {
 
     @Id
-    @Column(name = "Admin_ID",nullable = false)
+    @Column(name = "ID",nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ID ;
+    private Long id ;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", nullable = false,unique = true)

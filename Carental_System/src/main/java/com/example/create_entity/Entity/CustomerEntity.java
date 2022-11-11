@@ -6,7 +6,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -14,11 +16,11 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CustomerEntity implements Serializable {
+public class CustomerEntity {
 
 
     @Id
-    @Column(name = "ID_Customer",nullable = false)
+    @Column(name = "ID",nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;
 
@@ -65,4 +67,8 @@ public class CustomerEntity implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "district_id")
     private DistrictsEntity districtsEntity;
+
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<ContractEntity> contractEntities =new ArrayList<>();
 }

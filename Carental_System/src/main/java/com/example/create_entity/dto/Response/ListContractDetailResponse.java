@@ -38,7 +38,7 @@ public class ListContractDetailResponse {
             tmp.setId(entity.getId());
             tmp.setRealReturnDate(entity.getReal_return_date());
             tmp.setRealPickUpDate(entity.getReal_pick_up_date());
-            tmp.setDriverId(entity.getDriver_id());
+            tmp.setDriverId(entity.getDriverEntity().getId());
             tmp.setPlateNumber(entity.getCar().getPlateNumber());
             tmp.setBookingId(entity.getBooking().getId());
             tmp.setModelName(entity.getCar().getModelName());

@@ -57,8 +57,9 @@ public class ContractEntity {
     private boolean had_driver;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false,foreignKey = @ForeignKey(name = "FK_bookings_customer"))
-    private AccountEntity customer;
+    @JoinColumn(name = "ID_Customer", nullable = false,foreignKey = @ForeignKey(name = "FK_bookings_customer" +
+            ""))
+    private CustomerEntity customer;
 
     @Column
     private int status;
