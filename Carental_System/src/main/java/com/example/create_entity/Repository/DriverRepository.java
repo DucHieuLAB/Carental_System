@@ -1,6 +1,7 @@
 package com.example.create_entity.Repository;
 
 import com.example.create_entity.Entity.DriverEntity;
+import com.example.create_entity.Entity.StaffEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -82,6 +84,13 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long>, Pag
             " OR c.contract_id = ct.booking_id AND ct.expected_end_date < ?1\n" +
             "JOIN cars on cars.plate_number = ?3 AND d.license_id >= cars.license_id ", nativeQuery = true)
     List<DriverEntity> getDriverByPlateNumberExpectedStartDateExpectedEnđate(Date expectedStartDate, Date expectedEndDate, String plateNumber);
+
+
+    @Query(value = "SELECT de FROM DriverEntity de WHERE de.Phone = ?1 ")
+    List<DriverEntity> Check_Phone(String Phone);
+
+    @Query(value = "SELECT de FROM DriverEntity de WHERE de.Identity_Number = ?1 ")
+    List<DriverEntity> Check_Identity(String Phone);
 
 
 ////    @Modifying

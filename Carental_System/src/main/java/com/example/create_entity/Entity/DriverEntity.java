@@ -15,12 +15,11 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Transactional
 @Table(name = "Driver")
-public class DriverEntity implements Serializable {
+public class DriverEntity {
 
 
     @Id
@@ -93,7 +92,7 @@ public class DriverEntity implements Serializable {
     @JoinColumn(name = "district_id")
     private DistrictsEntity districtsEntity;
 
-    @OneToMany(mappedBy = "driverEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "driverEntity",cascade = CascadeType.ALL)
     private List<ContractDetailEntity> contractDetailEntityList =new ArrayList<>();
 
 

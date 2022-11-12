@@ -14,7 +14,7 @@ import java.util.Date;
 @Entity
 @Table(name = "Accounts",
         uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_USERNAME_Email", columnNames = {"user_name", "email"})})
-public class AccountEntity implements Serializable {
+public class AccountEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

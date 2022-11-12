@@ -13,24 +13,24 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class DriverController {
 
-//    @Autowired
-//    DriverRepository driverRepository;
-//
-//    @Autowired
-//    LicenseRepository licenseRepository;
-//
-//
-//    @Autowired
-//    AccountRepository accountRepository;
-//
-////    @Autowired
-////    private final DriverService driverService;
-//
-//    @Autowired
-//    RoleRepository roleRepository;
-//
-//    @Autowired
-//    DistrictRepository districtRepository;
+    @Autowired
+    DriverRepository driverRepository;
+
+    @Autowired
+    LicenseRepository licenseRepository;
+
+
+    @Autowired
+    AccountRepository accountRepository;
+
+    @Autowired
+    private final DriverService driverService;
+
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    DistrictRepository districtRepository;
 
 
 //    @RequestMapping(value = "/driver/ListDriver", method = RequestMethod.GET)
@@ -73,10 +73,10 @@ public class DriverController {
 //    }
 //
 //
-//    @RequestMapping(value = "/driver/Create", method = RequestMethod.POST)
-//    private ResponseEntity<?> Create(@RequestBody DriverInfoRequest infoRequest) {
-//        return driverService.Create(infoRequest);
-//    }
+    @RequestMapping(value = "/driver/Create", method = RequestMethod.POST)
+    private ResponseEntity<?> Create(@RequestBody DriverInfoRequest infoRequest) {
+        return driverService.Create(infoRequest);
+    }
 
 
 }

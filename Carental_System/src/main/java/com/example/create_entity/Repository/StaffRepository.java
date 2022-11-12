@@ -17,9 +17,20 @@ public interface StaffRepository extends JpaRepository<StaffEntity,Long> {
     @Query(value = "SELECT * FROM carrental_v2.staffs Where staffs.account_id= ?1 ",nativeQuery = true)
     StaffEntity staffEntity(Long ac_id);
 
-    @Query(value = "select * from staffs where full_name like %?% AND role_id=? order by create_date ASC ",nativeQuery = true)
-    Page<StaffEntity> FilterByName(String Name, Integer Role_id, Pageable pageable);
+    @Query(value = "SELECT st FROM StaffEntity st INNER JOIN AccountEntity ac ON st.accountEntity.ID =ac.ID WHERE st.FullName LIKE %?1% ")
+    Page<StaffEntity> FilterByName(String name,Pageable pageable);
 
+    @Query(value = "SELECT st FROM StaffEntity st INNER JOIN AccountEntity ac ON st.accountEntity.ID =ac.ID WHERE st.Phone LIKE %?1% ")
+    Page<StaffEntity> FilterByPhone(String Phone,Pageable pageable);
+
+    @Query(value = "SELECT st FROM StaffEntity st INNER JOIN AccountEntity ac ON st.accountEntity.ID =ac.ID WHERE st.Identity_Number LIKE %?1% ")
+    Page<StaffEntity> FilterByIdentity_Number(String Identity,Pageable pageable);
+
+    @Query(value = "SELECT st FROM StaffEntity st ORDER BY st.ModifiedDate DESC ")
+    Page<StaffEntity> List_Staff(Pageable pageable);
+
+    @Query(value = "SELECT st FROM StaffEntity st WHERE st.accountEntity.Username = ?1 ")
+    StaffEntity GetStaffByUserName(String name);
 
     @Query(value = "SELECT * FROM  staffs where phone = ? ",nativeQuery = true)
     List<StaffEntity> Check_Phone(String phone);

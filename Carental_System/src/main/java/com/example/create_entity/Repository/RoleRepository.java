@@ -16,12 +16,11 @@ import java.util.List;
 public interface RoleRepository extends JpaRepository<RoleEntity,Long> {
 
 
-    @Transactional
-    @Query(value = "SELECT * FROM carrental.roles WHERE role_title= ? ; ",nativeQuery = true)
+    @Query(value = "SELECT * FROM roles WHERE role_title= ? ; ",nativeQuery = true)
     RoleEntity GetRoleDriver(String name);
 
 
-    @Query(value = "SELECT role_id FROM carrental.roles where role_title= ? ; ",nativeQuery = true)
+    @Query(value = "SELECT role_id FROM roles where role_title= ? ; ",nativeQuery = true)
     Integer  GetIDRoleByNameRole(String name);
 
     @Query(value = "SELECT * FROM carrental.roles ;  ",nativeQuery = true)

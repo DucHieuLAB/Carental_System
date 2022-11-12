@@ -48,6 +48,9 @@ public class StaffEntity {
     @Column(name = "img")
     private String img;
 
+    @Column(name = "status")
+    private int status;
+
     @Column(name = "identity_number")
     private String Identity_Number;
 

@@ -1,6 +1,7 @@
 package com.example.create_entity.dto.Response;
 
 import com.example.create_entity.Entity.AccountEntity;
+import com.example.create_entity.Entity.StaffEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,27 +31,27 @@ public class StaffDetailResponse {
     private String wards;
     private String City;
 
-//    public StaffDetailResponse staffDetailResponse(AccountEntity accountEntity){
-//        StaffDetailResponse detailResponse = new StaffDetailResponse();
-//
-//        detailResponse.setAddress(accountEntity.getAddress());
-//
-//        detailResponse.setDob(accountEntity.getDOB());
-//        detailResponse.setEmail(accountEntity.getEmail());
-//        detailResponse.setFullName(accountEntity.getFullName());
-//        detailResponse.setGender(accountEntity.getGender());
-//        detailResponse.setIdentity_Picture_Front(accountEntity.getIdentity_Picture_Front());
-//        detailResponse.setIdentity_Number(accountEntity.getIdentity_Number());
-//        detailResponse.setIdentity_Picture_Back(accountEntity.getIdentity_Picture_Back());
-//        detailResponse.setPhone(accountEntity.getPhone());
-//        detailResponse.setUser_Name(accountEntity.getUsername());
-//        detailResponse.setImg(accountEntity.getImg());
-//        detailResponse.setStatus(accountEntity.getStatus());
-//        detailResponse.setPassword(accountEntity.getPassword());
-//        detailResponse.setDistrict_Name(accountEntity.getDistrictsEntity().getDistrict_Name());
-//        detailResponse.setWards(accountEntity.getDistrictsEntity().getWards());
-//        detailResponse.setCity(accountEntity.getDistrictsEntity().getCity());
-//
-//        return detailResponse;
-//    }
+    public StaffDetailResponse staffDetailResponse(StaffEntity staffEntity){
+        StaffDetailResponse detailResponse = new StaffDetailResponse();
+
+        detailResponse.setAddress(staffEntity.getAddress());
+
+        detailResponse.setDob(staffEntity.getDOB());
+        detailResponse.setEmail(staffEntity.getAccountEntity().getEmail());
+        detailResponse.setFullName(staffEntity.getFullName());
+        detailResponse.setGender(staffEntity.getGender());
+        detailResponse.setIdentity_Picture_Front(staffEntity.getIdentity_Picture_Front());
+        detailResponse.setIdentity_Number(staffEntity.getIdentity_Number());
+        detailResponse.setIdentity_Picture_Back(staffEntity.getIdentity_Picture_Back());
+        detailResponse.setPhone(staffEntity.getPhone());
+        detailResponse.setUser_Name(staffEntity.getAccountEntity().getUsername());
+        detailResponse.setImg(staffEntity.getImg());
+        detailResponse.setStatus(staffEntity.getAccountEntity().getStatus());
+        detailResponse.setPassword(staffEntity.getAccountEntity().getPassword());
+        detailResponse.setDistrict_Name(staffEntity.getDistrictsEntity().getDistrict_Name());
+        detailResponse.setWards(staffEntity.getDistrictsEntity().getWards());
+        detailResponse.setCity(staffEntity.getDistrictsEntity().getCity());
+
+        return detailResponse;
+    }
 }

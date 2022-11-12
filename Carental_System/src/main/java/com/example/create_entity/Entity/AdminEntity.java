@@ -39,6 +39,9 @@ public class AdminEntity {
     @Column(name = "phone")
     private String Phone;
 
+    @Column(name = "status")
+    private int status;
+
     @Column(name = "modified_date")
     @Temporal(TemporalType.DATE)
     private Date ModifiedDate;
