@@ -19,7 +19,7 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     AccountEntity GetAccountByName(String username);
 
 
-    @Query(value = "    SELECT * FROM carrental.accounts where email = ? and  (accounts.status=1 or accounts.status=2) ", nativeQuery = true)
+    @Query(value = "    SELECT * FROM accounts where email = ? and  (accounts.status=1 or accounts.status=2) ", nativeQuery = true)
     AccountEntity GetAccountByEmail(String email);
 
     @Query(value = "SELECT * FROM accounts where  email =?", nativeQuery = true)
@@ -38,10 +38,10 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
     //SELECT * FROM carrental.accounts where user_name="hieu123" AND status=2 AND otp="KNaJDU";
 
-    @Query(value = "SELECT * FROM carrental.accounts where user_name= ?  AND status=1 ",nativeQuery = true)
+    @Query(value = "SELECT * FROM accounts where user_name= ?  AND status=1 ",nativeQuery = true)
     AccountEntity Check_ConfirmOTP(String username);
 
-    @Query(value = "SELECT * FROM carrental.accounts where status=2 AND otp = ?",nativeQuery = true)
+    @Query(value = "SELECT * FROM accounts where status=2 AND otp = ?",nativeQuery = true)
     AccountEntity Check_ConfirmOTP_Ex(String otp);
 
 

@@ -1,10 +1,7 @@
 package com.example.create_entity.Service;
 
 import com.example.create_entity.Entity.*;
-import com.example.create_entity.Repository.AccountRepository;
-import com.example.create_entity.Repository.DistrictRepository;
-import com.example.create_entity.Repository.RoleRepository;
-import com.example.create_entity.Repository.StaffRepository;
+import com.example.create_entity.Repository.*;
 import com.example.create_entity.dto.Request.ChangePassWordRequest;
 import com.example.create_entity.dto.Request.RegisterInfoRequest;
 import com.example.create_entity.dto.Request.StaffRequest;
@@ -33,6 +30,9 @@ import java.util.List;
 public class AccountServiceIml implements AccountService {
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
 
     StaffResponse staffResponse = new StaffResponse();
     @Autowired
@@ -201,6 +201,7 @@ public class AccountServiceIml implements AccountService {
                     ||  staffEntities.getAccountEntity().getStatus()== 1) ) {
                 Date date = new Date(System.currentTimeMillis());
                 staffEntities.getAccountEntity().setStatus(0);
+                staffEntities.setStatus(0);
                 staffEntities.setModifiedDate(date);
 
                 staffResponse = staffResponse.staffResponse(staffEntities);
@@ -209,6 +210,7 @@ public class AccountServiceIml implements AccountService {
             } else if (staffEntities != null && staffEntities.getAccountEntity().getStatus() == 0) {
                 Date date = new Date(System.currentTimeMillis());
                 staffEntities.getAccountEntity().setStatus(2);
+                staffEntities.setStatus(1);
                 staffEntities.setModifiedDate(date);
                 staffResponse = staffResponse.staffResponse(staffEntities);
                 staffRepository.save(staffEntities);
@@ -248,80 +250,90 @@ public class AccountServiceIml implements AccountService {
     @Autowired
     private RandomString randomString;
 
-//    @Override
-//    @Transactional
-//    public ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST, HttpServletResponse response) {
-//
-//        String regexPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-//        ReposMesses messes = new ReposMesses();
-//        RoleEntity roleEntity = roleRepository.GetRoleDriver("Customer");
-//        AccountEntity accountEntity = new AccountEntity();
-//        try {
-//            if (!accountRepository.Check_email(REQUEST.getEmail().trim()).isEmpty()) {
-//                messes.setMess("Email đã tồn tại  !");
-//                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-//            } else if (!accountRepository.Check_username(REQUEST.getUserName().trim()).isEmpty() || REQUEST.getUserName() == "error") {
-//                messes.setMess("UserName đã tồn tại !");
-//                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-//            } else if (!REQUEST.getEmail().matches(regexPattern)) {
-//                messes.setMess("Email k đúng định dạng !");
-//                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-//            }
-//            String Code_OTP = randomString.generateRandomString();
-//            accountEntity.setEmail(REQUEST.getEmail());
-//            accountEntity.setFullName(REQUEST.getFullName());
-//            accountEntity.setUsername(REQUEST.getUserName());
-//            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//            String encodedPassword = passwordEncoder.encode(REQUEST.getPassword());
-//            accountEntity.setPassword(encodedPassword.trim());
-//
-//            accountEntity.setCreateDate(new Date());
-//            accountEntity.setModifiedDate(new Date());
-//            accountEntity.setRoleEntity(roleEntity);
-//            accountEntity.setStatus(1);
-//
-//            Cookie cookie = new Cookie("username", REQUEST.getUserName());
-//            cookie.setMaxAge(5 * 60);
-//            cookie.setPath("http://localhost:8080/api/account/CfOTP");
-//            response.addCookie(cookie);
-//
-//            Cookie cookieOTP = new Cookie("OTP", Code_OTP);
-//            cookieOTP.setMaxAge(5 * 60);
-//            cookieOTP.setPath("http://localhost:8080/api/account/CfOTP");
-//            response.addCookie(cookieOTP);
-//
-//            accountRepository.save(accountEntity);
-//            emailSenderService.sendSimpleEmail(REQUEST.getEmail(),"Here's your One Time Password (OTP) - Expire in 5 minutes!", Code_OTP);
-//            messes.setMess("Đã Đăng ký thành công tài khoản " +
-//                    "Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
-//            return new ResponseEntity<>(messes, HttpStatus.OK);
-//        } catch (Exception e) {
-//            messes.setMess(e.getMessage());
-//            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-//        }
-//    }
-//    @Override
-//    public ResponseEntity<?> Confirm_Register_OTPEmail(String username, String OTP, String OTP_ck,HttpServletResponse response) {
-//        ReposMesses messes = new ReposMesses();
-//        try {
-//            AccountEntity accountEntity = accountRepository.Check_ConfirmOTP(username.trim());
-//            if (accountEntity != null && OTP.trim().equals(OTP_ck.trim())) {
-//                accountEntity.setStatus(2);
-//                accountRepository.save(accountEntity);
-//                messes.setMess("Xác thực tài khoản thành công !");
-//                RemoveCookie("username", response, "http://localhost:8080/api/account/Customer/CfOTP");
-//                RemoveCookie("OTP", response, "http://localhost:8080/api/account/Customer/CfOTP");
-//                return new ResponseEntity<>(messes, HttpStatus.OK);
-//            } else {
-//                messes.setMess("Mã OTP đã hết hiệu lực !");
-//                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-//            }
-//        } catch (Exception e) {
-//            messes.setMess(e.getMessage());
-//            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-//        }
-////        return null;
-//    }
+    @Override
+    @Transactional
+    public ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST, HttpServletResponse response) {
+
+        String regexPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        ReposMesses messes = new ReposMesses();
+        CustomerEntity customerEntity = new CustomerEntity();
+        RoleEntity roleEntity = roleRepository.GetRoleDriver("Customer");
+        AccountEntity accountEntity = new AccountEntity();
+        try {
+            if (!accountRepository.Check_email(REQUEST.getEmail().trim()).isEmpty()) {
+                messes.setMess("Email đã tồn tại  !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!accountRepository.Check_username(REQUEST.getUserName().trim()).isEmpty() || REQUEST.getUserName() == "error") {
+                messes.setMess("UserName đã tồn tại !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!REQUEST.getEmail().matches(regexPattern)) {
+                messes.setMess("Email k đúng định dạng !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }
+            String Code_OTP = randomString.generateRandomString();
+            accountEntity.setEmail(REQUEST.getEmail());
+            accountEntity.setUsername(REQUEST.getUserName());
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String encodedPassword = passwordEncoder.encode(REQUEST.getPassword());
+            accountEntity.setPassword(encodedPassword.trim());
+
+            accountEntity.setCreateDate(new Date());
+            accountEntity.setModifiedDate(new Date());
+            accountEntity.setRoleEntity(roleEntity);
+            accountEntity.setStatus(1);
+
+            customerEntity.setFullName(REQUEST.getFullName());
+            customerEntity.setAccountEntity(accountEntity);
+            customerEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+            customerEntity.setStatus(1);
+
+
+            Cookie cookie = new Cookie("username", REQUEST.getUserName());
+            cookie.setMaxAge(5 * 60);
+            cookie.setPath("http://localhost:8080/api/account/Customer/CfOTP");
+            response.addCookie(cookie);
+
+            Cookie cookieOTP = new Cookie("OTP", Code_OTP);
+            cookieOTP.setMaxAge(5 * 60);
+            cookieOTP.setPath("http://localhost:8080/api/account/Customer/CfOTP");
+            response.addCookie(cookieOTP);
+
+            accountRepository.save(accountEntity);
+            customerRepository.save(customerEntity);
+
+
+            emailSenderService.sendSimpleEmail(REQUEST.getEmail(),"Here's your One Time Password (OTP) - Expire in 5 minutes!", Code_OTP);
+            messes.setMess("Đã Đăng ký thành công tài khoản " +
+                    "Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
+            return new ResponseEntity<>(messes, HttpStatus.OK);
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+    @Override
+    public ResponseEntity<?> Confirm_Register_OTPEmail(String username, String OTP, String OTP_ck,HttpServletResponse response) {
+        ReposMesses messes = new ReposMesses();
+        try {
+            AccountEntity accountEntity = accountRepository.Check_ConfirmOTP(username.trim());
+            if (accountEntity != null && OTP.trim().equals(OTP_ck.trim())) {
+                accountEntity.setStatus(2);
+                accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+                accountRepository.save(accountEntity);
+                messes.setMess("Xác thực tài khoản thành công !");
+                RemoveCookie("username", response, "http://localhost:8080/api/account/Customer/CfOTP");
+                RemoveCookie("OTP", response, "http://localhost:8080/api/account/Customer/CfOTP");
+                return new ResponseEntity<>(messes, HttpStatus.OK);
+            } else {
+                messes.setMess("Mã OTP đã hết hiệu lực !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+//        return null;
+    }
 //
 //    @Override
 //    public ResponseEntity<?> UpdateCustomer(UpdateInfoCustomerRequest updateInfoCustomerRequest) {
@@ -451,12 +463,12 @@ public class AccountServiceIml implements AccountService {
 //        }
 //    }
 //
-//    public void RemoveCookie(String Name,HttpServletResponse response, String URL) {
-//        Cookie cookie = new Cookie(Name, null);
-//        cookie.setMaxAge(0);
-//        cookie.setPath(URL);
-//        response.addCookie(cookie);
-//    }
+    public void RemoveCookie(String Name,HttpServletResponse response, String URL) {
+        Cookie cookie = new Cookie(Name, null);
+        cookie.setMaxAge(0);
+        cookie.setPath(URL);
+        response.addCookie(cookie);
+    }
 //    CustomerInfoResponse customerInfoResponse;
 //
 //    @Override

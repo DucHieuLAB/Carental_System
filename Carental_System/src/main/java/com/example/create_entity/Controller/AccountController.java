@@ -14,22 +14,22 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/api")
 public class AccountController {
 
-//    @Autowired
-//    AccountServiceIml accountService;
-//
-//    @RequestMapping(value = "/account/Customer/Register", method = RequestMethod.POST)
-//    public ResponseEntity<?> Create(@RequestBody RegisterInfoRequest registerInfoRequest, HttpServletResponse response) {
-//        return accountService.sendOTPEmail_Register(registerInfoRequest, response);
-//    }
-//
-//    @RequestMapping(value = "/account/Customer/CfOTP", method = RequestMethod.PUT)
-//    public ResponseEntity<?> CfOTP(@CookieValue(value = "username", defaultValue = "") String UserName,
-//                                   @RequestParam(required = false) String OTP,
-//                                   @CookieValue(value = "OTP", defaultValue = "") String OTP_ck,
-//                                   HttpServletResponse response) {
-//
-//        return accountService.Confirm_Register_OTPEmail(UserName, OTP, OTP_ck,response);
-//    }
+    @Autowired
+    AccountServiceIml accountService;
+
+    @RequestMapping(value = "/account/Customer/Register", method = RequestMethod.POST)
+    public ResponseEntity<?> Create(@RequestBody RegisterInfoRequest registerInfoRequest, HttpServletResponse response) {
+        return accountService.sendOTPEmail_Register(registerInfoRequest, response);
+    }
+
+    @RequestMapping(value = "/account/Customer/CfOTP", method = RequestMethod.PUT)
+    public ResponseEntity<?> CfOTP(@CookieValue(value = "username", defaultValue = "") String UserName,
+                                   @RequestParam(required = false) String OTP,
+                                   @CookieValue(value = "OTP", defaultValue = "") String OTP_ck,
+                                   HttpServletResponse response) {
+
+        return accountService.Confirm_Register_OTPEmail(UserName, OTP, OTP_ck,response);
+    }
 //
 //    @RequestMapping(value = "/account/ForgotPassword", method = RequestMethod.GET)
 //    public ResponseEntity<?> Forgot_Password(@RequestParam(required = false) String Email, HttpServletResponse response) {

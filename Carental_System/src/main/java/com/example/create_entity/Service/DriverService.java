@@ -41,7 +41,7 @@ public class DriverService {
     LicenseRepository licenseRepository;
 
 
-    public List<DriverInfoResponse> responseEntity(List<DriverEntity> driverInfoResponses) {
+    public List<DriverInfoResponse> responseEntity(Page<DriverEntity> driverInfoResponses) {
 
         List<DriverInfoResponse> infoResponses = new ArrayList<>();
 
@@ -64,223 +64,69 @@ public class DriverService {
     }
 
     public ResponseEntity<?> SearchByName(String name, Integer p) {
-        ReposMesses messes = new ReposMesses();
-
         if (p == null) {
             p = 0;
         } else if (p > 0) {
             p = p - 1;
-        } else if (name == null) {
-            name = "";
         }
-
-        Pageable pageable = PageRequest.of(p, 5);
-        List<DriverEntity> driverEntities = driverRepository.GetDriverBy_fullName(name.trim(), pageable);
-
-        List<DriverEntity> driverEntities1 = driverRepository.GetDriverBy_fullName1(name.trim());
-
-        List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
-        PagingDriver pagingDriver = new PagingDriver();
-        pagingDriver.setDriverInfoResponsesList(infoResponses);
-
-        if (driverEntities1.size() % 5 == 0) {
-            pagingDriver.setTotalPage(driverEntities1.size() / 5);
-        } else {
-            pagingDriver.setTotalPage(driverEntities1.size() / 5 + 1);
-        }
-        pagingDriver.setNumberPage(p + 1);
-
-
-        if (infoResponses.isEmpty()) {
-            messes.setMess("k tìm thấy tên ! ");
+        ReposMesses messes = new ReposMesses();
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+            Page<DriverEntity> driverEntities = driverRepository.GetDriverBy_fullName(name, pageable);
+            PagingDriver pagingDriver = new PagingDriver();
+            List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
+            pagingDriver.setDriverInfoResponsesList(infoResponses);
+            pagingDriver.setTotalPage(driverEntities.getTotalPages());
+            pagingDriver.setNumberPage(driverEntities.getNumber() + 1);
+            if (infoResponses.isEmpty()) {
+                messes.setMess("k tìm thấy tên ! ");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>(pagingDriver, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-
-        } else {
-            return new ResponseEntity<>(pagingDriver, HttpStatus.OK);
         }
-
     }
 
-//    public ResponseEntity<?> DriverDetail(String username) {
-//
-//        ReposMesses messes = new ReposMesses();
-//        if (username.equals(null)) {
-//            username = "";
-//        }
-//        DriverEntity driverEntities = driverRepository.GetByUsername(username.trim());
-//
-//        if(driverEntities==null){
-//            messes.setMess("Error ! ");
-//            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-//        }else {
-//            DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
-//            driverInfoDetailResponse = driverInfoDetailResponse.driverInfoResponses(driverEntities, driverInfoDetailResponse);
-//            return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.OK);
-//        }
-//    }
 
-//    public ResponseEntity<?> Find_By_Phone(String Phone, Integer p) {
-//
-//        if (p == null) {
-//            p = 0;
-//        } else if (p > 0) {
-//            p = p - 1;
-//        } else if (Phone == null) {
-//            Phone = "";
-//        }
-//
-//        if (Phone == null) {
-//            Phone = "";
-//        }
-//        ReposMesses messes = new ReposMesses();
-//        List<DriverEntity> driverEntities1 = driverRepository.GetDriverBy_Phone1(Phone.trim());
-//        Pageable pageable = PageRequest.of(p, 5);
-//        List<DriverEntity> driverEntities = driverRepository.GetDriverBy_Phone(Phone.trim(), pageable);
-//        List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
-//
-//        PagingDriver pagingDriver1 = new PagingDriver();
-//
-//        if (driverEntities1.size() % 5 == 0) {
-//            pagingDriver1.setTotalPage(driverEntities1.size() / 5);
-//        } else {
-//            pagingDriver1.setTotalPage(driverEntities1.size() / 5 + 1);
-//        }
-//
-//        pagingDriver1.setNumberPage(p + 1);
-//        pagingDriver1.setDriverInfoResponsesList(infoResponses);
-//
-//
-//        if (infoResponses.isEmpty()) {
-//            messes.setMess("Số điện thoại k tồn tại trong hệ thống ! ");
-//            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-//
-//        } else {
-//            return new ResponseEntity<>(pagingDriver1, HttpStatus.OK);
-//        }
-//    }
-
-//    public ResponseEntity<?> Find_By_cmt(String cmt, Integer p) {
-//
-//        if (p == null) {
-//            p = 0;
-//        } else if (p > 0) {
-//            p = p - 1;
-//        } else if (cmt == null) {
-//            cmt = "";
-//        }
-//        Pageable pageable = PageRequest.of(p, 5);
-//        PagingDriver pagingDriver_Search_cmt = new PagingDriver();
-//        ReposMesses messes = new ReposMesses();
-//
-//
-//        List<DriverEntity> driverEntities = driverRepository.GetDriverBy_Identity(cmt.trim(), pageable);
-//        List<DriverEntity> driverEntities1 = driverRepository.GetDriverBy_Identity1(cmt.trim());
-//        List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
-//
-//        if (driverEntities1.size() % 5 == 0) {
-//            pagingDriver_Search_cmt.setTotalPage(driverEntities1.size() / 5);
-//        } else {
-//            pagingDriver_Search_cmt.setTotalPage(driverEntities1.size() / 5 + 1);
-//        }
-//
-//        pagingDriver_Search_cmt.setDriverInfoResponsesList(infoResponses);
-//        pagingDriver_Search_cmt.setNumberPage(p + 1);
-//
-//
-//        if (driverEntities1.isEmpty()) {
-//            messes.setMess("NOT FOUND ! ");
-//            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-//        } else {
-//            return new ResponseEntity<>(pagingDriver_Search_cmt, HttpStatus.OK);
-//        }
-//    }
-
-//    public ResponseEntity<?> licenseTypeEntities() {
-//        ReposMesses messes = new ReposMesses();
-//        List<LicenseTypeEntity> licenseTypeEntities = licenseRepository.findAll();
-//        List<LicenseInfoResponse> licenseInfoResponses = new ArrayList<>();
-//        licenseTypeEntities.forEach(LicenseTypeEntity -> {
-//            LicenseInfoResponse licenseTypeEntity = new LicenseInfoResponse();
-//            licenseTypeEntity.setID(LicenseTypeEntity.getID());
-//            licenseTypeEntity.setName_license(LicenseTypeEntity.getName_License());
-//            licenseTypeEntity.setDescription(LicenseTypeEntity.getDescription());
-//            licenseInfoResponses.add(licenseTypeEntity);
-//
-//        });
-//        if (licenseInfoResponses.isEmpty()) {
-//            messes.setMess("K có dữ liệu trong bảng license !");
-//            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-//        } else {
-//            return new ResponseEntity<>(licenseInfoResponses, HttpStatus.OK);
-//        }
-//    }
-
-//    public ResponseEntity<?> Change_Status_Driver(String username) {
-//        ReposMesses reposMesses = new ReposMesses();
-//        DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
-//        DriverEntity driverEntities = driverRepository.GetByUsername(username.trim());
-//        if (driverEntities != null && driverEntities.getStatus() == 1 && driverEntities.getAccountEntity().getStatus() == 2) {
-//            driverEntities.getAccountEntity().setStatus(0);
-//            driverEntities.setStatus(0);
-//            driverRepository.save(driverEntities);
-//            driverInfoDetailResponse = driverInfoDetailResponse.driverInfoResponses(driverEntities, driverInfoDetailResponse);
-//
-//        } else if (driverEntities != null && driverEntities.getStatus() == 0 && driverEntities.getAccountEntity().getStatus() == 0) {
-//            driverEntities.getAccountEntity().setStatus(2);
-//            driverEntities.setStatus(1);
-//            driverRepository.save(driverEntities);
-//            driverInfoDetailResponse = driverInfoDetailResponse.driverInfoResponses(driverEntities, driverInfoDetailResponse);
-//        } else {
-//            reposMesses.setMess("Thay đổi trạng thái thất bại ! ");
-//            return new ResponseEntity<>(reposMesses, HttpStatus.BAD_REQUEST);
-//        }
-//        return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.OK);
-//    }
-
-//    public ResponseEntity<?> ManagerDriver(Integer p) {
-//
-//
-//        if (p == null) {
-//            p = 0;
-//        } else if (p > 0) {
-//            p = p - 1;
-//        }
-//        Pageable pageable = PageRequest.of(p, 5);
-//
-//        Page<DriverEntity> page = driverRepository.findAll(pageable);
-//
-//
-//        List<DriverInfoResponse> driverInfoResponses = new ArrayList<>();
-//        page.forEach(DriverEntity -> {
-//            DriverInfoResponse infoResponse = new DriverInfoResponse();
-//            infoResponse.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
-//            infoResponse.setYearExperience(DriverEntity.getYear_Experience());
-//            infoResponse.setStatus(DriverEntity.getAccountEntity().getStatus());
-//            infoResponse.setPhone(DriverEntity.getAccountEntity().getPhone());
-//            infoResponse.setIdentity_Number(DriverEntity.getAccountEntity().getIdentity_Number());
-//            infoResponse.setFullName(DriverEntity.getAccountEntity().getFullName());
-//            infoResponse.setUsername(DriverEntity.getAccountEntity().getUsername());
-//
-//
-//            driverInfoResponses.add(infoResponse);
-//
-//
-//        });
-//
-//        PagingDriver driverPagingDriver = new PagingDriver();
-//        driverPagingDriver.setDriverInfoResponsesList(driverInfoResponses);
-//        driverPagingDriver.setTotalPage(page.getTotalPages());
-//        driverPagingDriver.setNumberPage(p + 1);
-//
-//
-//        if (page.isEmpty()) {
-//            ReposMesses messes = new ReposMesses();
-//            messes.setMess("K có dữ liệu ! ");
-//            return new ResponseEntity<>(messes, HttpStatus.OK);
-//        }
-//        return new ResponseEntity<>(driverPagingDriver, HttpStatus.OK);
-//
-//    }
+    public ResponseEntity<?> ManagerDriver(Integer p) {
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        }
+        ReposMesses messes = new ReposMesses();
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+            Page<DriverEntity> page = driverRepository.findAll(pageable);
+            List<DriverInfoResponse> driverInfoResponses = new ArrayList<>();
+            page.forEach(DriverEntity -> {
+                DriverInfoResponse infoResponse = new DriverInfoResponse();
+                infoResponse.setName_License(DriverEntity.getLicenseTypeEntity().getName_License());
+                infoResponse.setYearExperience(DriverEntity.getYear_Experience());
+                infoResponse.setStatus(DriverEntity.getAccountEntity().getStatus());
+                infoResponse.setPhone(DriverEntity.getPhone());
+                infoResponse.setIdentity_Number(DriverEntity.getIdentity_Number());
+                infoResponse.setFullName(DriverEntity.getFullName());
+                infoResponse.setUsername(DriverEntity.getAccountEntity().getUsername());
+                driverInfoResponses.add(infoResponse);
+            });
+            PagingDriver driverPagingDriver = new PagingDriver();
+            driverPagingDriver.setDriverInfoResponsesList(driverInfoResponses);
+            driverPagingDriver.setTotalPage(page.getTotalPages());
+            driverPagingDriver.setNumberPage(page.getNumber() + 1);
+            if (page.isEmpty()) {
+                messes.setMess("K có dữ liệu ! ");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(driverPagingDriver, HttpStatus.OK);
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
     @Transactional
@@ -380,6 +226,139 @@ public class DriverService {
         } catch (Exception e) {
             messes.setMess(e.getMessage());
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> DriverDetail(String username) {
+        ReposMesses messes = new ReposMesses();
+//        if (username.equals(null)) {
+//            username = "";
+//        }
+        try {
+            DriverEntity driverEntities = driverRepository.GetByUsername(username.trim());
+            if (driverEntities == null) {
+                messes.setMess("Error ! ");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else {
+                DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
+                driverInfoDetailResponse = driverInfoDetailResponse.driverInfoResponses(driverEntities);
+                return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> Find_By_Phone(String Phone, Integer p) {
+
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        }
+        ReposMesses messes = new ReposMesses();
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+            Page<DriverEntity> driverEntities = driverRepository.GetDriverBy_Phone(Phone,pageable);
+            PagingDriver pagingDriver = new PagingDriver();
+            List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
+            pagingDriver.setDriverInfoResponsesList(infoResponses);
+            pagingDriver.setTotalPage(driverEntities.getTotalPages());
+            pagingDriver.setNumberPage(driverEntities.getNumber() + 1);
+            if (infoResponses.isEmpty()) {
+                messes.setMess("k tìm thấy tên ! ");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>(pagingDriver, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> Find_By_cmt(String cmt, Integer p) {
+
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        }
+        ReposMesses messes = new ReposMesses();
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+            Page<DriverEntity> driverEntities = driverRepository.GetDriverBy_Identity(cmt,pageable);
+            PagingDriver pagingDriver = new PagingDriver();
+            List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
+            pagingDriver.setDriverInfoResponsesList(infoResponses);
+            pagingDriver.setTotalPage(driverEntities.getTotalPages());
+            pagingDriver.setNumberPage(driverEntities.getNumber() + 1);
+            if (infoResponses.isEmpty()) {
+                messes.setMess("k tìm thấy tên ! ");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>(pagingDriver, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> licenseTypeEntities() {
+        ReposMesses messes = new ReposMesses();
+        try {
+            List<LicenseTypeEntity> licenseTypeEntities = licenseRepository.findAll();
+            List<LicenseInfoResponse> licenseInfoResponses = new ArrayList<>();
+            licenseTypeEntities.forEach(LicenseTypeEntity -> {
+                LicenseInfoResponse licenseTypeEntity = new LicenseInfoResponse();
+                licenseTypeEntity.setID(LicenseTypeEntity.getID());
+                licenseTypeEntity.setName_license(LicenseTypeEntity.getName_License());
+                licenseTypeEntity.setDescription(LicenseTypeEntity.getDescription());
+                licenseInfoResponses.add(licenseTypeEntity);
+
+            });
+            if (licenseInfoResponses.isEmpty()) {
+                messes.setMess("K có dữ liệu trong bảng license !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>(licenseInfoResponses, HttpStatus.OK);
+            }
+        }catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> Change_Status_Driver(String username) {
+        ReposMesses reposMesses = new ReposMesses();
+        try {
+            DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
+            DriverEntity driverEntities = driverRepository.GetByUsername(username.trim());
+            if (driverEntities != null && driverEntities.getStatus() == 1 && driverEntities.getAccountEntity().getStatus() == 2) {
+                driverEntities.getAccountEntity().setStatus(0);
+                driverEntities.setStatus(0);
+                Date date = new Date(System.currentTimeMillis());
+                driverEntities.setModifiedDate(date);
+                driverRepository.save(driverEntities);
+                driverInfoDetailResponse = driverInfoDetailResponse.driverInfoResponses(driverEntities);
+
+            } else if (driverEntities != null && driverEntities.getStatus() == 0 && driverEntities.getAccountEntity().getStatus() == 0) {
+                driverEntities.getAccountEntity().setStatus(2);
+                driverEntities.setStatus(1);
+                Date date = new Date(System.currentTimeMillis());
+                driverEntities.setModifiedDate(date);
+                driverRepository.save(driverEntities);
+                driverInfoDetailResponse = driverInfoDetailResponse.driverInfoResponses(driverEntities);
+            } else {
+                reposMesses.setMess("Thay đổi trạng thái thất bại ! ");
+                return new ResponseEntity<>(reposMesses, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.OK);
+        }catch (Exception e){
+            reposMesses.setMess(e.getMessage());
+            return new ResponseEntity<>(reposMesses, HttpStatus.BAD_REQUEST);
         }
     }
 }

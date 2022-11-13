@@ -25,10 +25,10 @@ public interface AccountService {
    ResponseEntity<?>ChangeStatusStaff(String UserName);
 
    ResponseEntity<?>GetDetailStaff(String UserName);
-//
-//   ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST, HttpServletResponse response);
-//
-//   ResponseEntity<?> Confirm_Register_OTPEmail(String username,String OTP,String OTP_ck,HttpServletResponse response);
+
+   ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST, HttpServletResponse response);
+
+   ResponseEntity<?> Confirm_Register_OTPEmail(String username,String OTP,String OTP_ck,HttpServletResponse response);
 //
 //
 //   ResponseEntity<?> SendOTPtoEmail(String email,HttpServletResponse response);
