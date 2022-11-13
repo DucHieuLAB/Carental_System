@@ -1,6 +1,7 @@
 package com.example.create_entity.dto.Response;
 
 import com.example.create_entity.Entity.AccountEntity;
+import com.example.create_entity.Entity.CustomerEntity;
 import com.example.create_entity.Entity.DriverEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -44,25 +46,31 @@ public class CustomerInfoResponse {
     private String img;
 
     private String RoleName;
-//
-//
-//    public CustomerInfoResponse customerInfoResponse(AccountEntity accountEntity, CustomerInfoResponse customerInfoResponse) {
-//
-//        customerInfoResponse.setUserName(accountEntity.getUsername());
-//        customerInfoResponse.setDob(accountEntity.getDOB());
-//        customerInfoResponse.setEmail(accountEntity.getEmail());
-//        customerInfoResponse.setGender(accountEntity.getStatus());
-//        customerInfoResponse.setAddress(accountEntity.getAddress());
-//        customerInfoResponse.setIdentity_Number(accountEntity.getIdentity_Number());
-//        customerInfoResponse.setIdentity_Picture_Back(accountEntity.getIdentity_Picture_Back());
-//        customerInfoResponse.setIdentity_Picture_Front(accountEntity.getIdentity_Picture_Front());
-//        customerInfoResponse.setStatus(accountEntity.getStatus());
-//        customerInfoResponse.setDistrict_Name(accountEntity.getDistrictsEntity().getDistrict_Name());
-//        customerInfoResponse.setCity(accountEntity.getDistrictsEntity().getCity());
-//        customerInfoResponse.setWards(accountEntity.getDistrictsEntity().getWards());
-//        customerInfoResponse.setImg(accountEntity.getImg());
-//        customerInfoResponse.setRoleName(accountEntity.getRoleEntity().getRole_Title());
-//
-//        return customerInfoResponse;
-//    }
+
+
+    public CustomerInfoResponse customerInfoResponse(CustomerEntity customer) {
+        CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
+        customerInfoResponse.setUserName(customer.getAccountEntity().getUsername());
+        customerInfoResponse.setDob(customer.getDOB());
+        customerInfoResponse.setEmail(customer.getAccountEntity().getEmail());
+        customerInfoResponse.setGender(customer.getAccountEntity().getStatus());
+        customerInfoResponse.setAddress(customer.getAddress());
+        customerInfoResponse.setIdentity_Number(customer.getIdentity_Number());
+        customerInfoResponse.setIdentity_Picture_Back(customer.getIdentity_Picture_Back());
+        customerInfoResponse.setIdentity_Picture_Front(customer.getIdentity_Picture_Front());
+        customerInfoResponse.setStatus(customer.getStatus());
+        if (customer.getDistrictsEntity() == null) {
+            customerInfoResponse.setDistrict_Name("");
+            customerInfoResponse.setCity("");
+            customerInfoResponse.setWards("");
+        } else {
+            customerInfoResponse.setDistrict_Name(customer.getDistrictsEntity().getDistrict_Name());
+            customerInfoResponse.setCity(customer.getDistrictsEntity().getCity());
+            customerInfoResponse.setWards(customer.getDistrictsEntity().getWards());
+        }
+        customerInfoResponse.setImg(customer.getImg());
+        customerInfoResponse.setRoleName(customer.getAccountEntity().getRoleEntity().getRole_Title());
+
+        return customerInfoResponse;
+    }
 }

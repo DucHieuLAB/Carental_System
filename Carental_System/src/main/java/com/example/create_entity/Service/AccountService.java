@@ -29,17 +29,17 @@ public interface AccountService {
    ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST, HttpServletResponse response);
 
    ResponseEntity<?> Confirm_Register_OTPEmail(String username,String OTP,String OTP_ck,HttpServletResponse response);
-//
-//
-//   ResponseEntity<?> SendOTPtoEmail(String email,HttpServletResponse response);
-//
-//   ResponseEntity<?> UpdateCustomer(UpdateInfoCustomerRequest updateInfoCustomerRequest);
-//
-//   ResponseEntity<?> ConfirmOTPForgot(String Email,String OTP,String OTP_ck,HttpServletResponse response);
-//
-//    ResponseEntity<?> Change_password(ChangePassWordRequest response,String Email,HttpServletResponse httpServletResponse);
 
-//   ResponseEntity<?>DetailCustomer (String username);
+
+   ResponseEntity<?> SendOTPtoEmail(String email,HttpServletResponse response);
+
+//   ResponseEntity<?> UpdateCustomer(UpdateInfoCustomerRequest updateInfoCustomerRequest);
+
+   ResponseEntity<?> ConfirmOTPForgot(String Email,String OTP,String OTP_ck,HttpServletResponse response);
+
+    ResponseEntity<?> Change_password(ChangePassWordRequest response,String Email,HttpServletResponse httpServletResponse);
+
+   ResponseEntity<?>DetailCustomer (String username);
 
 
 

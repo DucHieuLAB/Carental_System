@@ -15,8 +15,8 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     @Query(value = "SELECT * FROM accounts where user_name = ? ", nativeQuery = true)
     List<AccountEntity> Check_username(String username);
 
-    @Query(value = "SELECT * FROM accounts where user_name = ? ", nativeQuery = true)
-    AccountEntity GetAccountByName(String username);
+//    @Query(value = "SELECT * FROM accounts where user_name = ? ", nativeQuery = true)
+//    AccountEntity GetAccountByName(String username);
 
 
     @Query(value = "    SELECT * FROM accounts where email = ? and  (accounts.status=1 or accounts.status=2) ", nativeQuery = true)

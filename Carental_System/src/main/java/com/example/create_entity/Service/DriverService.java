@@ -267,7 +267,7 @@ public class DriverService {
             pagingDriver.setTotalPage(driverEntities.getTotalPages());
             pagingDriver.setNumberPage(driverEntities.getNumber() + 1);
             if (infoResponses.isEmpty()) {
-                messes.setMess("k tìm thấy tên ! ");
+                messes.setMess("k tìm thấy dữ liệu  ! ");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<>(pagingDriver, HttpStatus.OK);
@@ -295,7 +295,7 @@ public class DriverService {
             pagingDriver.setTotalPage(driverEntities.getTotalPages());
             pagingDriver.setNumberPage(driverEntities.getNumber() + 1);
             if (infoResponses.isEmpty()) {
-                messes.setMess("k tìm thấy tên ! ");
+                messes.setMess("k tìm thấy dữ liệu ! ");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<>(pagingDriver, HttpStatus.OK);
