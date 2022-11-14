@@ -8,6 +8,7 @@ import com.example.create_entity.dto.Request.StaffRequest;
 import com.example.create_entity.dto.Request.UpdateInfoCustomerRequest;
 import com.example.create_entity.dto.Response.*;
 import com.example.create_entity.untils.RandomString;
+import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -422,6 +423,15 @@ public class AccountServiceIml implements AccountService {
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }
+
+
+    public void RemoveCookie(String Name, HttpServletResponse response, String URL) {
+        Cookie cookie = new Cookie(Name, null);
+        cookie.setMaxAge(0);
+        cookie.setPath(URL);
+        response.addCookie(cookie);
+    }
+
 //    @Override
 //    @Transactional
 //    public ResponseEntity<?> UpdateCustomer(UpdateInfoCustomerRequest updateInfoCustomerRequest) {
@@ -462,11 +472,27 @@ public class AccountServiceIml implements AccountService {
 //        return null;
 ////    }
 
-    public void RemoveCookie(String Name, HttpServletResponse response, String URL) {
-        Cookie cookie = new Cookie(Name, null);
-        cookie.setMaxAge(0);
-        cookie.setPath(URL);
-        response.addCookie(cookie);
+
+    @Override
+    public ResponseEntity<?> ListCustomer(Integer p) {
+        ReposMesses messes = new ReposMesses();
+        p = this.CheckNullPaging(p);
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+            Page<CustomerEntity> page = customerRepository.GetListCustomer(pageable);
+            ListCustomerResponse listCustomerResponse = new ListCustomerResponse();
+            List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
+
+            PagingResponse pagingResponse = new PagingResponse();
+            pagingResponse.setObjects(listCustomerResponses);
+            pagingResponse.setTotalPage(page.getTotalPages());
+            pagingResponse.setNumberPage(page.getNumber() + 1);
+
+            return new ResponseEntity<>(pagingResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
@@ -478,6 +504,87 @@ public class AccountServiceIml implements AccountService {
             CustomerInfoResponse infoResponse = new CustomerInfoResponse();
             infoResponse = infoResponse.customerInfoResponse(customer);
             return new ResponseEntity<>(infoResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByNameCustomer(String name, Integer p) {
+        ReposMesses messes = new ReposMesses();
+        p = this.CheckNullPaging(p);
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+            Page<CustomerEntity> page = customerRepository.FilterByName(name, pageable);
+            ListCustomerResponse listCustomerResponse = new ListCustomerResponse();
+            List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
+
+            if (listCustomerResponses.isEmpty()) {
+                messes.setMess("K tim thay !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else {
+                PagingResponse pagingResponse = new PagingResponse();
+                pagingResponse.setObjects(listCustomerResponses);
+                pagingResponse.setTotalPage(page.getTotalPages());
+                pagingResponse.setNumberPage(page.getNumber() + 1);
+
+                return new ResponseEntity<>(pagingResponse, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByPhoneCustomer(String phone, Integer p) {
+        ReposMesses messes = new ReposMesses();
+        p = this.CheckNullPaging(p);
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+            Page<CustomerEntity> page = customerRepository.FilterByPhone(phone, pageable);
+            ListCustomerResponse listCustomerResponse = new ListCustomerResponse();
+            List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
+
+            if (listCustomerResponses.isEmpty()) {
+                messes.setMess("K tim thay !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else {
+                PagingResponse pagingResponse = new PagingResponse();
+                pagingResponse.setObjects(listCustomerResponses);
+                pagingResponse.setTotalPage(page.getTotalPages());
+                pagingResponse.setNumberPage(page.getNumber() + 1);
+
+                return new ResponseEntity<>(pagingResponse, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByIdentityCustomer(String identity_number, Integer p) {
+        ReposMesses messes = new ReposMesses();
+        p = this.CheckNullPaging(p);
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+            Page<CustomerEntity> page = customerRepository.FilterByIdentity(identity_number, pageable);
+            ListCustomerResponse listCustomerResponse = new ListCustomerResponse();
+            List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
+
+            if (listCustomerResponses.isEmpty()) {
+                messes.setMess("K tim thay !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else {
+                PagingResponse pagingResponse = new PagingResponse();
+                pagingResponse.setObjects(listCustomerResponses);
+                pagingResponse.setTotalPage(page.getTotalPages());
+                pagingResponse.setNumberPage(page.getNumber() + 1);
+
+                return new ResponseEntity<>(pagingResponse, HttpStatus.OK);
+            }
         } catch (Exception e) {
             messes.setMess(e.getMessage());
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);

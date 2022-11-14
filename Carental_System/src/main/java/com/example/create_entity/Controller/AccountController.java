@@ -52,8 +52,8 @@ public class AccountController {
         return accountService.Change_password(response,Email,httpServletResponse);
     }
 
-    @RequestMapping(value = "account/Customer/Detail", method = RequestMethod.GET)
-    public ResponseEntity<?> GetDetail(@RequestParam(required = false) String username) {
-        return accountService.DetailCustomer(username);
-    }
+//    @RequestMapping(value = "account/Customer/Detail", method = RequestMethod.GET)
+//    public ResponseEntity<?> GetDetail(@RequestParam(required = false) String username) {
+//        return accountService.DetailCustomer(username);
+//    }
 }

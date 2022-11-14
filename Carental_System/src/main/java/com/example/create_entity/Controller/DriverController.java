@@ -39,8 +39,8 @@ public class DriverController {
     }
 
     @RequestMapping(value = "/driver/Search_name", method = RequestMethod.GET)
-    public ResponseEntity<?> Find_By_Name(@RequestParam(required = false,value = "name") String name,
-                                          @RequestParam(required = false,value = "p") Integer p) {
+    public ResponseEntity<?> Find_By_Name(@RequestParam(required = false) String name,
+                                          @RequestParam(required = false) Integer p) {
         return driverService.SearchByName(name,p);
     }
 

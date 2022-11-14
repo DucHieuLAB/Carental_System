@@ -30,7 +30,6 @@ public interface AccountService {
 
    ResponseEntity<?> Confirm_Register_OTPEmail(String username,String OTP,String OTP_ck,HttpServletResponse response);
 
-
    ResponseEntity<?> SendOTPtoEmail(String email,HttpServletResponse response);
 
 //   ResponseEntity<?> UpdateCustomer(UpdateInfoCustomerRequest updateInfoCustomerRequest);
@@ -39,10 +38,16 @@ public interface AccountService {
 
     ResponseEntity<?> Change_password(ChangePassWordRequest response,String Email,HttpServletResponse httpServletResponse);
 
+
+    // Customer
+
+   ResponseEntity<?> ListCustomer (Integer p);
    ResponseEntity<?>DetailCustomer (String username);
 
 
+    ResponseEntity<?> FilterByNameCustomer(String name, Integer p);
 
+   ResponseEntity<?> FilterByPhoneCustomer(String phone, Integer p);
 
-
+   ResponseEntity<?> FilterByIdentityCustomer(String identity_number, Integer p);
 }
