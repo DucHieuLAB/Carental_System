@@ -34,6 +34,11 @@ public class ContractController {
         return contractService.ListContract(p);
     }
 
+    @RequestMapping(value = "/ListContract_2", method = RequestMethod.GET)
+    public ResponseEntity<?> List_2(@RequestParam(value = "p", required = false) Integer p)
+    {
+        return contractService.ListContract_2(p);
+    }
     @RequestMapping(value = "/Search", method = RequestMethod.GET)
     public ResponseEntity<?> Filter(@RequestParam(required = false) Integer p,
                                           @RequestParam(required = false) String name,
@@ -46,11 +51,11 @@ public class ContractController {
         }
         return contractService.FilterByName(name,HadDriver,Status,p);
     }
-//
+
 //    @GetMapping("/Detail/{id}")
 //    public ResponseEntity<?> getContract(@PathVariable long id){
 //        return contractService.getContractById(id);
-//    }
+    }
 //
 //    @PutMapping("/update/driver")
 //    public ResponseEntity<?> updateDriver(@RequestBody ContractHadDriverRequest contractHadDriverRequest){
@@ -108,4 +113,4 @@ public class ContractController {
 //    public ResponseEntity<?> cancelContract(@PathVariable long id){
 //        return contractService.cancelRenting(id,2);
 //    }
-}
+

@@ -15,6 +15,7 @@ public interface ContractService {
 //
     ResponseEntity<?> ListContract(Integer p);
 
+    ResponseEntity<?> ListContract_2(Integer p);
     ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p);
 
     ResponseEntity<?> FilterByPhone(String name, Integer HadDriver, Integer Status, Integer p);
@@ -22,7 +23,7 @@ public interface ContractService {
 //    @Transactional
 //    ResponseEntity<?> update(ContractRequest contractRequest);
 //
-////    ResponseEntity<?> getContractById(Long id);
+//    ResponseEntity<?> getContractById(Long id);
 //
 //    ResponseEntity<?> updateRealPrice(ContractRealPriceRequest contractRealPriceRequest);
 //

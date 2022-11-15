@@ -39,16 +39,16 @@ public class TestDemo {
     @Autowired
     DriverRepository driverRepository;
 
-
-    @Test
-    public void testDriver() {
-        Pageable pageable = PageRequest.of(0, 1);
-        List<DriverEntity> driverEntities = driverRepository.GetDriverBy_fullName1("Vũ");
-
-
-        System.out.println(driverEntities);
-    }
-////}
+//
+//    @Test
+//    public void testDriver() {
+//        Pageable pageable = PageRequest.of(0, 1);
+//        List<DriverEntity> driverEntities = driverRepository.GetDriverBy_fullName1("Vũ");
+//
+//
+//        System.out.println(driverEntities);
+//    }
+//////}
 //
 //    @Test
 //    public void testGet() {
@@ -58,39 +58,39 @@ public class TestDemo {
 //        System.out.println(optionalUser.get());
 //    }
 //
-    @Test
-    public void testAccount() throws ParseException {
-
-        RoleEntity roleEntity = roleRepository.GetRoleDriver("Driver");
-
-
-        AccountEntity accountEntity = new AccountEntity();
-        accountEntity.setFullName("Nguyen Xuan Hieu");
-        accountEntity.setEmail("hieunxhe140911@fpt.edu.vn");
-        accountEntity.setUsername("hieu123");
-        accountEntity.setGender(1);
-        String sDate1="31/12/1998";
-        Date date1=new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
-
-
-        accountEntity.setPhone("0368995147");
-        accountEntity.setDOB(date1);
-        accountEntity.setIdentity_Number("1999291211212121");
-        accountEntity.setIdentity_Picture_Back("img1.jpg");
-        accountEntity.setIdentity_Picture_Front("img2.jpg");
-        accountEntity.setAddress("Hung Yen1");
-        accountEntity.setPassword("PassWord1");
-        accountEntity.setRoleEntity(roleEntity);
-
-            AccountEntity account = accountRepository.save(accountEntity);
-        Assertions.assertThat(account.getID()).isGreaterThan(0);
-        Assertions.assertThat(account.getID()).isGreaterThan(0);
-
-
-        //   accountEntity.setPassword("PassWord1");
-
-
-    }
+//    @Test
+//    public void testAccount() throws ParseException {
+//
+//        RoleEntity roleEntity = roleRepository.GetRoleDriver("Driver");
+//
+//
+//        AccountEntity accountEntity = new AccountEntity();
+//        accountEntity.setFullName("Nguyen Xuan Hieu");
+//        accountEntity.setEmail("hieunxhe140911@fpt.edu.vn");
+//        accountEntity.setUsername("hieu123");
+//        accountEntity.setGender(1);
+//        String sDate1="31/12/1998";
+//        Date date1=new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+//
+//
+//        accountEntity.setPhone("0368995147");
+//        accountEntity.setDOB(date1);
+//        accountEntity.setIdentity_Number("1999291211212121");
+//        accountEntity.setIdentity_Picture_Back("img1.jpg");
+//        accountEntity.setIdentity_Picture_Front("img2.jpg");
+//        accountEntity.setAddress("Hung Yen1");
+//        accountEntity.setPassword("PassWord1");
+//        accountEntity.setRoleEntity(roleEntity);
+//
+//            AccountEntity account = accountRepository.save(accountEntity);
+//        Assertions.assertThat(account.getID()).isGreaterThan(0);
+//        Assertions.assertThat(account.getID()).isGreaterThan(0);
+//
+//
+//        //   accountEntity.setPassword("PassWord1");
+//
+//
+//    }
 
 //    @Test
 //    public void TestBDetail(){

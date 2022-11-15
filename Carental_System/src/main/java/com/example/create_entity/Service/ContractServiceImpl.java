@@ -269,7 +269,43 @@ public class ContractServiceImpl implements ContractService {
             return new ResponseEntity<>(pagingContract, HttpStatus.OK);
         } else {
             ReposMesses messes = new ReposMesses();
-            messes.setMess("K có dữ liệu bảng Booking");
+            messes.setMess("K có dữ liệu bảng contract");
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<?> ListContract_2(Integer p) {
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        }
+        Pageable pageable = PageRequest.of(p, 5);
+
+        Page<ContractEntity> page = br.ListContract_2(pageable);
+
+        List<ContractResponse> contractResponse = new ArrayList<>();
+
+        page.forEach(BookingEntity -> {
+
+            ContractResponse contractResponse1 = ContractEntity.convertToContractResponse(BookingEntity);
+            contractResponse.add(contractResponse1);
+        });
+
+        PagingContract pagingContract = new PagingContract();
+
+        pagingContract.setContractResponseList(contractResponse);
+        pagingContract.setTotalPage(page.getTotalPages());
+        pagingContract.setNumberPage(page.getNumber() + 1);
+
+
+        if (!page.isEmpty()) {
+            return new ResponseEntity<>(pagingContract, HttpStatus.OK);
+        } else {
+            ReposMesses messes = new ReposMesses();
+            messes.setMess("K có dữ liệu bảng contract");
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         }
 
@@ -410,7 +446,7 @@ public class ContractServiceImpl implements ContractService {
 //        responseVo = ResponseVeConvertUntil.createResponseVo(true, "Thay đổi giá thuê thành công ", response);
 //        return new ResponseEntity<>(responseVo, HttpStatus.OK);
 //    }
-
+//
 //    @Override
 //    public ResponseEntity<?> getListContractByCustomerId(long customerId) {
 //        ResponseVo responseVo = null;
@@ -427,7 +463,7 @@ public class ContractServiceImpl implements ContractService {
 //        responseVo = ResponseVeConvertUntil.createResponseVo(true, "Danh sách hợp đồng", responses);
 //        return new ResponseEntity<>(responseVo, HttpStatus.OK);
 //    }
-
+//
 //    @Override
 //    public ResponseEntity<?> cancelRenting(long id, int i) {
 //        ContractEntity contractEntity = br.FindByID(id);
@@ -456,7 +492,7 @@ public class ContractServiceImpl implements ContractService {
 //            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
 //        }
 //    }
-
+//
 //    @Override
 //    public ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest) {
 //        ResponseVo responseVo = null;
@@ -534,7 +570,7 @@ public class ContractServiceImpl implements ContractService {
 //            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
 //        }
 //    }
-
+//
 //    @Override
 //    public ResponseEntity<?> update(ContractRequest contractRequest) {
 //        ResponseVo responseVo = null;
