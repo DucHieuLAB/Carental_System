@@ -25,9 +25,9 @@ public interface ContractRepository extends JpaRepository<ContractEntity,Long> {
 
 
 
-    @Query(value = "  select * from contracts left join accounts  \n" +
-            "            on contracts.customer_id=accounts.account_id \n" +
-            "            where accounts.full_name like %?1% \n" +
+    @Query(value = "select * from contracts left join customers  \n" +
+            "            on contracts.id_customer=customers.id_customer \n" +
+            "            where customers.full_name like %?1% \n" +
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END\n" +
             "            ",nativeQuery = true)

@@ -16,11 +16,11 @@ public class ContractController {
         this.contractService = bookingService1;
     }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<?> add(@RequestBody ContractRequest contractRequest)
-//    {
-//        return contractService.add(contractRequest);
-//    }
+    @PostMapping("/add")
+    public ResponseEntity<?> add(@RequestBody ContractRequest contractRequest)
+    {
+        return contractService.add(contractRequest);
+    }
 //
 //    @PutMapping("/update")
 //    public ResponseEntity<?> update(@RequestBody ContractRequest contractRequest) {
@@ -28,24 +28,24 @@ public class ContractController {
 //    }
 //
 //
-//    @RequestMapping(value = "/ListContract", method = RequestMethod.GET)
-//    public ResponseEntity<?> List(@RequestParam(value = "p", required = false) Integer p)
-//    {
-//        return contractService.ListContract(p);
-//    }
-//
-//    @RequestMapping(value = "/Search", method = RequestMethod.GET)
-//    public ResponseEntity<?> Filter(@RequestParam(required = false) Integer p,
-//                                          @RequestParam(required = false) String name,
-//                                          @RequestParam(required = false)Integer HadDriver,
-//                                          @RequestParam(required = false)Integer Status,
-//                                          @RequestParam(required = false) String phone)
-//    {
-//        if(phone!=null && name==null){
-//            return contractService.FilterByPhone(phone,HadDriver,Status,p);
-//        }
-//        return contractService.FilterByName(name,HadDriver,Status,p);
-//    }
+    @RequestMapping(value = "/ListContract", method = RequestMethod.GET)
+    public ResponseEntity<?> List(@RequestParam(value = "p", required = false) Integer p)
+    {
+        return contractService.ListContract(p);
+    }
+
+    @RequestMapping(value = "/Search", method = RequestMethod.GET)
+    public ResponseEntity<?> Filter(@RequestParam(required = false) Integer p,
+                                          @RequestParam(required = false) String name,
+                                          @RequestParam(required = false)Integer HadDriver,
+                                          @RequestParam(required = false)Integer Status,
+                                          @RequestParam(required = false) String phone)
+    {
+        if(phone!=null && name==null){
+            return contractService.FilterByPhone(phone,HadDriver,Status,p);
+        }
+        return contractService.FilterByName(name,HadDriver,Status,p);
+    }
 //
 //    @GetMapping("/Detail/{id}")
 //    public ResponseEntity<?> getContract(@PathVariable long id){

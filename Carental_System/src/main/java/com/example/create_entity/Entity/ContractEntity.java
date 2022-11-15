@@ -92,31 +92,31 @@ public class ContractEntity {
     @Column(name = "real_price")
     private double real_price;
 
-//    public static ContractResponse convertToContractResponse(ContractEntity be){
-//        ContractResponse result = new ContractResponse();
-//        if (ObjectUtils.isEmpty(be)){
-//            return null;
-//        }
-//        result.setBookingId(be.getId());
-//        result.setCustomerId(be.getId());
-//        result.setPickupParkingId(be.getPickup_parking().getId());
-//        result.setReturnParkingId(be.getReturn_parking().getId());
-//        result.setExpectedStartDate(be.getExpected_start_date());
-//        result.setExpectedEndDate(be.getExpected_end_date());
-//        result.setNote(be.getNote());
-//        result.setExpectedRentalPrice(be.getExpected_rental_price());
-//        result.setQuantity(be.getQuantity());
-//        result.setDepositAmount(be.getDeposit_amount());
-//        result.setHad_driver(be.isHad_driver());
-//        result.setCustomerId(be.getCustomer().getID());
-//        result.setPhoneCustomer(be.customer.getPhone());
-//        result.setFullName(be.customer.getFullName());
-//        result.setStatus(be.getStatus());
-//        result.setCreateDate(be.getCreatedDate());
-//        result.setLastModifiedDate(be.getLastModifiedDate());
-//        result.setReal_price(be.getReal_price());
-//        result.setCustomerEmail(be.customer.getEmail());
-//        return result;
-//    }
+    public static ContractResponse convertToContractResponse(ContractEntity be){
+        ContractResponse result = new ContractResponse();
+        if (ObjectUtils.isEmpty(be)){
+            return null;
+        }
+        result.setBookingId(be.getId());
+        result.setCustomerId(be.getId());
+        result.setPickupParkingId(be.getPickup_parking().getId());
+        result.setReturnParkingId(be.getReturn_parking().getId());
+        result.setExpectedStartDate(be.getExpected_start_date());
+        result.setExpectedEndDate(be.getExpected_end_date());
+        result.setNote(be.getNote());
+        result.setExpectedRentalPrice(be.getExpected_rental_price());
+        result.setQuantity(be.getQuantity());
+        result.setDepositAmount(be.getDeposit_amount());
+        result.setHad_driver(be.isHad_driver());
+        result.setCustomerId(be.getCustomer().getID());
+        result.setPhoneCustomer(be.customer.getPhone());
+        result.setFullName(be.customer.getFullName());
+        result.setStatus(be.getStatus());
+        result.setCreateDate(be.getCreatedDate());
+        result.setLastModifiedDate(be.getLastModifiedDate());
+        result.setReal_price(be.getReal_price());
+        result.setCustomerEmail(be.customer.getAccountEntity().getEmail());
+        return result;
+    }
 
 }

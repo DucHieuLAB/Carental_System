@@ -12,7 +12,7 @@ import java.util.List;
 public interface CarService {
 //    ResponseEntity<?> getListCapacity();
 //
-//    ResponseEntity<?> add(CarRequest carRequest);
+    ResponseEntity<?> add(CarRequest carRequest);
 //
 //    ResponseEntity<?> findAll(int pageIndex, int pageSize,
 //                              String modelName, Long parkingId, Integer capacity);

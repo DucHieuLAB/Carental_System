@@ -28,7 +28,7 @@ public class ContractDetailEntity {
 
 
     @ManyToOne
-    @JoinColumn(name = "ID_Driver",nullable = false, foreignKey = @ForeignKey(name = "FK_Driver"))
+    @JoinColumn(name = "ID_Driver",foreignKey = @ForeignKey(name = "FK_Driver"))
     private DriverEntity driverEntity;
 
     @ManyToOne

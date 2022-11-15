@@ -16,6 +16,7 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> 
     @Query(value = "SELECT cs FROM CustomerEntity cs INNER JOIN AccountEntity  ac ON cs.accountEntity.ID = ac.ID WHERE  cs.accountEntity.Username = ?1 ")
     CustomerEntity GetCustomerByName(String username);
 
+
     @Query(value = "SELECT cs FROM CustomerEntity cs INNER JOIN AccountEntity ac ON cs.accountEntity.ID = ac.ID ")
     Page<CustomerEntity> GetListCustomer(Pageable pageable);
 
@@ -27,5 +28,9 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> 
 
     @Query(value = "SELECT cs FROM CustomerEntity cs INNER JOIN AccountEntity ac ON cs.accountEntity.ID = ac.ID WHERE cs.Identity_Number  LIKE %?1%  ORDER BY cs.ModifiedDate DESC ")
     Page<CustomerEntity> FilterByIdentity(String identity,Pageable pageable);
+
+    @Query(value = "SELECT cs FROM CustomerEntity cs WHERE cs.ID = ?1 ")
+    CustomerEntity GetCustomerID (Long ID);
+
 
 }

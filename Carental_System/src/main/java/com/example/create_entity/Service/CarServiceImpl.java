@@ -19,27 +19,27 @@ import java.util.*;
 
 @Service
 public class CarServiceImpl implements CarService {
-//    @Autowired
-//    CarRepository carRepository;
-//
-//    @Autowired
-//    BrandRepository brandRepository;
-//
-//    @Autowired
-//    ParkingRepository parkingRepository;
-//
-//    @Autowired
-//    CarImageServiceImpl carImageService;
-//
-//    @Autowired
-//    LicenseRepository licenseRepository;
-//
-//    @Autowired
-//    DriverRepository driverRepository;
-//
-//    @Autowired
-//    AccountRepository accountRepository;
-//
+    @Autowired
+    CarRepository carRepository;
+
+    @Autowired
+    BrandRepository brandRepository;
+
+    @Autowired
+    ParkingRepository parkingRepository;
+
+    @Autowired
+    CarImageServiceImpl carImageService;
+
+    @Autowired
+    LicenseRepository licenseRepository;
+
+    @Autowired
+    DriverRepository driverRepository;
+
+    @Autowired
+    AccountRepository accountRepository;
+
 //    @Override
 //    public ResponseEntity<?> getListCapacity() {
 //        ResponseVo responseVo = new ResponseVo();
@@ -56,58 +56,58 @@ public class CarServiceImpl implements CarService {
 //        return new ResponseEntity<>(responseVo, HttpStatus.OK);
 //    }
 //
-//    @Override
-//    public ResponseEntity<?> add(CarRequest carRequest) {
-//        ResponseVo responseVo = new ResponseVo();
-//        if (ObjectUtils.isEmpty(carRequest)) {
-//            responseVo.setStatus(false);
-//            responseVo.setMessage("invialid input, car is empty");
-//            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-//        }
-//        CarEntity exsitCar = carRepository.findCarEntityByPlateNumber(carRequest.getPlateNumber());
-//        if (!ObjectUtils.isEmpty(exsitCar)) {
-//            responseVo.setStatus(false);
-//            responseVo.setMessage("Biển số xe đã tồn tại");
-//            return new ResponseEntity<>(responseVo, HttpStatus.OK);
-//        }
-//        try {
-//            CarEntity newCarEntity = CarEntity.createCarEntity(carRequest);
-//            BrandEntity brandEntity = brandRepository.findBrandEntityById(carRequest.getBrandId());
-//            Optional<ParkingEntity> parkingEntity = parkingRepository.findById(carRequest.getParkingId());
-//            LicenseTypeEntity licenseTypeEntity = licenseRepository.getLicenseById(carRequest.getLicenseId());
-//            if (ObjectUtils.isEmpty(brandEntity)) {
-//                responseVo.setMessage("Hãng xe không hợp lệ");
-//                return new ResponseEntity<>(responseVo, HttpStatus.OK);
-//            }
-//            if (!parkingEntity.isPresent()) {
-//                responseVo.setMessage("Bãi đỗ xe không hợp lệ");
-//                return new ResponseEntity<>(responseVo, HttpStatus.OK);
-//            }
-//            if (ObjectUtils.isEmpty(licenseTypeEntity)) {
-//                responseVo.setMessage("Thông tin bằng lái chưa hợp lệ");
-//                return new ResponseEntity<>(responseVo, HttpStatus.OK);
-//            }
-//            newCarEntity.setBrand(brandEntity);
-//            newCarEntity.setParking(parkingEntity.get());
-//            newCarEntity.setLicenseTypeEntity(licenseTypeEntity);
-//            carRepository.save(newCarEntity);
-//            carImageService.addList(carRequest.getImgs(), newCarEntity);
-//            CarEntity newCar = carRepository.findCarEntityByPlateNumber(newCarEntity.getPlateNumber());
-//            List<CarImageEntity> lsCar = carImageService.getListCarByPlateNumber(newCarEntity.getPlateNumber());
-//            newCar.setCarImageEntities(lsCar);
-//            CarResponseDetailResponse response = CarEntity.createCarResponseDetailResponse(newCar);
-//            responseVo.setStatus(true);
-//            responseVo.setMessage("Tạo mới thành công");
-//            responseVo.setData(response);
-//            return new ResponseEntity<>(responseVo, HttpStatus.OK);
-//        } catch (Exception e) {
-//            responseVo.setStatus(false);
-//            responseVo.setMessage("Lỗi khi tạo mới Xe");
-//            responseVo.setData(e.getMessage());
-//            return new ResponseEntity<>(responseVo, HttpStatus.OK);
-//        }
-//
-//    }
+    @Override
+    public ResponseEntity<?> add(CarRequest carRequest) {
+        ResponseVo responseVo = new ResponseVo();
+        if (ObjectUtils.isEmpty(carRequest)) {
+            responseVo.setStatus(false);
+            responseVo.setMessage("invialid input, car is empty");
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        CarEntity exsitCar = carRepository.findCarEntityByPlateNumber(carRequest.getPlateNumber());
+        if (!ObjectUtils.isEmpty(exsitCar)) {
+            responseVo.setStatus(false);
+            responseVo.setMessage("Biển số xe đã tồn tại");
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        try {
+            CarEntity newCarEntity = CarEntity.createCarEntity(carRequest);
+            BrandEntity brandEntity = brandRepository.findBrandEntityById(carRequest.getBrandId());
+            Optional<ParkingEntity> parkingEntity = parkingRepository.findById(carRequest.getParkingId());
+            LicenseTypeEntity licenseTypeEntity = licenseRepository.getLicenseById(carRequest.getLicenseId());
+            if (ObjectUtils.isEmpty(brandEntity)) {
+                responseVo.setMessage("Hãng xe không hợp lệ");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            if (!parkingEntity.isPresent()) {
+                responseVo.setMessage("Bãi đỗ xe không hợp lệ");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            if (ObjectUtils.isEmpty(licenseTypeEntity)) {
+                responseVo.setMessage("Thông tin bằng lái chưa hợp lệ");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            newCarEntity.setBrand(brandEntity);
+            newCarEntity.setParking(parkingEntity.get());
+            newCarEntity.setLicenseTypeEntity(licenseTypeEntity);
+            carRepository.save(newCarEntity);
+            carImageService.addList(carRequest.getImgs(), newCarEntity);
+            CarEntity newCar = carRepository.findCarEntityByPlateNumber(newCarEntity.getPlateNumber());
+            List<CarImageEntity> lsCar = carImageService.getListCarByPlateNumber(newCarEntity.getPlateNumber());
+            newCar.setCarImageEntities(lsCar);
+            CarResponseDetailResponse response = CarEntity.createCarResponseDetailResponse(newCar);
+            responseVo.setStatus(true);
+            responseVo.setMessage("Tạo mới thành công");
+            responseVo.setData(response);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        } catch (Exception e) {
+            responseVo.setStatus(false);
+            responseVo.setMessage("Lỗi khi tạo mới Xe");
+            responseVo.setData(e.getMessage());
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+
+    }
 //
 //    @Override
 //    public ResponseEntity<?> findAll(int pageIndex, int pageSize, String modelName, Long parkingId, Integer capacity) {

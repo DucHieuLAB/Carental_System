@@ -32,10 +32,10 @@ public class CarController {
 //        return carService.getListCapacity();
 //    }
 //
-//    @PostMapping("/add")
-//    public ResponseEntity<?> add(@RequestBody CarRequest carRequest) {
-//        return carService.add(carRequest);
-//    }
+    @PostMapping("/add")
+    public ResponseEntity<?> add(@RequestBody CarRequest carRequest) {
+        return carService.add(carRequest);
+    }
 //
 //    @PutMapping("/update")
 //    public ResponseEntity<?> update(@RequestBody CarRequest carRequest) {

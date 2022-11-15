@@ -13,11 +13,11 @@ public interface ContractService {
 ////    @Transactional
 ////    ResponseEntity<?> updateDriver(ContractHadDriverRequest contractHadDriverRequest);
 //
-//    ResponseEntity<?> ListContract(Integer p);
-//
-//    ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p);
-//
-//    ResponseEntity<?> FilterByPhone(String name, Integer HadDriver, Integer Status, Integer p);
+    ResponseEntity<?> ListContract(Integer p);
+
+    ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p);
+
+    ResponseEntity<?> FilterByPhone(String name, Integer HadDriver, Integer Status, Integer p);
 //
 //    @Transactional
 //    ResponseEntity<?> update(ContractRequest contractRequest);
