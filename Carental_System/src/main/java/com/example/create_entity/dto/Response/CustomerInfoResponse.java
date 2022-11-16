@@ -55,7 +55,7 @@ public class CustomerInfoResponse {
         customerInfoResponse.setUserName(customer.getAccountEntity().getUsername());
         customerInfoResponse.setDob(customer.getDOB());
         customerInfoResponse.setEmail(customer.getAccountEntity().getEmail());
-        customerInfoResponse.setGender(customer.getAccountEntity().getStatus());
+        customerInfoResponse.setGender(customer.getGender());
         customerInfoResponse.setAddress(customer.getAddress());
         customerInfoResponse.setIdentity_Number(customer.getIdentity_Number());
         customerInfoResponse.setIdentity_Picture_Back(customer.getIdentity_Picture_Back());
