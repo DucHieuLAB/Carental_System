@@ -26,6 +26,7 @@ public class ListCustomerResponse {
     String Identity_number;
     String UserName;
     Integer Status;
+    Integer Gender;
 
     public List<ListCustomerResponse> listCustomerResponses (Page<CustomerEntity> customerEntities){
         List<ListCustomerResponse> listCustomerResponses = new ArrayList<>();
@@ -40,6 +41,7 @@ public class ListCustomerResponse {
             staffResponse.setUserName(CustomerEntity.getAccountEntity().getUsername());
             staffResponse.setEmail(CustomerEntity.getAccountEntity().getEmail());
             staffResponse.setAddress(CustomerEntity.getAddress());
+            staffResponse.setGender(CustomerEntity.getGender());
             listCustomerResponses.add(staffResponse);
         });
         return listCustomerResponses;

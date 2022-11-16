@@ -20,8 +20,8 @@ import java.util.Arrays;
 public class CreateEntityApplication extends SpringBootServletInitializer {
 
 
-//    @Autowired
-//    private EmailSenderService senderService;
+    @Autowired
+    private EmailSenderService senderService;
 
 
 
@@ -38,6 +38,7 @@ public class CreateEntityApplication extends SpringBootServletInitializer {
 //                "This is email subject");
 //
 //    }
+
 
     @Bean
     public CorsFilter corsFilter() {
