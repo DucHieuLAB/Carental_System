@@ -49,7 +49,9 @@ public class CustomerInfoResponse {
 
 
     public CustomerInfoResponse customerInfoResponse(CustomerEntity customer) {
+
         CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
+        customerInfoResponse.setFullName(customer.getFullName());
         customerInfoResponse.setUserName(customer.getAccountEntity().getUsername());
         customerInfoResponse.setDob(customer.getDOB());
         customerInfoResponse.setEmail(customer.getAccountEntity().getEmail());
@@ -59,6 +61,7 @@ public class CustomerInfoResponse {
         customerInfoResponse.setIdentity_Picture_Back(customer.getIdentity_Picture_Back());
         customerInfoResponse.setIdentity_Picture_Front(customer.getIdentity_Picture_Front());
         customerInfoResponse.setStatus(customer.getStatus());
+        customerInfoResponse.setPhone(customer.getPhone());
         if (customer.getDistrictsEntity() == null) {
             customerInfoResponse.setDistrict_Name("");
             customerInfoResponse.setCity("");
