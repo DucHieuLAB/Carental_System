@@ -16,17 +16,12 @@ public class DriverInfoRequest {
 
 
     private String FullName;
-
-
     private String username;
     private String name_License;
 
     private String Phone;
 
     private int yearExperience;
-
-    private int status;
-
     private Date Dob;
 
     private String Email;

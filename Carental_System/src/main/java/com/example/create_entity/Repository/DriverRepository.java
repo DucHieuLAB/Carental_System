@@ -16,12 +16,15 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
+public interface DriverRepository extends JpaRepository<DriverEntity,Long> {
 
 
     @Transactional
     @Query(value = "SELECT * FROM driver WHERE id_diver = ?1 ", nativeQuery = true)
     DriverEntity GetDriverById(Long id);
+
+    @Query(value = "SELECT dr FROM DriverEntity  dr INNER JOIN AccountEntity ac ON dr.accountEntity.ID = ac.ID WHERE dr.accountEntity.Username = ?1 ")
+    DriverEntity  Check_Username(String username);
 
     @Query(value = "select *  from driver inner join accounts on driver.account_id=accounts.account_id where accounts.user_name = ?", nativeQuery = true)
     DriverEntity GetByUsername(String username);
@@ -41,11 +44,28 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
     Page<DriverEntity> GetDriverBy_Phone(String phone,Pageable pageable);
 
 
-    @Query(value = "SELECT de FROM DriverEntity de WHERE de.Phone = ?1 ")
+    @Query(value = "SELECT de FROM DriverEntity de WHERE de.Phone = ?1")
     List<DriverEntity> Check_Phone(String Phone);
 
+
+
     @Query(value = "SELECT de FROM DriverEntity de WHERE de.Identity_Number = ?1 ")
-    List<DriverEntity> Check_Identity(String Phone);
+    List<DriverEntity> Check_Identity(String Identity);
+
+    @Query(value = "SELECT * FROM driver " +
+            "inner join accounts on driver.id = accounts.account_id " +
+            "where driver.phone = ? and accounts.user_name != ? and driver.id != ? ",nativeQuery = true)
+    List<DriverEntity> Check_Phone_Update(String Phone,String username,Long id);
+
+    @Query(value = "SELECT * FROM driver " +
+            "inner join accounts on driver.id = accounts.account_id "+
+            "where driver.identity_number = ? and accounts.user_name != ? and driver.id != ? ",nativeQuery = true)
+    List<DriverEntity> Check_Identity_Update(String Identity,String username,Long id);
+
+    @Query(value = "SELECT * FROM driver " +
+            "inner join accounts on driver.id = accounts.account_id " +
+            "where driver.diver_number_license = ? and accounts.user_name != ? and driver.id != ? ",nativeQuery = true)
+    DriverEntity Check_Number_license_update(String number_license,String username,Long id);
 
     @Query(value = "SELECT  dr FROM DriverEntity dr INNER JOIN AccountEntity ac ON dr.accountEntity.ID = ac.ID WHERE dr.Identity_Number LIKE %?1% ")
     Page<DriverEntity> GetDriverBy_Identity(String cmt, Pageable pageable);
@@ -53,6 +73,11 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
 
     @Query(value = "SELECT * From driver where driver.diver_number_license=? ", nativeQuery = true)
     List<DriverEntity> Check_diver_number_license(String diver_number_license);
+
+    @Query(value = "SELECT dr FROM DriverEntity dr WHERE dr.Driver_Number_License = ?1 ")
+    DriverEntity Check_Number_license(String number_license);
+
+
 
 
     //    @Transactional

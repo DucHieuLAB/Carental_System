@@ -1,21 +1,17 @@
 package com.example.create_entity.dto.Request;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 import java.util.Date;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateInfoCustomerRequest {
+public class UpdateInfoStaffRequest {
     private String UserName;
-
     private String FullName;
     private String img_avt;
     private int Gender;
@@ -28,8 +24,4 @@ public class UpdateInfoCustomerRequest {
     private String wards;
     private String City;
     private Date Dob;
-    private int Status;
-    private String driving_license_image_Front;
-    private String driving_license_image_back;
-    private String Driver_Number_License;
 }

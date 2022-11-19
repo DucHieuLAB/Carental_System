@@ -32,5 +32,11 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> 
     @Query(value = "SELECT cs FROM CustomerEntity cs WHERE cs.ID = ?1 ")
     CustomerEntity GetCustomerID (Long ID);
 
+    @Query(value = "SELECT cs FROM CustomerEntity cs WHERE cs.Identity_Number = ?1 ")
+    CustomerEntity Check_Identity(String  Identity);
+
+    @Query(value = "SELECT cs FROM CustomerEntity cs WHERE cs.Phone = ?1 ")
+    CustomerEntity Check_Phone(String  phone);
+
 
 }

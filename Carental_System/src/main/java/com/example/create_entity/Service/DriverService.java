@@ -3,11 +3,7 @@ package com.example.create_entity.Service;
 import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.*;
 import com.example.create_entity.dto.Request.DriverInfoRequest;
-import com.example.create_entity.dto.Response.PagingDriver;
-import com.example.create_entity.dto.Response.DriverInfoDetailResponse;
-import com.example.create_entity.dto.Response.DriverInfoResponse;
-import com.example.create_entity.dto.Response.LicenseInfoResponse;
-import com.example.create_entity.dto.Response.ReposMesses;
+import com.example.create_entity.dto.Response.*;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -260,7 +256,7 @@ public class DriverService {
         ReposMesses messes = new ReposMesses();
         try {
             Pageable pageable = PageRequest.of(p, 5);
-            Page<DriverEntity> driverEntities = driverRepository.GetDriverBy_Phone(Phone,pageable);
+            Page<DriverEntity> driverEntities = driverRepository.GetDriverBy_Phone(Phone, pageable);
             PagingDriver pagingDriver = new PagingDriver();
             List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
             pagingDriver.setDriverInfoResponsesList(infoResponses);
@@ -288,7 +284,7 @@ public class DriverService {
         ReposMesses messes = new ReposMesses();
         try {
             Pageable pageable = PageRequest.of(p, 5);
-            Page<DriverEntity> driverEntities = driverRepository.GetDriverBy_Identity(cmt,pageable);
+            Page<DriverEntity> driverEntities = driverRepository.GetDriverBy_Identity(cmt, pageable);
             PagingDriver pagingDriver = new PagingDriver();
             List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
             pagingDriver.setDriverInfoResponsesList(infoResponses);
@@ -325,7 +321,7 @@ public class DriverService {
             } else {
                 return new ResponseEntity<>(licenseInfoResponses, HttpStatus.OK);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             messes.setMess(e.getMessage());
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         }
@@ -356,9 +352,81 @@ public class DriverService {
                 return new ResponseEntity<>(reposMesses, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             reposMesses.setMess(e.getMessage());
             return new ResponseEntity<>(reposMesses, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> UpdateDriver(DriverInfoRequest infoRequest) {
+        ResponseVo messes = new ResponseVo();
+
+        try {
+
+            DriverEntity driverEntity = driverRepository.Check_Username(infoRequest.getUsername().trim());
+            if (!driverRepository.Check_Phone_Update(infoRequest.getPhone().trim(),infoRequest.getUsername().trim(),driverEntity.getId()).isEmpty()) {
+                messes.setMessage("Số điện thoại đã được đăng kí trong hệ thống  !");
+                messes.setStatus(false);
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!driverRepository.Check_Identity_Update(infoRequest.getIdentity_Number().trim(),infoRequest.getUsername().trim(),driverEntity.getId()).isEmpty()) {
+                messes.setMessage("Số Chứng minh thư đã được đăng kí trong hệ thống !");
+                messes.setStatus(false);
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (driverRepository.Check_Number_license_update(infoRequest.getDriver_Number_License().trim(),infoRequest.getUsername().trim(),driverEntity.getId()) != null) {
+                messes.setMessage("Số bằng lái xe đã tồn ! ");
+                messes.setStatus(false);
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else {
+                DistrictsEntity districtsEntity = new DistrictsEntity();
+
+                driverEntity.setImg(infoRequest.getImg());
+                driverEntity.setDOB(infoRequest.getDob());
+                driverEntity.setAddress(infoRequest.getAddress());
+                driverEntity.setIdentity_Picture_Front(infoRequest.getIdentity_Picture_Front());
+                driverEntity.setIdentity_Picture_Back(infoRequest.getIdentity_Picture_Back());
+                driverEntity.setIdentity_Number(infoRequest.getIdentity_Number());
+                driverEntity.setPhone(infoRequest.getPhone());
+                driverEntity.setFullName(infoRequest.getFullName());
+                driverEntity.setGender(infoRequest.getGender());
+                driverEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+
+                List<DistrictsEntity> districtsEntities = districtRepository.check_district(infoRequest.getCity(),
+                        infoRequest.getWards(),
+                        infoRequest.getDistrict_Name());
+                if (districtsEntities.isEmpty()) {
+                    districtsEntity.setCity(infoRequest.getCity());
+                    districtsEntity.setDistrict_Name(infoRequest.getDistrict_Name());
+                    districtsEntity.setWards(infoRequest.getWards());
+                    driverEntity.setDistrictsEntity(districtsEntity);
+                    districtRepository.save(districtsEntity);
+                } else {
+                    DistrictsEntity districts = districtRepository.check_districts(
+                            districtsEntity.getCity(),
+                            districtsEntity.getWards(),
+                            districtsEntity.getDistrict_Name());
+                    driverEntity.setDistrictsEntity(districts);
+
+                }
+
+                LicenseTypeEntity licenseTypeEntity;
+                licenseTypeEntity = licenseRepository.Get_License_By_Name(infoRequest.getName_License());
+
+                driverEntity.setLicenseTypeEntity(licenseTypeEntity);
+                driverEntity.setDriver_Number_License(infoRequest.getDriver_Number_License());
+                driverEntity.setDriving_license_image_Front(infoRequest.getDriving_license_image_Front());
+                driverEntity.setDriving_license_image_back(infoRequest.getDriving_license_image_back());
+                driverEntity.setYear_Experience(infoRequest.getYearExperience());
+
+                driverRepository.save(driverEntity);
+                messes.setStatus(true);
+                messes.setMessage("Cập nhật thành công !");
+                messes.setData(infoRequest);
+                return new ResponseEntity<>(messes, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            messes.setStatus(false);
+            messes.setMessage(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -1,12 +1,10 @@
 package com.example.create_entity.Controller;
 
 import com.example.create_entity.Service.AccountServiceIml;
+import com.example.create_entity.dto.Request.UpdateInfoCustomerRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -42,5 +40,10 @@ public class CustomerController {
     public ResponseEntity<?> FilterByIdentity(@RequestParam(required = false ,name = "p") Integer p,
                                           @RequestParam(required = false ,name = "identity_number") String identity_number) {
         return accountService.FilterByIdentityCustomer(identity_number,p);
+    }
+
+    @RequestMapping(value = "account/Customer/Update", method = RequestMethod.PUT)
+    public ResponseEntity<?>Update(@RequestBody UpdateInfoCustomerRequest updateInfoCustomerRequest) {
+        return accountService.UpdateCustomer(updateInfoCustomerRequest);
     }
 }
