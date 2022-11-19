@@ -2,6 +2,7 @@ package com.example.create_entity.Repository;
 
 import com.example.create_entity.Entity.AccountEntity;
 import com.example.create_entity.Entity.CustomerEntity;
+import com.example.create_entity.Entity.StaffEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,6 +38,18 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> 
 
     @Query(value = "SELECT cs FROM CustomerEntity cs WHERE cs.Phone = ?1 ")
     CustomerEntity Check_Phone(String  phone);
+
+
+    @Query(value = "SELECT * FROM customers " +
+            "inner join accounts on customers.id = accounts.account_id " +
+            "where customers.phone = ? and accounts.user_name != ? and customers.id != ?  ",nativeQuery = true)
+    CustomerEntity Check_Phone_Update(String phone, String username, Long id);
+
+
+    @Query(value = "SELECT * FROM customers " +
+            "inner join accounts on customers.id = accounts.account_id " +
+            "where customers.identity_number = ? and accounts.user_name != ? and customers.id != ?  ",nativeQuery = true)
+   CustomerEntity Check_Identity_Update(String Identity,String username,Long id);
 
 
 }

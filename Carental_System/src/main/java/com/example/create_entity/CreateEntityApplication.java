@@ -9,6 +9,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -24,10 +28,13 @@ public class CreateEntityApplication extends SpringBootServletInitializer {
     private EmailSenderService senderService;
 
 
-
     public static void main(String[] args) {
         SpringApplication.run(CreateEntityApplication.class, args);
-        System.out.println("Add row");
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        Boolean a = passwordEncoder.matches("12312272123", "$2a$10$p4D5aEFKUkMiN6wYPhW0T.ml0PXS1jD10Fg/1qdr9DK4T03Gf62eW");
+        System.out.println(a);
+
+
     }
 
 
@@ -38,6 +45,7 @@ public class CreateEntityApplication extends SpringBootServletInitializer {
 //                "This is email subject");
 //
 //    }
+
 
 
     @Bean

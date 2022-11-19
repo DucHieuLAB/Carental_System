@@ -270,7 +270,7 @@ public class AccountServiceIml implements AccountService {
             } else if (!REQUEST.getEmail().matches(regexPattern)) {
                 responseVo.setMessage("Email k đúng định dạng !");
                 responseVo.setStatus(false);
-                return new ResponseEntity<>( responseVo, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
             String Code_OTP = randomString.generateRandomString();
             accountEntity.setEmail(REQUEST.getEmail());
@@ -442,16 +442,20 @@ public class AccountServiceIml implements AccountService {
     @Override
     @Transactional
     public ResponseEntity<?> UpdateCustomer(UpdateInfoCustomerRequest updateInfoCustomerRequest) {
-        ReposMesses messes = new ReposMesses();
+        ResponseVo responseVo = new ResponseVo();
         try {
-            if (customerRepository.Check_Phone(updateInfoCustomerRequest.getPhone().trim()) !=null) {
-                messes.setMess("Số điện thoại đã tồn tại trong hệ thống !");
-                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-            } else if (customerRepository.Check_Identity(updateInfoCustomerRequest.getIdentity_number().trim()) != null) {
-                messes.setMess("Số chứng minh thư đã tồn tại trong hệ thống !");
-                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-            }else {
-                CustomerEntity customer = customerRepository.GetCustomerByName(updateInfoCustomerRequest.getUserName());
+            CustomerEntity customer = customerRepository.GetCustomerByName(updateInfoCustomerRequest.getUserName());
+            String username = updateInfoCustomerRequest.getUserName();
+            if (customerRepository.Check_Phone_Update(updateInfoCustomerRequest.getPhone().trim(), username, customer.getID()) != null) {
+                responseVo.setMessage("Số điện thoại đã tồn tại trong hệ thống !");
+                responseVo.setStatus(false);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            } else if (customerRepository.Check_Identity_Update(updateInfoCustomerRequest.getIdentity_number().trim(), username, customer.getID()) != null) {
+                responseVo.setMessage("Số chứng minh thư đã tồn tại trong hệ thống !");
+                responseVo.setStatus(false);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            } else {
+
                 DistrictsEntity districtsEntity = new DistrictsEntity();
                 customer.setImg(updateInfoCustomerRequest.getImg_avt());
                 customer.setDOB(updateInfoCustomerRequest.getDob());
@@ -482,11 +486,14 @@ public class AccountServiceIml implements AccountService {
                     customer.setDistrictsEntity(districts);
                 }
                 customerRepository.save(customer);
-                messes.setMess("Cập nhật thành công !");
-                return new ResponseEntity<>(messes, HttpStatus.OK);
+                responseVo.setMessage("Cập nhật thành công !");
+                responseVo.setStatus(true);
+                return new ResponseEntity<>(responseVo,HttpStatus.OK);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            responseVo.setMessage(e.getMessage());
+            responseVo.setStatus(false);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -494,16 +501,19 @@ public class AccountServiceIml implements AccountService {
     @Override
     @Transactional
     public ResponseEntity<?> UpdateStaff(UpdateInfoStaffRequest updateInfoStaffRequest) {
-        ReposMesses messes = new ReposMesses();
+        ResponseVo responseVo = new ResponseVo();
         try {
-            if (!staffRepository.Check_Phone(updateInfoStaffRequest.getPhone().trim()).isEmpty()) {
-                messes.setMess("Số điện thoại đã tồn tại trong hệ thống !");
-                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-            } else if (!staffRepository.Check_Identity(updateInfoStaffRequest.getIdentity_number().trim()).isEmpty()) {
-                messes.setMess("Số chứng minh thư đã tồn tại trong hệ thống !");
-                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-            }else {
-                StaffEntity staffEntity =staffRepository.GetStaffByUserName(updateInfoStaffRequest.getUserName());
+            String username = updateInfoStaffRequest.getUserName();
+            StaffEntity staffEntity = staffRepository.GetStaffByUserName(username);
+            if (!staffRepository.Check_Phone_Update(updateInfoStaffRequest.getPhone().trim(), username, staffEntity.getId()).isEmpty()) {
+                responseVo.setMessage("Số điện thoại đã tồn tại trong hệ thống !");
+                responseVo.setStatus(false);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            } else if (!staffRepository.Check_Identity_Update(updateInfoStaffRequest.getIdentity_number().trim(),username, staffEntity.getId()).isEmpty()) {
+                responseVo.setMessage("Số chứng minh thư đã tồn tại trong hệ thống !");
+                    responseVo.setStatus(false);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            } else {
                 DistrictsEntity districtsEntity = new DistrictsEntity();
                 staffEntity.setImg(updateInfoStaffRequest.getImg_avt());
                 staffEntity.setDOB(updateInfoStaffRequest.getDob());
@@ -532,12 +542,15 @@ public class AccountServiceIml implements AccountService {
                             updateInfoStaffRequest.getDistrict_Name());
                     staffEntity.setDistrictsEntity(districts);
                 }
-              staffRepository.save(staffEntity);
-                messes.setMess("Cập nhật thành công !");
-                return new ResponseEntity<>(messes, HttpStatus.OK);
+                staffRepository.save(staffEntity);
+                responseVo.setMessage("Cập nhật thành công !");
+                responseVo.setStatus(true);
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            responseVo.setMessage(e.getMessage());
+            responseVo.setStatus(false);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -657,5 +670,34 @@ public class AccountServiceIml implements AccountService {
             messes.setMess(e.getMessage());
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest) {
+        ResponseVo responseVo = new ResponseVo();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        try {
+            CustomerEntity customer = customerRepository.GetCustomerByName(changePassRequest.getUsername());
+        if(!passwordEncoder.matches(changePassRequest.getOldPass(),customer.getAccountEntity().getPassword())){
+           responseVo.setStatus(false);
+           responseVo.setMessage("Mật khẩu cũ không chính xác !");
+           return  new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }else{
+          String new_pass =  passwordEncoder.encode(changePassRequest.getNewPass());
+            customer.getAccountEntity().setPassword(new_pass);
+            customer.getAccountEntity().setModifiedDate(new Date(System.currentTimeMillis()));
+            responseVo.setStatus(true);
+            customerRepository.save(customer);
+            responseVo.setMessage("Thay đổi mật khẩu thành công !");
+            return  new ResponseEntity<>(responseVo,HttpStatus.OK);
+        }
+
+        }catch (Exception e){
+             responseVo.setMessage(e.getMessage());
+             responseVo.setStatus(false);
+            return  new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

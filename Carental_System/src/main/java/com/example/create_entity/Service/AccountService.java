@@ -49,4 +49,6 @@ public interface AccountService {
    ResponseEntity<?> FilterByPhoneCustomer(String phone, Integer p);
 
    ResponseEntity<?> FilterByIdentityCustomer(String identity_number, Integer p);
+
+    ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest);
 }
