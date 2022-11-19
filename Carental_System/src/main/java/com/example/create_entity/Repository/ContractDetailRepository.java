@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -119,5 +120,15 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
     List<ContractDetailEntity>SearchPlateNumber_schedule_Date1(String name,String date1,String date2);
 
 
+    @Query(value = "SELECT *\n" +
+            "FROM contract_details c\n" +
+            "LEFT JOIN contracts ct on c.contract_id = ct.booking_id and ct.status > 0\n" +
+            "WHERE c.car_id = ?1 LIMIT 1",nativeQuery = true )
+    Optional<ContractDetailEntity> findContractDetailByCar(Long carId);
+
+    @Query(value = "SELECT COUNT(*) FROM contract_details c,contracts ct WHERE c.contract_id = ct.booking_id and ct.status > 0 and c.contract_id = ?1 ",nativeQuery = true)
+    int getCountContractDetail(long contractId);
+    @Query(value = "SELECT COUNT(*) FROM contract_details c,contracts ct WHERE c.contract_id = ct.booking_id and ct.status > 0 and c.driver_id = ?1 ",nativeQuery = true)
+    int getCountContractDetailByDriverId(Long id);
 
 }

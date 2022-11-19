@@ -27,7 +27,7 @@ public class ContractDetailEntity {
     private Date real_return_date;
 
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "ID_Driver",foreignKey = @ForeignKey(name = "FK_Driver"))
     private DriverEntity driverEntity;
 

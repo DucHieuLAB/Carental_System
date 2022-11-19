@@ -7,34 +7,34 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 public interface ContractService {
-//    @Transactional
-//    ResponseEntity<?> add(ContractRequest contractRequest);
-//
-////    @Transactional
-////    ResponseEntity<?> updateDriver(ContractHadDriverRequest contractHadDriverRequest);
-//
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    ResponseEntity<?> add(ContractRequest contractRequest);
+
     ResponseEntity<?> ListContract(Integer p);
 
-    ResponseEntity<?> ListContract_2(Integer p);
     ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p);
 
     ResponseEntity<?> FilterByPhone(String name, Integer HadDriver, Integer Status, Integer p);
-//
-//    @Transactional
-//    ResponseEntity<?> update(ContractRequest contractRequest);
-//
-//    ResponseEntity<?> getContractById(Long id);
-//
-//    ResponseEntity<?> updateRealPrice(ContractRealPriceRequest contractRealPriceRequest);
-//
-//    ResponseEntity<?> getListContractByCustomerId(long customerId);
-//
-//    @Transactional
-//    ResponseEntity<?> cancelRenting(long id, int i);
 
-//    @Transactional
-//    ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest);
+    ResponseEntity<?> getContractById(Long id);
+
+    ResponseEntity<?> getListContractByCustomerId(long customerId);
+
+    @Transactional
+    ResponseEntity<?> cancelRenting(long id, int i);
+
+    @Transactional
+    ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest);
 
 //    @Transactional
 //    ResponseEntity<?> updateRentailPrice()
+
+//    @Transactional
+//    ResponseEntity<?> updateDriver(ContractHadDriverRequest contractHadDriverRequest);
+
+//    ResponseEntity<?> updateRealPrice(ContractRealPriceRequest contractRealPriceRequest);
+
+//    @Transactional
+//    ResponseEntity<?> update(ContractRequest contractRequest);
+//
 }

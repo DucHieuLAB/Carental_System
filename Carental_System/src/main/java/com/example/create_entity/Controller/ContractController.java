@@ -11,50 +11,52 @@ import org.springframework.web.bind.annotation.*;
 public class ContractController {
 
     private final ContractServiceImpl contractService;
+
     @Autowired
-    public ContractController(ContractServiceImpl bookingService1) {
-        this.contractService = bookingService1;
+    public ContractController(ContractServiceImpl contractService1) {
+        this.contractService = contractService1;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody ContractRequest contractRequest)
-    {
+    public ResponseEntity<?> add(@RequestBody ContractRequest contractRequest) {
         return contractService.add(contractRequest);
     }
-//
-//    @PutMapping("/update")
-//    public ResponseEntity<?> update(@RequestBody ContractRequest contractRequest) {
-//        return contractService.update(contractRequest);
-//    }
-//
-//
+
     @RequestMapping(value = "/ListContract", method = RequestMethod.GET)
-    public ResponseEntity<?> List(@RequestParam(value = "p", required = false) Integer p)
-    {
+    public ResponseEntity<?> List(@RequestParam(value = "p", required = false) Integer p) {
         return contractService.ListContract(p);
     }
 
-    @RequestMapping(value = "/ListContract_2", method = RequestMethod.GET)
-    public ResponseEntity<?> List_2(@RequestParam(value = "p", required = false) Integer p)
-    {
-        return contractService.ListContract_2(p);
-    }
     @RequestMapping(value = "/Search", method = RequestMethod.GET)
     public ResponseEntity<?> Filter(@RequestParam(required = false) Integer p,
-                                          @RequestParam(required = false) String name,
-                                          @RequestParam(required = false)Integer HadDriver,
-                                          @RequestParam(required = false)Integer Status,
-                                          @RequestParam(required = false) String phone)
-    {
-        if(phone!=null && name==null){
-            return contractService.FilterByPhone(phone,HadDriver,Status,p);
+                                    @RequestParam(required = false) String name,
+                                    @RequestParam(required = false) Integer HadDriver,
+                                    @RequestParam(required = false) Integer Status,
+                                    @RequestParam(required = false) String phone) {
+        if (phone != null && name == null) {
+            return contractService.FilterByPhone(phone, HadDriver, Status, p);
         }
-        return contractService.FilterByName(name,HadDriver,Status,p);
+        return contractService.FilterByName(name, HadDriver, Status, p);
     }
 
-//    @GetMapping("/Detail/{id}")
-//    public ResponseEntity<?> getContract(@PathVariable long id){
-//        return contractService.getContractById(id);
+    @GetMapping("/Detail/{id}")
+    public ResponseEntity<?> getContract(@PathVariable long id) {
+        return contractService.getContractById(id);
+    }
+
+    @GetMapping("/ListContract/{CustomerId}")
+    public ResponseEntity<?> getListResponseEntityByCustomerId(@PathVariable long CustomerId) {
+        return contractService.getListContractByCustomerId(CustomerId);
+    }
+
+    @PutMapping("/update/UpdateDriverAndRealPrice")
+    public ResponseEntity<?> updateDriverAndRealPrice(@RequestBody ContractDriverRealPriceRequest contractDriverRealPriceRequest) {
+        return contractService.updateDriverAndRealPrice(contractDriverRealPriceRequest);
+    }
+
+    @DeleteMapping("/cancelContractByCustomer/{id}")
+    public ResponseEntity<?> cancelContract(@PathVariable long id){
+        return contractService.cancelRenting(id,2);
     }
 //
 //    @PutMapping("/update/driver")
@@ -67,20 +69,13 @@ public class ContractController {
 //        return contractService.updateRealPrice(contractRealPriceRequest);
 //    }
 //
-//    @PutMapping("/update/UpdateDriverAndRealPrice")
-//    public ResponseEntity<?> updateDriverAndRealPrice(@RequestBody ContractDriverRealPriceRequest contractDriverRealPriceRequest){
-//        return contractService.updateDriverAndRealPrice(contractDriverRealPriceRequest);
-//    }
 //    @PutMapping
 //    public ResponseEntity<?> updateContract(@RequestBody ContractRequest contractRequest){
 //        return contractService.update(contractRequest);
 //    }
 //
 //
-//    @GetMapping("/ListContract/{CustomerId}")
-//    public ResponseEntity<?> getListResponseEntityByCustomerId(@PathVariable long CustomerId){
-//        return contractService.getListContractByCustomerId(CustomerId);
-//    }
+
 //    @PutMapping("/update/startContract")
 //    public ResponseEntity<?> updateContractStatus(@RequestBody StartContractRequest startContractRequest){
 //        return contractService.startRenting(startContractRequest);
@@ -109,8 +104,5 @@ public class ContractController {
 //    public ResponseEntity<?> cancelContract(@PathVariable long id){
 //        return contractService.cancelRenting(id,1);
 //    }
-//    @DeleteMapping("/cancelContractByCustomer/{id}")
-//    public ResponseEntity<?> cancelContract(@PathVariable long id){
-//        return contractService.cancelRenting(id,2);
-//    }
 
+}
