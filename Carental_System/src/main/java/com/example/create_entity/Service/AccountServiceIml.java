@@ -2,10 +2,7 @@ package com.example.create_entity.Service;
 
 import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.*;
-import com.example.create_entity.dto.Request.ChangePassWordRequest;
-import com.example.create_entity.dto.Request.RegisterInfoRequest;
-import com.example.create_entity.dto.Request.StaffRequest;
-import com.example.create_entity.dto.Request.UpdateInfoCustomerRequest;
+import com.example.create_entity.dto.Request.*;
 import com.example.create_entity.dto.Response.*;
 import com.example.create_entity.untils.RandomString;
 import org.apache.logging.log4j.message.Message;
@@ -257,20 +254,23 @@ public class AccountServiceIml implements AccountService {
     public ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST, HttpServletResponse response) {
 
         String regexPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-        ReposMesses messes = new ReposMesses();
+        ResponseVo responseVo = new ResponseVo();
         CustomerEntity customerEntity = new CustomerEntity();
         RoleEntity roleEntity = roleRepository.GetRoleDriver("Customer");
         AccountEntity accountEntity = new AccountEntity();
         try {
             if (!accountRepository.Check_email(REQUEST.getEmail().trim()).isEmpty()) {
-                messes.setMess("Email đã tồn tại  !");
-                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-            } else if (!accountRepository.Check_username(REQUEST.getUserName().trim()).isEmpty() || REQUEST.getUserName() == "error") {
-                messes.setMess("UserName đã tồn tại !");
-                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+                responseVo.setMessage("Email đã tồn tại  !");
+                responseVo.setStatus(false);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            } else if (!accountRepository.Check_username(REQUEST.getUserName().trim()).isEmpty()) {
+                responseVo.setMessage("UserName đã tồn tại !");
+                responseVo.setStatus(false);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             } else if (!REQUEST.getEmail().matches(regexPattern)) {
-                messes.setMess("Email k đúng định dạng !");
-                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+                responseVo.setMessage("Email k đúng định dạng !");
+                responseVo.setStatus(false);
+                return new ResponseEntity<>( responseVo, HttpStatus.BAD_REQUEST);
             }
             String Code_OTP = randomString.generateRandomString();
             accountEntity.setEmail(REQUEST.getEmail());
@@ -305,35 +305,39 @@ public class AccountServiceIml implements AccountService {
 
 
             emailSenderService.sendSimpleEmail(REQUEST.getEmail(), "Register Account - Here's your One Time Password (OTP) - Expire in 5 minutes!", Code_OTP);
-            messes.setMess("Đã Đăng ký thành công tài khoản " +
-                    "Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
-            return new ResponseEntity<>(messes, HttpStatus.OK);
+            responseVo.setMessage("Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
+            responseVo.setStatus(true);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (Exception e) {
-            messes.setMess(e.getMessage());
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            responseVo.setMessage(e.getMessage());
+            responseVo.setStatus(false);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
     public ResponseEntity<?> Confirm_Register_OTPEmail(String username, String OTP, String OTP_ck, HttpServletResponse response) {
-        ReposMesses messes = new ReposMesses();
+        ResponseVo responseVo = new ResponseVo();
         try {
             AccountEntity accountEntity = accountRepository.Check_ConfirmOTP(username.trim());
             if (accountEntity != null && OTP.trim().equals(OTP_ck.trim())) {
                 accountEntity.setStatus(2);
                 accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
                 accountRepository.save(accountEntity);
-                messes.setMess("Xác thực tài khoản thành công !");
+                responseVo.setStatus(true);
+                responseVo.setMessage("Xác thực tài khoản thành công !");
                 RemoveCookie("username", response, "http://localhost:8080/api/account/Customer/CfOTP");
                 RemoveCookie("OTP", response, "http://localhost:8080/api/account/Customer/CfOTP");
-                return new ResponseEntity<>(messes, HttpStatus.OK);
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
             } else {
-                messes.setMess("Mã OTP đã hết hiệu lực !");
-                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+                responseVo.setStatus(false);
+                responseVo.setMessage("Mã OTP đã hết hiệu lực !");
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            messes.setMess(e.getMessage());
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            responseVo.setMessage(e.getMessage());
+            responseVo.setStatus(false);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
 //        return null;
     }
@@ -341,7 +345,7 @@ public class AccountServiceIml implements AccountService {
 
     @Override
     public ResponseEntity<?> SendOTPtoEmail(String email, HttpServletResponse response) {
-        ReposMesses messes = new ReposMesses();
+        ResponseVo responseVo = new ResponseVo();
         try {
             AccountEntity accountEntity = accountRepository.GetAccountByEmail(email.trim());
             System.out.println(accountEntity);
@@ -357,15 +361,18 @@ public class AccountServiceIml implements AccountService {
                 cookieOTP.setPath("http://localhost:8080/api/account/CfOTP_Forgot");
                 response.addCookie(cookieOTP);
                 emailSenderService.sendSimpleEmail(email, "Forgot Password - Here's your One Time Password (OTP)  - Expire in 5 minutes!", Code_OTP);
-                messes.setMess("Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
-                return new ResponseEntity<>(messes, HttpStatus.OK);
+                responseVo.setMessage("Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
+                responseVo.setStatus(true);
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
             } else {
-                messes.setMess("Email không tồn tại trong hệ thống hoặc đã bị khóa !");
-                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+                responseVo.setStatus(false);
+                responseVo.setMessage("Email không tồn tại trong hệ thống hoặc đã bị khóa !");
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            messes.setMess(e.getMessage());
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            responseVo.setStatus(false);
+            responseVo.setMessage(e.getMessage());
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -432,46 +439,107 @@ public class AccountServiceIml implements AccountService {
         response.addCookie(cookie);
     }
 
-//    @Override
-//    @Transactional
-//    public ResponseEntity<?> UpdateCustomer(UpdateInfoCustomerRequest updateInfoCustomerRequest) {
-//        ReposMesses messes = new ReposMesses();
-//        try {
-//            AccountEntity accountEntity = accountRepository.GetAccountByName(updateInfoCustomerRequest.getUserName());
-//            DistrictsEntity districtsEntity = new DistrictsEntity();
-//            accountEntity.setImg(updateInfoCustomerRequest.getImg_avt());
-//            accountEntity.setDOB(updateInfoCustomerRequest.getDoD());
-//            accountEntity.setAddress(updateInfoCustomerRequest.getAddress());
-//            accountEntity.setIdentity_Picture_Front(updateInfoCustomerRequest.getIdentity_picture_front());
-//            accountEntity.setIdentity_Picture_Back(updateInfoCustomerRequest.getIdentity_picture_back());
-//            accountEntity.setIdentity_Number(updateInfoCustomerRequest.getIdentity_number());
-//            accountEntity.setPhone(updateInfoCustomerRequest.getPhone());
-//            accountEntity.setGender(updateInfoCustomerRequest.getGender());
-//
-//            List<DistrictsEntity> districtsEntities = districtRepository.check_district(updateInfoCustomerRequest.getCity(),
-//                    updateInfoCustomerRequest.getWards(),
-//                    updateInfoCustomerRequest.getDistrict_Name());
-//            if (districtsEntities.isEmpty()) {
-//                districtsEntity.setCity(updateInfoCustomerRequest.getCity());
-//                districtsEntity.setDistrict_Name(updateInfoCustomerRequest.getDistrict_Name());
-//                districtsEntity.setWards(updateInfoCustomerRequest.getWards());
-//                accountEntity.setDistrictsEntity(districtsEntity);
-//                districtRepository.save(districtsEntity);
-//            } else {
-//                DistrictsEntity districts = districtRepository.check_districts(
-//                        updateInfoCustomerRequest.getCity(),
-//                        updateInfoCustomerRequest.getWards(),
-//                        updateInfoCustomerRequest.getDistrict_Name());
-//                accountEntity.setDistrictsEntity(districts);
-//            }
-//            accountRepository.save(accountEntity);
-//            messes.setMess("Cập nhật thành công !   ");
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-//        }
-//        return null;
-////    }
+    @Override
+    @Transactional
+    public ResponseEntity<?> UpdateCustomer(UpdateInfoCustomerRequest updateInfoCustomerRequest) {
+        ReposMesses messes = new ReposMesses();
+        try {
+            if (customerRepository.Check_Phone(updateInfoCustomerRequest.getPhone().trim()) !=null) {
+                messes.setMess("Số điện thoại đã tồn tại trong hệ thống !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (customerRepository.Check_Identity(updateInfoCustomerRequest.getIdentity_number().trim()) != null) {
+                messes.setMess("Số chứng minh thư đã tồn tại trong hệ thống !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }else {
+                CustomerEntity customer = customerRepository.GetCustomerByName(updateInfoCustomerRequest.getUserName());
+                DistrictsEntity districtsEntity = new DistrictsEntity();
+                customer.setImg(updateInfoCustomerRequest.getImg_avt());
+                customer.setDOB(updateInfoCustomerRequest.getDob());
+                customer.setAddress(updateInfoCustomerRequest.getAddress());
+                customer.setIdentity_Picture_Front(updateInfoCustomerRequest.getIdentity_picture_front());
+                customer.setIdentity_Picture_Back(updateInfoCustomerRequest.getIdentity_picture_back());
+                customer.setIdentity_Number(updateInfoCustomerRequest.getIdentity_number());
+                customer.setPhone(updateInfoCustomerRequest.getPhone());
+                customer.setFullName(updateInfoCustomerRequest.getFullName());
+                customer.setStatus(updateInfoCustomerRequest.getStatus());
+                customer.setGender(updateInfoCustomerRequest.getGender());
+                customer.setModifiedDate(new Date(System.currentTimeMillis()));
 
+                List<DistrictsEntity> districtsEntities = districtRepository.check_district(updateInfoCustomerRequest.getCity(),
+                        updateInfoCustomerRequest.getWards(),
+                        updateInfoCustomerRequest.getDistrict_Name());
+                if (districtsEntities.isEmpty()) {
+                    districtsEntity.setCity(updateInfoCustomerRequest.getCity());
+                    districtsEntity.setDistrict_Name(updateInfoCustomerRequest.getDistrict_Name());
+                    districtsEntity.setWards(updateInfoCustomerRequest.getWards());
+                    customer.setDistrictsEntity(districtsEntity);
+                    districtRepository.save(districtsEntity);
+                } else {
+                    DistrictsEntity districts = districtRepository.check_districts(
+                            updateInfoCustomerRequest.getCity(),
+                            updateInfoCustomerRequest.getWards(),
+                            updateInfoCustomerRequest.getDistrict_Name());
+                    customer.setDistrictsEntity(districts);
+                }
+                customerRepository.save(customer);
+                messes.setMess("Cập nhật thành công !");
+                return new ResponseEntity<>(messes, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> UpdateStaff(UpdateInfoStaffRequest updateInfoStaffRequest) {
+        ReposMesses messes = new ReposMesses();
+        try {
+            if (!staffRepository.Check_Phone(updateInfoStaffRequest.getPhone().trim()).isEmpty()) {
+                messes.setMess("Số điện thoại đã tồn tại trong hệ thống !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (!staffRepository.Check_Identity(updateInfoStaffRequest.getIdentity_number().trim()).isEmpty()) {
+                messes.setMess("Số chứng minh thư đã tồn tại trong hệ thống !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }else {
+                StaffEntity staffEntity =staffRepository.GetStaffByUserName(updateInfoStaffRequest.getUserName());
+                DistrictsEntity districtsEntity = new DistrictsEntity();
+                staffEntity.setImg(updateInfoStaffRequest.getImg_avt());
+                staffEntity.setDOB(updateInfoStaffRequest.getDob());
+                staffEntity.setAddress(updateInfoStaffRequest.getAddress());
+                staffEntity.setIdentity_Picture_Front(updateInfoStaffRequest.getIdentity_picture_front());
+                staffEntity.setIdentity_Picture_Back(updateInfoStaffRequest.getIdentity_picture_back());
+                staffEntity.setIdentity_Number(updateInfoStaffRequest.getIdentity_number());
+                staffEntity.setPhone(updateInfoStaffRequest.getPhone());
+                staffEntity.setFullName(updateInfoStaffRequest.getFullName());
+                staffEntity.setGender(updateInfoStaffRequest.getGender());
+                staffEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+
+                List<DistrictsEntity> districtsEntities = districtRepository.check_district(updateInfoStaffRequest.getCity(),
+                        updateInfoStaffRequest.getWards(),
+                        updateInfoStaffRequest.getDistrict_Name());
+                if (districtsEntities.isEmpty()) {
+                    districtsEntity.setCity(updateInfoStaffRequest.getCity());
+                    districtsEntity.setDistrict_Name(updateInfoStaffRequest.getDistrict_Name());
+                    districtsEntity.setWards(updateInfoStaffRequest.getWards());
+                    staffEntity.setDistrictsEntity(districtsEntity);
+                    districtRepository.save(districtsEntity);
+                } else {
+                    DistrictsEntity districts = districtRepository.check_districts(
+                            updateInfoStaffRequest.getCity(),
+                            updateInfoStaffRequest.getWards(),
+                            updateInfoStaffRequest.getDistrict_Name());
+                    staffEntity.setDistrictsEntity(districts);
+                }
+              staffRepository.save(staffEntity);
+                messes.setMess("Cập nhật thành công !");
+                return new ResponseEntity<>(messes, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @Override
     public ResponseEntity<?> ListCustomer(Integer p) {

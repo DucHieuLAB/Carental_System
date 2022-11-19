@@ -81,6 +81,11 @@ public class DriverController {
         return driverService.Create(infoRequest);
     }
 
+    @RequestMapping(value = "/driver/Update", method = RequestMethod.PUT)
+    private ResponseEntity<?>Update(@RequestBody DriverInfoRequest infoRequest) {
+        return driverService.UpdateDriver(infoRequest);
+    }
+
 
 }
 

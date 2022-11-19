@@ -2,6 +2,7 @@ package com.example.create_entity.Repository;
 
 
 import com.example.create_entity.Entity.AccountEntity;
+import com.example.create_entity.Entity.CustomerEntity;
 import com.example.create_entity.Entity.StaffEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,9 @@ public interface StaffRepository extends JpaRepository<StaffEntity,Long> {
 
     @Query(value = "SELECT * FROM carrental_v2.staffs Where staffs.account_id= ?1 ",nativeQuery = true)
     StaffEntity staffEntity(Long ac_id);
+
+    @Query(value = "SELECT cs FROM StaffEntity cs INNER JOIN AccountEntity  ac ON cs.accountEntity.ID = ac.ID WHERE  cs.accountEntity.Username = ?1 ")
+    CustomerEntity GetStaffByName(String username);
 
     @Query(value = "SELECT st FROM StaffEntity st INNER JOIN AccountEntity ac ON st.accountEntity.ID =ac.ID WHERE st.FullName LIKE %?1% ")
     Page<StaffEntity> FilterByName(String name,Pageable pageable);

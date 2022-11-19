@@ -3,6 +3,7 @@ package com.example.create_entity.Controller;
 import com.example.create_entity.Service.AccountServiceIml;
 import com.example.create_entity.dto.Request.DriverInfoRequest;
 import com.example.create_entity.dto.Request.StaffRequest;
+import com.example.create_entity.dto.Request.UpdateInfoStaffRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,5 +49,11 @@ public class ControllerStaff {
     private ResponseEntity<?>GetDetail(@RequestParam(required = false) String username)  {
         return accountServiceIml.GetDetailStaff(username);
     }
+
+    @RequestMapping(value = "/Staff/Update", method = RequestMethod.PUT)
+    private ResponseEntity<?> Update(@RequestBody UpdateInfoStaffRequest infoRequest) {
+        return accountServiceIml.UpdateStaff(infoRequest);
+    }
+
 
 }
