@@ -78,13 +78,13 @@ public class AccountServiceIml implements AccountService {
 
 
             if (!accountRepository.Check_email(infoRequest.getEmail()).isEmpty()) {
-                messes.setMess("Email đã tồn tại  !");
+                messes.setMess("Email đã tồn tại trong hệ thống  !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else if (!accountRepository.Check_username(infoRequest.getUser_Name()).isEmpty()) {
-                messes.setMess("UserName đã tồn tại !");
+                messes.setMess("UserName đã tồn tại trong hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else if (!infoRequest.getEmail().matches(regexPattern)) {
-                messes.setMess("Email k đúng định dạng !");
+                messes.setMess("Email k đúng định dạng yêu cầu  !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else if (!staffRepository.Check_Phone(infoRequest.getPhone().trim()).isEmpty()) {
                 messes.setMess("Số điện thoại đã được đăng kí trong hệ thống  !");
@@ -135,7 +135,7 @@ public class AccountServiceIml implements AccountService {
                 }
 
                 staffRepository.save(staffEntity);
-                messes.setMess("Đã Tạo Thành Công ! ");
+                messes.setMess("Đã Tạo tài khoản Thành Công ! ");
                 return new ResponseEntity<>(messes, HttpStatus.OK);
             }
         } catch (Exception e) {
@@ -155,7 +155,7 @@ public class AccountServiceIml implements AccountService {
 
             if (staffResponseList.isEmpty()) {
                 ReposMesses messes = new ReposMesses();
-                messes.setMess("NOT FOUND");
+                messes.setMess("Không có dữ liệu trong bảng Staff");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<>(pagingResponse, HttpStatus.OK);
@@ -260,15 +260,15 @@ public class AccountServiceIml implements AccountService {
         AccountEntity accountEntity = new AccountEntity();
         try {
             if (!accountRepository.Check_email(REQUEST.getEmail().trim()).isEmpty()) {
-                responseVo.setMessage("Email đã tồn tại  !");
+                responseVo.setMessage("Email đã tồn tại trong hệ thống  !");
                 responseVo.setStatus(false);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             } else if (!accountRepository.Check_username(REQUEST.getUserName().trim()).isEmpty()) {
-                responseVo.setMessage("UserName đã tồn tại !");
+                responseVo.setMessage("UserName đã tồn tại trong hệ thống !");
                 responseVo.setStatus(false);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             } else if (!REQUEST.getEmail().matches(regexPattern)) {
-                responseVo.setMessage("Email k đúng định dạng !");
+                responseVo.setMessage("Email không đúng định dạng yêu cầu !");
                 responseVo.setStatus(false);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
@@ -304,7 +304,7 @@ public class AccountServiceIml implements AccountService {
             customerRepository.save(customerEntity);
 
 
-            emailSenderService.sendSimpleEmail(REQUEST.getEmail(), "Register Account - Here's your One Time Password (OTP) - Expire in 5 minutes!", Code_OTP);
+            emailSenderService.sendSimpleEmail(REQUEST.getEmail(), "Đăng kí tài khoản của Hệ thống Carrental  - Đây là mã xác thực (OTP) - Hiệu lực của mã là 5 phút!", Code_OTP);
             responseVo.setMessage("Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
             responseVo.setStatus(true);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -331,7 +331,7 @@ public class AccountServiceIml implements AccountService {
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             } else {
                 responseVo.setStatus(false);
-                responseVo.setMessage("Mã OTP đã hết hiệu lực !");
+                responseVo.setMessage("Mã OTP không chính xác hoặc Không còn tồn tại ! !");
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
@@ -360,7 +360,7 @@ public class AccountServiceIml implements AccountService {
                 cookieOTP.setMaxAge(5 * 60);
                 cookieOTP.setPath("http://localhost:8080/api/account/CfOTP_Forgot");
                 response.addCookie(cookieOTP);
-                emailSenderService.sendSimpleEmail(email, "Forgot Password - Here's your One Time Password (OTP)  - Expire in 5 minutes!", Code_OTP);
+                emailSenderService.sendSimpleEmail(email, "Đặt lại password của hệ thống Carrental  - Đây là mã  (OTP)  - Hiệu lực 5 phút!", Code_OTP);
                 responseVo.setMessage("Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
                 responseVo.setStatus(true);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -486,7 +486,7 @@ public class AccountServiceIml implements AccountService {
                     customer.setDistrictsEntity(districts);
                 }
                 customerRepository.save(customer);
-                responseVo.setMessage("Cập nhật thành công !");
+                responseVo.setMessage("Cập nhật tài khoản thành công!");
                 responseVo.setStatus(true);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
@@ -543,7 +543,7 @@ public class AccountServiceIml implements AccountService {
                     staffEntity.setDistrictsEntity(districts);
                 }
                 staffRepository.save(staffEntity);
-                responseVo.setMessage("Cập nhật thành công !");
+                responseVo.setMessage("Cập nhật thành công tài khoản !");
                 responseVo.setStatus(true);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
@@ -563,7 +563,10 @@ public class AccountServiceIml implements AccountService {
             Page<CustomerEntity> page = customerRepository.GetListCustomer(pageable);
             ListCustomerResponse listCustomerResponse = new ListCustomerResponse();
             List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
-
+            if(listCustomerResponses.isEmpty()){
+                messes.setMess("Không có dữ liệu trong bảng Customer");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }
             PagingResponse pagingResponse = new PagingResponse();
             pagingResponse.setObjects(listCustomerResponses);
             pagingResponse.setTotalPage(page.getTotalPages());
@@ -602,7 +605,7 @@ public class AccountServiceIml implements AccountService {
             List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
 
             if (listCustomerResponses.isEmpty()) {
-                messes.setMess("K tim thay !");
+                messes.setMess("Không tìm thấy dữ liệu yêu cầu  !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 PagingResponse pagingResponse = new PagingResponse();
@@ -629,7 +632,7 @@ public class AccountServiceIml implements AccountService {
             List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
 
             if (listCustomerResponses.isEmpty()) {
-                messes.setMess("K tim thay !");
+                messes.setMess("Không tìm thấy dữ liệu yêu cầu !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 PagingResponse pagingResponse = new PagingResponse();
@@ -656,7 +659,7 @@ public class AccountServiceIml implements AccountService {
             List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
 
             if (listCustomerResponses.isEmpty()) {
-                messes.setMess("K tim thay !");
+                messes.setMess("Không tìm thấy dữ liệu yêu cầu  !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 PagingResponse pagingResponse = new PagingResponse();

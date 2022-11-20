@@ -73,7 +73,7 @@ public class ContractDetailServiceImpl implements ContractDetailService {
             return new ResponseEntity<>(pagingResponse, HttpStatus.OK);
         } else {
             responseVo.setStatus(false);
-            responseVo.setMessage("K có dữ liệu !");
+            responseVo.setMessage("Không có dữ liệu của trong hệ thống  !");
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }

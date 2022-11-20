@@ -203,7 +203,7 @@ public class ContractServiceImpl implements ContractService {
             return new ResponseEntity<>(pagingContract, HttpStatus.OK);
         } else {
             ReposMesses messes = new ReposMesses();
-            messes.setMess("K có dữ liệu bảng contract");
+            messes.setMess("Không có dữ liệu bảng hợp đồng !");
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         }
 
@@ -239,7 +239,7 @@ public class ContractServiceImpl implements ContractService {
             return new ResponseEntity<>(pagingContract, HttpStatus.OK);
         } else {
             ReposMesses messes = new ReposMesses();
-            messes.setMess("K có dữ liệu bảng contract");
+            messes.setMess("Không có dữ liệu bảng hợp đồng !");
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         }
 
@@ -274,7 +274,7 @@ public class ContractServiceImpl implements ContractService {
 
         if (contractEntities1.isEmpty()) {
             ReposMesses messes = new ReposMesses();
-            messes.setMess("Không tìm thấy ! ");
+            messes.setMess("Không tìm thấy dữ liệu yêu cầu  ! ");
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         } else {
             return new ResponseEntity<>(pagingContract, HttpStatus.OK);

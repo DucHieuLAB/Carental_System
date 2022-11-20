@@ -75,7 +75,7 @@ public class DriverService {
             pagingDriver.setTotalPage(driverEntities.getTotalPages());
             pagingDriver.setNumberPage(driverEntities.getNumber() + 1);
             if (infoResponses.isEmpty()) {
-                messes.setMess("k tìm thấy tên ! ");
+                messes.setMess("Không tìm thấy dữ liệu yêu cầu  ! ");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<>(pagingDriver, HttpStatus.OK);
@@ -114,7 +114,7 @@ public class DriverService {
             driverPagingDriver.setTotalPage(page.getTotalPages());
             driverPagingDriver.setNumberPage(page.getNumber() + 1);
             if (page.isEmpty()) {
-                messes.setMess("K có dữ liệu ! ");
+                messes.setMess("Không có dữ liệu trong bảng driver ! ");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(driverPagingDriver, HttpStatus.OK);
@@ -140,13 +140,13 @@ public class DriverService {
 
 
             if (!accountRepository.Check_email(infoRequest.getEmail()).isEmpty()) {
-                messes.setMess("Email đã tồn tại  !");
+                messes.setMess("Email đã tồn tại trong hệ thống  !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else if (!accountRepository.Check_username(infoRequest.getUsername()).isEmpty()) {
-                messes.setMess("UserName đã tồn tại !");
+                messes.setMess("UserName đã tồn tại trong hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else if (!infoRequest.getEmail().matches(regexPattern)) {
-                messes.setMess("Email k đúng định dạng !");
+                messes.setMess("Email k đúng định dạng trong hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else if (!driverRepository.Check_Phone(infoRequest.getPhone().trim()).isEmpty()) {
                 messes.setMess("Số điện thoại đã được đăng kí trong hệ thống  !");
@@ -154,7 +154,11 @@ public class DriverService {
             } else if (!driverRepository.Check_Identity(infoRequest.getIdentity_Number().trim()).isEmpty()) {
                 messes.setMess("Số Chứng minh thư đã được đăng kí trong hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            } else if (driverRepository.CheckNumberLicense(infoRequest.getDriver_Number_License().trim()) != null) {
+                messes.setMess("Bằng lái xe đã được đăng kí trong hệ thống !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
+
                 try {
                     AccountEntity accountEntity = new AccountEntity();
                     String encodedPassword = passwordEncoder.encode(infoRequest.getPassword());
@@ -212,7 +216,7 @@ public class DriverService {
                     driver.setStart_Date(date);
 
                     driverRepository.save(driver);
-                    messes.setMess("Đã Tạo Thành Công ! ");
+                    messes.setMess("Đã Tạo Thành Công tài khoản ! ");
                     return new ResponseEntity<>(messes, HttpStatus.OK);
                 } catch (Exception e) {
                     messes.setMess(e.getMessage());
@@ -263,7 +267,7 @@ public class DriverService {
             pagingDriver.setTotalPage(driverEntities.getTotalPages());
             pagingDriver.setNumberPage(driverEntities.getNumber() + 1);
             if (infoResponses.isEmpty()) {
-                messes.setMess("k tìm thấy dữ liệu  ! ");
+                messes.setMess("Không tìm thấy dữ liệu yêu cầu   ! ");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<>(pagingDriver, HttpStatus.OK);
@@ -291,7 +295,7 @@ public class DriverService {
             pagingDriver.setTotalPage(driverEntities.getTotalPages());
             pagingDriver.setNumberPage(driverEntities.getNumber() + 1);
             if (infoResponses.isEmpty()) {
-                messes.setMess("k tìm thấy dữ liệu ! ");
+                messes.setMess("Không tìm thấy dữ liệu yêu cầu ! ");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<>(pagingDriver, HttpStatus.OK);
@@ -316,7 +320,7 @@ public class DriverService {
 
             });
             if (licenseInfoResponses.isEmpty()) {
-                messes.setMess("K có dữ liệu trong bảng license !");
+                messes.setMess("Không có dữ liệu trong bảng license !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<>(licenseInfoResponses, HttpStatus.OK);
@@ -348,7 +352,7 @@ public class DriverService {
                 driverRepository.save(driverEntities);
                 driverInfoDetailResponse = driverInfoDetailResponse.driverInfoResponses(driverEntities);
             } else {
-                reposMesses.setMess("Thay đổi trạng thái thất bại ! ");
+                reposMesses.setMess("Thay đổi trạng thái tài khoảns thất bại ! ");
                 return new ResponseEntity<>(reposMesses, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(driverInfoDetailResponse, HttpStatus.OK);
@@ -364,15 +368,15 @@ public class DriverService {
         try {
 
             DriverEntity driverEntity = driverRepository.Check_Username(infoRequest.getUsername().trim());
-            if (!driverRepository.Check_Phone_Update(infoRequest.getPhone().trim(),infoRequest.getUsername().trim(),driverEntity.getId()).isEmpty()) {
+            if (!driverRepository.Check_Phone_Update(infoRequest.getPhone().trim(), infoRequest.getUsername().trim(), driverEntity.getId()).isEmpty()) {
                 messes.setMessage("Số điện thoại đã được đăng kí trong hệ thống  !");
                 messes.setStatus(false);
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-            } else if (!driverRepository.Check_Identity_Update(infoRequest.getIdentity_Number().trim(),infoRequest.getUsername().trim(),driverEntity.getId()).isEmpty()) {
+            } else if (!driverRepository.Check_Identity_Update(infoRequest.getIdentity_Number().trim(), infoRequest.getUsername().trim(), driverEntity.getId()).isEmpty()) {
                 messes.setMessage("Số Chứng minh thư đã được đăng kí trong hệ thống !");
                 messes.setStatus(false);
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-            } else if (driverRepository.Check_Number_license_update(infoRequest.getDriver_Number_License().trim(),infoRequest.getUsername().trim(),driverEntity.getId()) != null) {
+            } else if (driverRepository.Check_Number_license_update(infoRequest.getDriver_Number_License().trim(), infoRequest.getUsername().trim(), driverEntity.getId()) != null) {
                 messes.setMessage("Số bằng lái xe đã tồn ! ");
                 messes.setStatus(false);
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
@@ -419,7 +423,7 @@ public class DriverService {
 
                 driverRepository.save(driverEntity);
                 messes.setStatus(true);
-                messes.setMessage("Cập nhật thành công !");
+                messes.setMessage("Cập nhật tài khoản thành công !");
                 messes.setData(infoRequest);
                 return new ResponseEntity<>(messes, HttpStatus.OK);
             }

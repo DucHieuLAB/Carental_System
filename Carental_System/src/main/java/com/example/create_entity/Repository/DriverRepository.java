@@ -29,6 +29,7 @@ public interface DriverRepository extends JpaRepository<DriverEntity,Long> {
     @Query(value = "select *  from driver inner join accounts on driver.account_id=accounts.account_id where accounts.user_name = ?", nativeQuery = true)
     DriverEntity GetByUsername(String username);
 
+
     @Transactional
     @Query(value = "select * from driver where driver.status=1 ", nativeQuery = true)
     Page<DriverEntity> GetDriverByStatus(Pageable pageable);
@@ -47,7 +48,8 @@ public interface DriverRepository extends JpaRepository<DriverEntity,Long> {
     @Query(value = "SELECT de FROM DriverEntity de WHERE de.Phone = ?1")
     List<DriverEntity> Check_Phone(String Phone);
 
-
+    @Query(value = "SELECT dr FROM DriverEntity dr INNER JOIN AccountEntity ac ON dr.accountEntity.ID = ac.ID WHERE dr.Driver_Number_License = ?1")
+    DriverEntity CheckNumberLicense(String NumberLicense );
 
     @Query(value = "SELECT de FROM DriverEntity de WHERE de.Identity_Number = ?1 ")
     List<DriverEntity> Check_Identity(String Identity);
