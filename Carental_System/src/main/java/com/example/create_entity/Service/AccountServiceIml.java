@@ -488,7 +488,7 @@ public class AccountServiceIml implements AccountService {
                 customerRepository.save(customer);
                 responseVo.setMessage("Cập nhật thành công !");
                 responseVo.setStatus(true);
-                return new ResponseEntity<>(responseVo,HttpStatus.OK);
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
         } catch (Exception e) {
             responseVo.setMessage(e.getMessage());
@@ -509,9 +509,9 @@ public class AccountServiceIml implements AccountService {
                 responseVo.setMessage("Số điện thoại đã tồn tại trong hệ thống !");
                 responseVo.setStatus(false);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-            } else if (!staffRepository.Check_Identity_Update(updateInfoStaffRequest.getIdentity_number().trim(),username, staffEntity.getId()).isEmpty()) {
+            } else if (!staffRepository.Check_Identity_Update(updateInfoStaffRequest.getIdentity_number().trim(), username, staffEntity.getId()).isEmpty()) {
                 responseVo.setMessage("Số chứng minh thư đã tồn tại trong hệ thống !");
-                    responseVo.setStatus(false);
+                responseVo.setStatus(false);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             } else {
                 DistrictsEntity districtsEntity = new DistrictsEntity();
@@ -672,32 +672,60 @@ public class AccountServiceIml implements AccountService {
         }
     }
 
+
+//    @Override
+//    @Transactional
+//    public ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest) {
+//        ResponseVo responseVo = new ResponseVo();
+//        BCryptPasswordEncoder pas swordEncoder = new BCryptPasswordEncoder();
+//        try {
+//            CustomerEntity customer = customerRepository.GetCustomerByName(changePassRequest.getUsername());
+//            if(!passwordEncoder.matches(changePassRequest.getOldPass(),customer.getAccountEntity().getPassword())){
+//                responseVo.setStatus(false);
+//                responseVo.setMessage("Mật khẩu cũ không chính xác !");
+//                return  new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+//            }else{
+//                String new_pass =  passwordEncoder.encode(changePassRequest.getNewPass());
+//                customer.getAccountEntity().setPassword(new_pass);
+//                customer.getAccountEntity().setModifiedDate(new Date(System.currentTimeMillis()));
+//                responseVo.setStatus(true);
+//                customerRepository.save(customer);
+//                responseVo.setMessage("Thay đổi mật khẩu thành công !");
+//                return  new ResponseEntity<>(responseVo,HttpStatus.OK);
+//            }
+//
+//        }catch (Exception e){
+//            responseVo.setMessage(e.getMessage());
+//            responseVo.setStatus(false);
+//            return  new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+//        }
+
+
     @Override
-    @Transactional
-    public ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest) {
+    public ResponseEntity<?> change_new_password(ChangePassRequest changePassRequest) {
         ResponseVo responseVo = new ResponseVo();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         try {
-            CustomerEntity customer = customerRepository.GetCustomerByName(changePassRequest.getUsername());
-        if(!passwordEncoder.matches(changePassRequest.getOldPass(),customer.getAccountEntity().getPassword())){
-           responseVo.setStatus(false);
-           responseVo.setMessage("Mật khẩu cũ không chính xác !");
-           return  new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
-        }else{
-          String new_pass =  passwordEncoder.encode(changePassRequest.getNewPass());
-            customer.getAccountEntity().setPassword(new_pass);
-            customer.getAccountEntity().setModifiedDate(new Date(System.currentTimeMillis()));
-            responseVo.setStatus(true);
-            customerRepository.save(customer);
-            responseVo.setMessage("Thay đổi mật khẩu thành công !");
-            return  new ResponseEntity<>(responseVo,HttpStatus.OK);
-        }
+//                CustomerEntity customer = customerRepository.GetCustomerByName(changePassRequest.getUsername());
+            AccountEntity accountEntity = accountRepository.GetAccountByName(changePassRequest.getUsername());
+            if (!passwordEncoder.matches(changePassRequest.getOldPass(), accountEntity.getPassword())) {
+                responseVo.setStatus(false);
+                responseVo.setMessage("Mật khẩu cũ không chính xác !");
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            } else {
+                String new_pass = passwordEncoder.encode(changePassRequest.getNewPass());
+                accountEntity.setPassword(new_pass);
+                accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+                responseVo.setStatus(true);
+                accountRepository.save(accountEntity);
+                responseVo.setMessage("Thay đổi mật khẩu thành công !");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
 
-        }catch (Exception e){
-             responseVo.setMessage(e.getMessage());
-             responseVo.setStatus(false);
-            return  new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            responseVo.setMessage(e.getMessage());
+            responseVo.setStatus(false);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-
     }
 }

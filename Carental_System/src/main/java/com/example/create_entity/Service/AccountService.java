@@ -50,5 +50,7 @@ public interface AccountService {
 
    ResponseEntity<?> FilterByIdentityCustomer(String identity_number, Integer p);
 
-    ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest);
+//    ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest);
+
+   ResponseEntity<?> change_new_password(ChangePassRequest changePassRequest);
 }
