@@ -26,7 +26,6 @@ public class StaffDetailResponse {
     private String User_Name;
     private String Img;
     private int Status;
-    private String Password;
     private String District_Name;
     private String wards;
     private String City;
@@ -47,7 +46,7 @@ public class StaffDetailResponse {
         detailResponse.setUser_Name(staffEntity.getAccountEntity().getUsername());
         detailResponse.setImg(staffEntity.getImg());
         detailResponse.setStatus(staffEntity.getAccountEntity().getStatus());
-        detailResponse.setPassword(staffEntity.getAccountEntity().getPassword());
+//        detailResponse.setPassword(staffEntity.getAccountEntity().getPassword());
         detailResponse.setDistrict_Name(staffEntity.getDistrictsEntity().getDistrict_Name());
         detailResponse.setWards(staffEntity.getDistrictsEntity().getWards());
         detailResponse.setCity(staffEntity.getDistrictsEntity().getCity());

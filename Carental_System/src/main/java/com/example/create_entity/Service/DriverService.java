@@ -237,7 +237,7 @@ public class DriverService {
         try {
             DriverEntity driverEntities = driverRepository.GetByUsername(username.trim());
             if (driverEntities == null) {
-                messes.setMess("Error ! ");
+                messes.setMess("Đã xảy ra lỗi hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else {
                 DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();

@@ -225,13 +225,17 @@ public class AccountServiceIml implements AccountService {
 
     @Override
     public ResponseEntity<?> GetDetailStaff(String UserName) {
+        ReposMesses messes = new ReposMesses();
         StaffDetailResponse detailResponse = new StaffDetailResponse();
         try {
             StaffEntity staffEntities = staffRepository.GetStaffByUserName(UserName.trim());
+            if(staffEntities==null){
+              messes.setMess("Đã xảy ra lỗi hệ thống !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }
             detailResponse = detailResponse.staffDetailResponse(staffEntities);
             return new ResponseEntity<>(detailResponse, HttpStatus.OK);
         } catch (Exception e) {
-            ReposMesses messes = new ReposMesses();
             messes.setMess(e.getMessage());
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         }
@@ -585,6 +589,10 @@ public class AccountServiceIml implements AccountService {
         ReposMesses messes = new ReposMesses();
         try {
             CustomerEntity customer = customerRepository.GetCustomerByName(username);
+            if(customer==null){
+                messes.setMess("Đã xảy ra lỗi hệ thống !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }
             CustomerInfoResponse infoResponse = new CustomerInfoResponse();
             infoResponse = infoResponse.customerInfoResponse(customer);
             return new ResponseEntity<>(infoResponse, HttpStatus.OK);
