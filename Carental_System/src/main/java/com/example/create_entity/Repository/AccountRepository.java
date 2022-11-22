@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.DoubleStream;
 
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
@@ -50,9 +52,6 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     @Query(value = "SELECT * FROM accounts where role_id = ?",nativeQuery = true)
     Page<AccountEntity> List_Staff(Integer id_role, Pageable pageable);
 
-
-
-
     //select * from accounts where email like '%hieu%' AND role_id=2 order by create_date ASC
 
     @Query(value = "select * from accounts where full_name like %?% AND role_id=? order by create_date ASC",nativeQuery = true)
@@ -64,4 +63,9 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     @Query(value = "select * from accounts where identity_number like %?% AND role_id=? order by create_date ASC",nativeQuery = true)
     Page<AccountEntity> FilterByIdentity_Number(String cmt,Integer Role_id,Pageable pageable);
 
+    @Query("SELECT a FROM AccountEntity a where  a.Username = ?1 and a.status > 0")
+     Optional<AccountEntity> findByUsername(String username);
+
+    @Query("SELECT a FROM AccountEntity a where  a.Username = ?1 and a.Password = ?2 ")
+    AccountEntity findOneByUsernameAndPassword(String username, String password);
 }

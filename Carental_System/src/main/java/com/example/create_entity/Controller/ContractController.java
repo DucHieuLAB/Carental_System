@@ -73,8 +73,6 @@ public class ContractController {
 //    public ResponseEntity<?> updateContract(@RequestBody ContractRequest contractRequest){
 //        return contractService.update(contractRequest);
 //    }
-//
-//
 
 //    @PutMapping("/update/startContract")
 //    public ResponseEntity<?> updateContractStatus(@RequestBody StartContractRequest startContractRequest){

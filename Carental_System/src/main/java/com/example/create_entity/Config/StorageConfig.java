@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class StorageConfig {
-
-
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
 

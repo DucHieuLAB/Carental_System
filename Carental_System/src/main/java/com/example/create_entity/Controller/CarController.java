@@ -5,6 +5,7 @@ import com.example.create_entity.Service.CarServiceImpl;
 import com.example.create_entity.dto.Request.BrandRequest;
 import com.example.create_entity.dto.Request.CarRequest;
 import com.example.create_entity.dto.Request.DriverByCarByContractRequest;
+import com.example.create_entity.untils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,7 +22,8 @@ public class CarController {
     private final int defaultPage = 1;
     private final int defaultSize = 10;
     private final CarServiceImpl carService;
-
+    @Autowired
+    JwtUtils jwtUtils;
     @Autowired
     public CarController(CarServiceImpl carService) {
         this.carService = carService;
@@ -76,11 +78,12 @@ public class CarController {
     }
 
     @GetMapping("/SearchCarNoDriver")
-    public ResponseEntity<?> searchCarForContract(@RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+    public ResponseEntity<?> searchCarForContract(@RequestHeader(value = "authorization",defaultValue = "")String auth,
+                                                  @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
                                                   @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
                                                   @RequestParam(required = true) Long PickupParkingId,
-                                                  @RequestParam(required = true) Long ReturnParkingId) {
-
+                                                  @RequestParam(required = true) Long ReturnParkingId) throws Exception {
+        jwtUtils.verify(auth);
         return carService.getListCarSelfDriver(startDate, endDate, PickupParkingId,ReturnParkingId);
     }
 
