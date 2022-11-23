@@ -27,6 +27,11 @@ public class ContractController {
         return contractService.ListContract(p);
     }
 
+    @RequestMapping(value = "/ListContract_2", method = RequestMethod.GET)
+    public ResponseEntity<?> List2(@RequestParam(value = "p", required = false) Integer p) {
+        return contractService.ListContract2(p);
+    }
+
     @RequestMapping(value = "/Search", method = RequestMethod.GET)
     public ResponseEntity<?> Filter(@RequestParam(required = false) Integer p,
                                     @RequestParam(required = false) String name,

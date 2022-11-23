@@ -115,7 +115,7 @@ public class DriverService {
             driverPagingDriver.setNumberPage(page.getNumber() + 1);
             if (page.isEmpty()) {
                 messes.setMess("Không có dữ liệu trong bảng driver ! ");
-                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(messes, HttpStatus.OK);
             }
             return new ResponseEntity<>(driverPagingDriver, HttpStatus.OK);
         } catch (Exception e) {

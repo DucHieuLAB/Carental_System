@@ -180,66 +180,77 @@ public class ContractServiceImpl implements ContractService {
         } else if (p > 0) {
             p = p - 1;
         }
-        Pageable pageable = PageRequest.of(p, 5);
+        ReposMesses messes = new ReposMesses();
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
 
-        Page<ContractEntity> page = br.ListContract(pageable);
+            Page<ContractEntity> page = br.ListContract(pageable);
 
-        List<ContractResponse> contractResponse = new ArrayList<>();
+            List<ContractResponse> contractResponse = new ArrayList<>();
 
-        page.forEach(BookingEntity -> {
+            page.forEach(BookingEntity -> {
 
-            ContractResponse contractResponse1 = ContractEntity.convertToContractResponse(BookingEntity);
-            contractResponse.add(contractResponse1);
-        });
+                ContractResponse contractResponse1 = ContractEntity.convertToContractResponse(BookingEntity);
+                contractResponse.add(contractResponse1);
+            });
 
-        PagingContract pagingContract = new PagingContract();
+            PagingContract pagingContract = new PagingContract();
 
-        pagingContract.setContractResponseList(contractResponse);
-        pagingContract.setTotalPage(page.getTotalPages());
-        pagingContract.setNumberPage(page.getNumber() + 1);
+            pagingContract.setContractResponseList(contractResponse);
+            pagingContract.setTotalPage(page.getTotalPages());
+            pagingContract.setNumberPage(page.getNumber() + 1);
 
 
-        if (!page.isEmpty()) {
-            return new ResponseEntity<>(pagingContract, HttpStatus.OK);
-        } else {
-            ReposMesses messes = new ReposMesses();
-            messes.setMess("Không có dữ liệu bảng hợp đồng !");
+            if (!page.isEmpty()) {
+                return new ResponseEntity<>(pagingContract, HttpStatus.OK);
+            } else {
+                messes.setMess("Không có dữ liệu bảng hợp đồng !");
+                return new ResponseEntity<>(messes, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         }
 
     }
 
-    //    @Override
-    public ResponseEntity<?> ListContract_2(Integer p) {
+    @Override
+    public ResponseEntity<?> ListContract2(Integer p) {
         if (p == null) {
             p = 0;
         } else if (p > 0) {
             p = p - 1;
         }
-        Pageable pageable = PageRequest.of(p, 5);
+        ReposMesses messes = new ReposMesses();
 
-        Page<ContractEntity> page = br.ListContract_2(pageable);
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
 
-        List<ContractResponse> contractResponse = new ArrayList<>();
+            Page<ContractEntity> page = br.ListContract_2(pageable);
 
-        page.forEach(BookingEntity -> {
+            List<ContractResponse> contractResponse = new ArrayList<>();
 
-            ContractResponse contractResponse1 = ContractEntity.convertToContractResponse(BookingEntity);
-            contractResponse.add(contractResponse1);
-        });
+            page.forEach(BookingEntity -> {
 
-        PagingContract pagingContract = new PagingContract();
+                ContractResponse contractResponse1 = ContractEntity.convertToContractResponse(BookingEntity);
+                contractResponse.add(contractResponse1);
+            });
 
-        pagingContract.setContractResponseList(contractResponse);
-        pagingContract.setTotalPage(page.getTotalPages());
-        pagingContract.setNumberPage(page.getNumber() + 1);
+            PagingContract pagingContract = new PagingContract();
+
+            pagingContract.setContractResponseList(contractResponse);
+            pagingContract.setTotalPage(page.getTotalPages());
+            pagingContract.setNumberPage(page.getNumber() + 1);
 
 
-        if (!page.isEmpty()) {
-            return new ResponseEntity<>(pagingContract, HttpStatus.OK);
-        } else {
-            ReposMesses messes = new ReposMesses();
-            messes.setMess("Không có dữ liệu bảng hợp đồng !");
+            if (!page.isEmpty()) {
+                return new ResponseEntity<>(pagingContract, HttpStatus.OK);
+            } else {
+                messes.setMess("Không có dữ liệu bảng hợp đồng !");
+                return new ResponseEntity<>(messes, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
             return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
         }
 
