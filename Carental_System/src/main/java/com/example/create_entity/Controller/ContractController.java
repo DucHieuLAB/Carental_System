@@ -68,6 +68,7 @@ public class ContractController {
     public ResponseEntity<?> confirmContractByStaff(@RequestBody DepositRequest depositRequest) {
         return contractService.confirmDeposit(depositRequest);
     }
+
     //
 //    @PutMapping("/update/driver")
 //    public ResponseEntity<?> updateDriver(@RequestBody ContractHadDriverRequest contractHadDriverRequest){

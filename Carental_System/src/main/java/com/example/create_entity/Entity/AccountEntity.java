@@ -41,9 +41,27 @@ public class AccountEntity {
     @Temporal(TemporalType.DATE)
     private Date CreateDate;
 
+    @Column(name = "OTP")
+    private String Otp;
+
+    @Column(name="otp_requested_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date otp_requested_time;
+
     @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "role_Id")
     private RoleEntity roleEntity;
+    private static final long OTP_VALID_DURATION = 5 * 60 * 1000;
+    public boolean isOTPRequired() {
+        long currentTimeInMillis = System.currentTimeMillis();
+        long otpRequestedTimeInMillis = this.getOtp_requested_time().getTime();
+
+        if (otpRequestedTimeInMillis + OTP_VALID_DURATION < currentTimeInMillis) {
+            return false;
+        }
+        return true;
+    }
+
 
 //    @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
 //    @JoinColumn(name = "district_id")

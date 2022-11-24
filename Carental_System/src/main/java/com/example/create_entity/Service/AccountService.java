@@ -23,19 +23,19 @@ public interface AccountService {
 
    ResponseEntity<?>GetDetailStaff(String UserName);
 
-   ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST, HttpServletResponse response);
+   ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST);
 
-   ResponseEntity<?> Confirm_Register_OTPEmail(String username,String OTP,String OTP_ck,HttpServletResponse response);
+   ResponseEntity<?> Confirm_Register_OTPEmail(ConfirmOTPRegisterRequest confirmOTPRegisterRequest);
 
-   ResponseEntity<?> SendOTPtoEmail(String email,HttpServletResponse response);
+   ResponseEntity<?> SendOTPtoEmail(String email);
 
    ResponseEntity<?> UpdateCustomer(UpdateInfoCustomerRequest updateInfoCustomerRequest);
 
    ResponseEntity<?> UpdateStaff(UpdateInfoStaffRequest updateInfoStaffRequest);
 
-   ResponseEntity<?> ConfirmOTPForgot(String Email,String OTP,String OTP_ck,HttpServletResponse response);
+   ResponseEntity<?> ConfirmOTPForgot(String Email,String OTP);
 
-    ResponseEntity<?> Change_password(ChangePassWordRequest response,String Email,HttpServletResponse httpServletResponse);
+    ResponseEntity<?> Change_password(ChangePassWordRequest response);
 
 
     // Customer
@@ -50,7 +50,7 @@ public interface AccountService {
 
    ResponseEntity<?> FilterByIdentityCustomer(String identity_number, Integer p);
 
-//    ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest);
+    ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest);
 
    ResponseEntity<?> change_new_password(ChangePassRequest changePassRequest);
 }

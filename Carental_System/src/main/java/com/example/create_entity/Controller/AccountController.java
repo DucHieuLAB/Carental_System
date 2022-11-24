@@ -4,6 +4,7 @@ import com.example.create_entity.Service.AccountService;
 import com.example.create_entity.Service.AccountServiceIml;
 import com.example.create_entity.dto.Request.ChangePassRequest;
 import com.example.create_entity.dto.Request.ChangePassWordRequest;
+import com.example.create_entity.dto.Request.ConfirmOTPRegisterRequest;
 import com.example.create_entity.dto.Request.RegisterInfoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,38 +20,36 @@ public class AccountController {
     AccountServiceIml accountService;
 
     @RequestMapping(value = "/account/Customer/Register", method = RequestMethod.POST)
-    public ResponseEntity<?> Create(@RequestBody RegisterInfoRequest registerInfoRequest, HttpServletResponse response) {
-        return accountService.sendOTPEmail_Register(registerInfoRequest, response);
+    public ResponseEntity<?> Create(@RequestBody RegisterInfoRequest registerInfoRequest) {
+        return accountService.sendOTPEmail_Register(registerInfoRequest);
     }
 
     @RequestMapping(value = "/account/Customer/CfOTP", method = RequestMethod.PUT)
-    public ResponseEntity<?> CfOTP(@CookieValue(value = "username", defaultValue = "") String UserName,
-                                   @RequestParam(required = false) String OTP,
-                                   @CookieValue(value = "OTP", defaultValue = "") String OTP_ck,
-                                   HttpServletResponse response) {
+    public ResponseEntity<?> CfOTP(@RequestBody ConfirmOTPRegisterRequest confirmOTPRegisterRequest){
 
-        return accountService.Confirm_Register_OTPEmail(UserName, OTP, OTP_ck,response);
+        return accountService.Confirm_Register_OTPEmail(confirmOTPRegisterRequest);
     }
 
+
+
+
+
+
     @RequestMapping(value = "/account/forgot/SendOTP", method = RequestMethod.GET)
-    public ResponseEntity<?> Forgot_Password(@RequestParam(required = false) String Email, HttpServletResponse response) {
-      return   accountService.SendOTPtoEmail(Email, response);
+    public ResponseEntity<?> Forgot_Password(@RequestParam(required = false) String Email) {
+      return   accountService.SendOTPtoEmail(Email);
     }
 
     @RequestMapping(value = "/account/forgot/CfOTP_Forgot", method = RequestMethod.GET)
-    public ResponseEntity<?> Cf_OTP_Forgot(@CookieValue(value = "email", defaultValue = "") String Email,
-                                   @RequestParam(required = false) String OTP,
-                                   @CookieValue(value = "OTP", defaultValue = "") String OTP_ck,HttpServletResponse response) {
+    public ResponseEntity<?> Cf_OTP_Forgot(@RequestParam(required = false) String Email,
+                                   @RequestParam(required = false) String OTP) {
 
-        return accountService.ConfirmOTPForgot(Email,OTP,OTP_ck,response);
+        return accountService.ConfirmOTPForgot(Email,OTP);
     }
 
     @RequestMapping(value = "/account/forgot/ChangePassWord", method = RequestMethod.PUT)
-    public ResponseEntity<?> Create(@RequestBody ChangePassWordRequest response,
-                                    @CookieValue(value = "email", defaultValue = "") String Email,
-                                    HttpServletResponse httpServletResponse
-                                    ) {
-        return accountService.Change_password(response,Email,httpServletResponse);
+    public ResponseEntity<?> Create(@RequestBody ChangePassWordRequest response){
+        return accountService.Change_password(response);
     }
 
     @RequestMapping(value = "/account/ChangeNewPassWord", method = RequestMethod.PUT)

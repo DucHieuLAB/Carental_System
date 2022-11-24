@@ -9,10 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangePassWordRequest {
-
- private String email;
- private String otp;
- private  String Password;
-
+public class ConfirmOTPRegisterRequest {
+   private String username;
+   private String otp;
 }

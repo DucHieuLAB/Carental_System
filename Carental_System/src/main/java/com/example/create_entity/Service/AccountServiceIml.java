@@ -255,7 +255,7 @@ public class AccountServiceIml implements AccountService {
 
     @Override
     @Transactional
-    public ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST, HttpServletResponse response) {
+    public ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST) {
 
         String regexPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
         ResponseVo responseVo = new ResponseVo();
@@ -286,6 +286,8 @@ public class AccountServiceIml implements AccountService {
             accountEntity.setCreateDate(new Date());
             accountEntity.setModifiedDate(new Date());
             accountEntity.setRoleEntity(roleEntity);
+            accountEntity.setOtp(Code_OTP);
+            accountEntity.setOtp_requested_time(new Date(System.currentTimeMillis()));
             accountEntity.setStatus(1);
 
             customerEntity.setFullName(REQUEST.getFullName());
@@ -293,22 +295,11 @@ public class AccountServiceIml implements AccountService {
             customerEntity.setModifiedDate(new Date(System.currentTimeMillis()));
             customerEntity.setStatus(1);
 
-
-            Cookie cookie = new Cookie("username", REQUEST.getUserName());
-            cookie.setMaxAge(5 * 60);
-            cookie.setPath("http://localhost:8080/api/account/Customer/CfOTP");
-            response.addCookie(cookie);
-
-            Cookie cookieOTP = new Cookie("OTP", Code_OTP);
-            cookieOTP.setMaxAge(5 * 60);
-            cookieOTP.setPath("http://localhost:8080/api/account/Customer/CfOTP");
-            response.addCookie(cookieOTP);
-
             accountRepository.save(accountEntity);
             customerRepository.save(customerEntity);
 
 
-            emailSenderService.sendSimpleEmail(REQUEST.getEmail(), "Đăng kí tài khoản của Hệ thống Carrental  - Đây là mã xác thực (OTP) - Hiệu lực của mã là 5 phút!", Code_OTP);
+            emailSenderService.sendSimpleEmail(REQUEST.getEmail(), "Đăng kí tài khoản của Hệ thống Carrental  - Đây là mã xác thực (OTP) - Hiệu lực của mã là 5 phút!",Code_OTP);
             responseVo.setMessage("Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
             responseVo.setStatus(true);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -320,22 +311,21 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public ResponseEntity<?> Confirm_Register_OTPEmail(String username, String OTP, String OTP_ck, HttpServletResponse response) {
+    public ResponseEntity<?> Confirm_Register_OTPEmail(ConfirmOTPRegisterRequest request) {
         ResponseVo responseVo = new ResponseVo();
         try {
-            AccountEntity accountEntity = accountRepository.Check_ConfirmOTP(username.trim());
-            if (accountEntity != null && OTP.trim().equals(OTP_ck.trim())) {
+            AccountEntity accountEntity = accountRepository.Check_ConfirmOTP(request.getUsername());
+            if (accountEntity != null && request.getOtp().trim().equals(accountEntity.getOtp()) && accountEntity.isOTPRequired()) {
                 accountEntity.setStatus(2);
                 accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
                 accountRepository.save(accountEntity);
+                accountEntity.setOtp("");
                 responseVo.setStatus(true);
                 responseVo.setMessage("Xác thực tài khoản thành công !");
-                RemoveCookie("username", response, "http://localhost:8080/api/account/Customer/CfOTP");
-                RemoveCookie("OTP", response, "http://localhost:8080/api/account/Customer/CfOTP");
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             } else {
                 responseVo.setStatus(false);
-                responseVo.setMessage("Mã OTP không chính xác hoặc Không còn tồn tại ! !");
+                responseVo.setMessage("Mã OTP không chính xác hoặc Không còn tồn tại !");
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
@@ -348,23 +338,18 @@ public class AccountServiceIml implements AccountService {
 
 
     @Override
-    public ResponseEntity<?> SendOTPtoEmail(String email, HttpServletResponse response) {
+    public ResponseEntity<?> SendOTPtoEmail(String email) {
         ResponseVo responseVo = new ResponseVo();
         try {
             AccountEntity accountEntity = accountRepository.GetAccountByEmail(email.trim());
             System.out.println(accountEntity);
             if (accountEntity != null) {
                 String Code_OTP = randomString.generateRandomString();
-                Cookie cookie = new Cookie("email", email.trim());
-                cookie.setPath("http://localhost:8080/api/account/CfOTP_Forgot");
-                cookie.setMaxAge(5 * 60);
-                response.addCookie(cookie);
-
-                Cookie cookieOTP = new Cookie("OTP", Code_OTP);
-                cookieOTP.setMaxAge(5 * 60);
-                cookieOTP.setPath("http://localhost:8080/api/account/CfOTP_Forgot");
-                response.addCookie(cookieOTP);
                 emailSenderService.sendSimpleEmail(email, "Đặt lại password của hệ thống Carrental  - Đây là mã  (OTP)  - Hiệu lực 5 phút!", Code_OTP);
+               accountEntity.setOtp(Code_OTP);
+               accountEntity.setOtp_requested_time(new Date(System.currentTimeMillis()));
+               accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+               accountRepository.save(accountEntity);
                 responseVo.setMessage("Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
                 responseVo.setStatus(true);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -382,19 +367,14 @@ public class AccountServiceIml implements AccountService {
 
 
     @Override
-    public ResponseEntity<?> ConfirmOTPForgot(String Email, String OTP, String OTP_ck, HttpServletResponse response) {
+    public ResponseEntity<?> ConfirmOTPForgot(String Email,String OTP) {
         ResponseVo responseVo = new ResponseVo();
         try {
             AccountEntity accountEntity = accountRepository.GetAccountByEmail(Email.trim());
-            if (accountEntity != null && OTP.trim().equals(OTP_ck.trim())) {
+            if (accountEntity != null && accountEntity.getOtp().equals(OTP.trim()) && accountEntity.isOTPRequired()) {
                 responseVo.setMessage("Xác thực Email thành công !");
                 responseVo.setStatus(true);
-                RemoveCookie("email", response, "http://localhost:8080/api/account/CfOTP_Forgot");
-                RemoveCookie("OTP", response, "http://localhost:8080/api/account/CfOTP_Forgot");
-                Cookie cookie = new Cookie("email", Email);
-                cookie.setPath("http://localhost:8080/api/account/ChangePassWord");
-                cookie.setMaxAge(5 * 60);
-                response.addCookie(cookie);
+                accountRepository.save(accountEntity);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             } else {
                 responseVo.setMessage("Mã OTP không chính xác hoặc Không còn tồn tại !");
@@ -409,19 +389,19 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public ResponseEntity<?> Change_password(ChangePassWordRequest response, String Email, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<?> Change_password(ChangePassWordRequest response) {
         ResponseVo responseVo = new ResponseVo();
         try {
-            AccountEntity accountEntity = accountRepository.GetAccountByEmail(Email.trim());
-            if (accountEntity != null) {
+            AccountEntity accountEntity = accountRepository.GetAccountByEmail(response.getEmail().trim());
+            if (accountEntity != null && accountEntity.isOTPRequired() && accountEntity.getOtp().equals(response.getOtp())) {
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 String encodedPassword = passwordEncoder.encode(response.getPassword());
                 accountEntity.setPassword(encodedPassword);
+                accountEntity.setOtp("");
                 accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
                 accountRepository.save(accountEntity);
                 responseVo.setMessage("Thay đổi mật khẩu thành công !");
                 responseVo.setStatus(true);
-                RemoveCookie("email", httpServletResponse, "http://localhost:8080/api/account/ChangePassWord");
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             } else {
                 responseVo.setMessage("Thay đổi mật thất bại vui lòng thực hiện lại !");
@@ -436,12 +416,6 @@ public class AccountServiceIml implements AccountService {
     }
 
 
-    public void RemoveCookie(String Name, HttpServletResponse response, String URL) {
-        Cookie cookie = new Cookie(Name, null);
-        cookie.setMaxAge(0);
-        cookie.setPath(URL);
-        response.addCookie(cookie);
-    }
 
     @Override
     @Transactional
@@ -684,33 +658,33 @@ public class AccountServiceIml implements AccountService {
     }
 
 
-//    @Override
-//    @Transactional
-//    public ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest) {
-//        ResponseVo responseVo = new ResponseVo();
-//        BCryptPasswordEncoder pas swordEncoder = new BCryptPasswordEncoder();
-//        try {
-//            CustomerEntity customer = customerRepository.GetCustomerByName(changePassRequest.getUsername());
-//            if(!passwordEncoder.matches(changePassRequest.getOldPass(),customer.getAccountEntity().getPassword())){
-//                responseVo.setStatus(false);
-//                responseVo.setMessage("Mật khẩu cũ không chính xác !");
-//                return  new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
-//            }else{
-//                String new_pass =  passwordEncoder.encode(changePassRequest.getNewPass());
-//                customer.getAccountEntity().setPassword(new_pass);
-//                customer.getAccountEntity().setModifiedDate(new Date(System.currentTimeMillis()));
-//                responseVo.setStatus(true);
-//                customerRepository.save(customer);
-//                responseVo.setMessage("Thay đổi mật khẩu thành công !");
-//                return  new ResponseEntity<>(responseVo,HttpStatus.OK);
-//            }
-//
-//        }catch (Exception e){
-//            responseVo.setMessage(e.getMessage());
-//            responseVo.setStatus(false);
-//            return  new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
-//        }
+    @Override
+    @Transactional
+    public ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest) {
+        ResponseVo responseVo = new ResponseVo();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        try {
+            CustomerEntity customer = customerRepository.GetCustomerByName(changePassRequest.getUsername());
+            if (!passwordEncoder.matches(changePassRequest.getOldPass(), customer.getAccountEntity().getPassword())) {
+                responseVo.setStatus(false);
+                responseVo.setMessage("Mật khẩu cũ không chính xác !");
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            } else {
+                String new_pass = passwordEncoder.encode(changePassRequest.getNewPass());
+                customer.getAccountEntity().setPassword(new_pass);
+                customer.getAccountEntity().setModifiedDate(new Date(System.currentTimeMillis()));
+                responseVo.setStatus(true);
+                customerRepository.save(customer);
+                responseVo.setMessage("Thay đổi mật khẩu thành công !");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
 
+        } catch (Exception e) {
+            responseVo.setMessage(e.getMessage());
+            responseVo.setStatus(false);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @Override
     public ResponseEntity<?> change_new_password(ChangePassRequest changePassRequest) {

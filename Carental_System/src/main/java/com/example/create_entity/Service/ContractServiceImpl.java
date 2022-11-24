@@ -530,7 +530,7 @@ public class ContractServiceImpl implements ContractService {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin request không hợp lệ", errors);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        // verifi
+        // verify
         ContractEntity contractEntity = br.findByIdAndStatus(depositRequest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
@@ -547,12 +547,14 @@ public class ContractServiceImpl implements ContractService {
         paymentEntity.setStaffEntity(staffEntity);
         paymentEntity.setDescription(depositRequest.getDescription());
         paymentEntity.setPaid(depositRequest.getPaid());
+        paymentEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         // cal  Receivables; = realprice - total paid
         paymentEntity.setReceivables(contractEntity.getReal_price() - depositRequest.getPaid());
         paymentEntity.setTotalAmount(contractEntity.getReal_price());
         paymentsRepository.save(paymentEntity);
         // update Contract id = 4;
         contractEntity.setStatus(3);
+        contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         br.save(contractEntity);
         // response
 //        HashMap<String,Object> response = new HashMap<>();
