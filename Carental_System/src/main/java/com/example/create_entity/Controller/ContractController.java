@@ -69,6 +69,10 @@ public class ContractController {
         return contractService.confirmDeposit(depositRequest);
     }
 
+    @GetMapping("/getCarFromParking")
+    public ResponseEntity<?> getCarFromParking(@RequestBody GetCarReQuest getCarReQuest) throws Exception {
+        return contractService.comfirmGetCar(getCarReQuest);
+    }
     //
 //    @PutMapping("/update/driver")
 //    public ResponseEntity<?> updateDriver(@RequestBody ContractHadDriverRequest contractHadDriverRequest){

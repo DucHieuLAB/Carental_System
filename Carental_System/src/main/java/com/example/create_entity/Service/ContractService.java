@@ -31,7 +31,11 @@ public interface ContractService {
     @Transactional
     ResponseEntity<?> confirmContract(long id, int i);
 
+    @Transactional
     ResponseEntity<?> confirmDeposit(DepositRequest depositRequest);
+
+    @Transactional
+    ResponseEntity<?> comfirmGetCar(GetCarReQuest getCarReQuest) throws Exception;
 
 //    @Transactional
 //    ResponseEntity<?> updateRentailPrice()

@@ -13,6 +13,7 @@ import com.example.create_entity.Repository.ContractDetailRepository;
 import com.example.create_entity.Repository.ContractRepository;
 import com.example.create_entity.Repository.ParkingRepository;
 
+import com.example.create_entity.untils.CarRequestValidator;
 import com.example.create_entity.untils.DepositValidator;
 import com.example.create_entity.untils.ResponseVeConvertUntil;
 import org.apache.http.annotation.Contract;
@@ -531,7 +532,7 @@ public class ContractServiceImpl implements ContractService {
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         // verify
-        ContractEntity contractEntity = br.findByIdAndStatus(depositRequest.getContractId());
+        ContractEntity contractEntity = br.findByIdAndStatus2(depositRequest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
@@ -562,6 +563,38 @@ public class ContractServiceImpl implements ContractService {
 //        Payment Response
         PaymentResponse paymentRespone = new PaymentResponse(depositRequest.getPaid(),contractEntity.getReal_price() - depositRequest.getPaid(),contractEntity.getReal_price());
         ResponseVo responseVo = new ResponseVo(true,"Cập nhập thông tin thành công",paymentRespone);
+        return new ResponseEntity<>(responseVo,HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> comfirmGetCar(GetCarReQuest CarReQuest) throws Exception{
+        // validate
+        List<ValidError> errors = CarRequestValidator.validateCarRequest(CarReQuest);
+        // if not success
+        if (errors.size() > 0){
+            ResponseVo responseVo = new ResponseVo(false,"Lỗi Bad Request",errors);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        // if success
+        ContractEntity contractEntity = br.findByIdAndStatus3(CarReQuest.getContractId());
+        if(ObjectUtils.isEmpty(contractEntity)){
+            ResponseVo responseVo = new ResponseVo(false,"Hợp đồng không tồn tại",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        List<String> plateNumber = CarReQuest.getPlateNumber();
+        for (String CarPlateNumber : plateNumber){
+            ContractDetailEntity contractDetailEntity = bdr.findContractDetailByContractIdByPlateNumber(CarReQuest.getContractId(),CarPlateNumber);
+            if (ObjectUtils.isEmpty(contractDetailEntity)){
+               throw new Exception("Xe biển số "+ CarPlateNumber+" Không hợp lệ" );
+            }
+            contractDetailEntity.setReal_pick_up_date(new Date(System.currentTimeMillis()));
+            bdr.save(contractDetailEntity);
+        }
+        contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
+        contractEntity.setStatus(4);
+        br.save(contractEntity);
+        // response
+        ResponseVo responseVo = new ResponseVo(true,"Cập nhật thông tin thành công",null);
         return new ResponseEntity<>(responseVo,HttpStatus.OK);
     }
 
