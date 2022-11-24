@@ -1,4 +1,4 @@
-package com.example.create_entity.common;
+package com.example.create_entity.dto.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Error {
-    int id;
-    String message;
+public class PaymentResponse {
+    private double paid;
+    private double receivable;
+    private double totalAmount;
 }

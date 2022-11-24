@@ -33,6 +33,7 @@ public class LoginServiceImpl implements LoginService {
         // encode
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String enCodePassword = passwordEncoder.encode(loginRequest.getPassword());
+        System.out.println(enCodePassword);
         // verify
         Optional<AccountEntity> accountEntity = accountRepository.findByUsername(loginRequest.getUsername());
         if (!accountEntity.isPresent()) {
@@ -55,6 +56,7 @@ public class LoginServiceImpl implements LoginService {
                 response.put("token",token);
                 response.put("role",accountEntity.get().getRoleEntity().getRoleID());
                 response.put("username",accountEntity.get().getUsername());
+                response.put("status",accountEntity.get().getStatus());
 
         responseVo = ResponseVeConvertUntil.createResponseVo(true, "Đăng nhập thành công", response);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);

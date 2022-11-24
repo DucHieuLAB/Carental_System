@@ -3,6 +3,8 @@ package com.example.create_entity.Service;
 import com.example.create_entity.Entity.*;
 
 import com.example.create_entity.Repository.*;
+import com.example.create_entity.common.Error;
+import com.example.create_entity.common.ValidError;
 import com.example.create_entity.dto.Request.*;
 import com.example.create_entity.dto.Response.*;
 
@@ -11,7 +13,9 @@ import com.example.create_entity.Repository.ContractDetailRepository;
 import com.example.create_entity.Repository.ContractRepository;
 import com.example.create_entity.Repository.ParkingRepository;
 
+import com.example.create_entity.untils.DepositValidator;
 import com.example.create_entity.untils.ResponseVeConvertUntil;
+import org.apache.http.annotation.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +52,12 @@ public class ContractServiceImpl implements ContractService {
     LicenseRepository licenseRepository;
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    PaymentsRepository paymentsRepository;
+    @Autowired
+    StaffRepository staffRepository;
+    @Autowired
+    DepositValidator depositValidator;
 
     @Override
     public ResponseEntity<?> add(ContractRequest contractRequest) {
@@ -490,6 +500,56 @@ public class ContractServiceImpl implements ContractService {
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @Override
+    public ResponseEntity<?> confirmContract(long id, int role) {
+        if (role == 2) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> confirmDeposit(DepositRequest depositRequest) {
+        // validate Request
+        List<ValidError> errors = depositValidator.validateDepositRequest(depositRequest);
+        // if not suscess
+        if (errors.size()>0){
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin request không hợp lệ", errors);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        // verifi
+        ContractEntity contractEntity = br.findByIdAndStatus(depositRequest.getContractId());
+        if (ObjectUtils.isEmpty(contractEntity)) {
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        StaffEntity staffEntity = staffRepository.staffEntity(depositRequest.getAccountId());
+        if (ObjectUtils.isEmpty(staffEntity)) {
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy nhân viên ID = " + depositRequest.getAccountId(), null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        //save payment into Database
+        PaymentEntity paymentEntity = new PaymentEntity();
+        paymentEntity.setContract(contractEntity);
+        paymentEntity.setStaffEntity(staffEntity);
+        paymentEntity.setDescription(depositRequest.getDescription());
+        paymentEntity.setPaid(depositRequest.getPaid());
+        // cal  Receivables; = realprice - total paid
+        paymentEntity.setReceivables(contractEntity.getReal_price() - depositRequest.getPaid());
+        paymentEntity.setTotalAmount(contractEntity.getReal_price());
+        paymentsRepository.save(paymentEntity);
+        // update Contract id = 4;
+        contractEntity.setStatus(3);
+        br.save(contractEntity);
+        // response
+//        HashMap<String,Object> response = new HashMap<>();
+//        Contract Response
+//        Payment Response
+        PaymentResponse paymentRespone = new PaymentResponse(depositRequest.getPaid(),contractEntity.getReal_price() - depositRequest.getPaid(),contractEntity.getReal_price());
+        ResponseVo responseVo = new ResponseVo(true,"Cập nhập thông tin thành công",paymentRespone);
+        return new ResponseEntity<>(responseVo,HttpStatus.OK);
     }
 
 

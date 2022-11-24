@@ -13,17 +13,9 @@ public class AuthController {
     @Autowired
     private LoginServiceImpl loginService;
 
-    @Autowired
-    private JwtUtils jwtUtils;
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         return loginService.login(loginRequest);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> login(@RequestHeader(value = "authorization",defaultValue = "") String auth) throws Exception {
-        jwtUtils.verify(auth);
-        return new ResponseEntity<>("hehe", HttpStatus.OK);
-    }
 }

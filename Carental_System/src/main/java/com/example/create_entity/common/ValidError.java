@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class Error {
-    int id;
-    String message;
+@NoArgsConstructor
+@Setter
+@Getter
+public class ValidError {
+    private String target;
+    private String message;
 }

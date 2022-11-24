@@ -26,6 +26,11 @@ public interface ContractService {
     @Transactional
     ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest);
 
+    @Transactional
+    ResponseEntity<?> confirmContract(long id, int i);
+
+    ResponseEntity<?> confirmDeposit(DepositRequest depositRequest);
+
 //    @Transactional
 //    ResponseEntity<?> updateRentailPrice()
 

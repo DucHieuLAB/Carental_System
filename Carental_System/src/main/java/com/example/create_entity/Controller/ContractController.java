@@ -55,10 +55,15 @@ public class ContractController {
     }
 
     @DeleteMapping("/cancelContractByCustomer/{id}")
-    public ResponseEntity<?> cancelContract(@PathVariable long id){
-        return contractService.cancelRenting(id,2);
+    public ResponseEntity<?> cancelContract(@PathVariable long id) {
+        return contractService.cancelRenting(id, 2);
     }
-//
+
+    @PutMapping("/confirmByStaff/{id}")
+    public ResponseEntity<?> confirmContractByStaff(@RequestBody DepositRequest depositRequest) {
+        return contractService.confirmDeposit(depositRequest);
+    }
+    //
 //    @PutMapping("/update/driver")
 //    public ResponseEntity<?> updateDriver(@RequestBody ContractHadDriverRequest contractHadDriverRequest){
 //        return contractService.updateDriver(contractHadDriverRequest);
@@ -84,10 +89,6 @@ public class ContractController {
 //        return contractService.confirmContract(id,1);
 //    }
 //
-//    @PutMapping("/confirmByStaff/{id}")
-//    public ResponseEntity<?> confirmContractByStaff(@PathVariable long id){
-//        return contractService.confirmContract(id,2);
-//    }
 //
 //    @PutMapping("/startRenting/{id}")
 //    public ResponseEntity<?> startRenting(@PathVariable long id){

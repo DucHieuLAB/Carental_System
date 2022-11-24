@@ -22,11 +22,12 @@ public class JwtUtils {
 
 
         Claims claims = Jwts.claims()
-                .setIssuer(accountEntity.getID().toString())
+                .setSubject(Long.toString(accountEntity.getID()))
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiryAt);
         claims.put("role", accountEntity.getRoleEntity().getRoleID());
         claims.put("email", accountEntity.getEmail());
+        claims.put("username",accountEntity.getUsername());
         return Jwts.builder().setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
@@ -38,8 +39,15 @@ public class JwtUtils {
         } catch (AccessDeniedException e) {
             throw e;
         }
+    }
+    // Lấy thông tin user từ jwt
+    public Long getUserIdFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
 
-
+        return Long.parseLong(claims.getSubject());
     }
 
     public void validateToken(String authToken) throws Exception {
