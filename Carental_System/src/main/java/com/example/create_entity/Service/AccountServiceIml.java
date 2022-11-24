@@ -342,7 +342,7 @@ public class AccountServiceIml implements AccountService {
         ResponseVo responseVo = new ResponseVo();
         try {
             AccountEntity accountEntity = accountRepository.GetAccountByEmail(email.trim());
-            System.out.println(accountEntity);
+//            System.out.println(accountEntity);
             if (accountEntity != null) {
                 String Code_OTP = randomString.generateRandomString();
                 emailSenderService.sendSimpleEmail(email, "Đặt lại password của hệ thống Carrental  - Đây là mã  (OTP)  - Hiệu lực 5 phút!", Code_OTP);
@@ -374,7 +374,6 @@ public class AccountServiceIml implements AccountService {
             if (accountEntity != null && accountEntity.getOtp().equals(OTP.trim()) && accountEntity.isOTPRequired()) {
                 responseVo.setMessage("Xác thực Email thành công !");
                 responseVo.setStatus(true);
-                accountRepository.save(accountEntity);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             } else {
                 responseVo.setMessage("Mã OTP không chính xác hoặc Không còn tồn tại !");

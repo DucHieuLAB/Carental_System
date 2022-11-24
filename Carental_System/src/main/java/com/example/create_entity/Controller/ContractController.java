@@ -69,7 +69,7 @@ public class ContractController {
         return contractService.confirmDeposit(depositRequest);
     }
 
-    @GetMapping("/getCarFromParking")
+    @PutMapping("/getCarFromParking")
     public ResponseEntity<?> getCarFromParking(@RequestBody GetCarReQuest getCarReQuest) throws Exception {
         return contractService.comfirmGetCar(getCarReQuest);
     }

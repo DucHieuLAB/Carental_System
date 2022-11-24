@@ -532,7 +532,7 @@ public class ContractServiceImpl implements ContractService {
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         // verify
-        ContractEntity contractEntity = br.findByIdAndStatus2(depositRequest.getContractId());
+        ContractEntity contractEntity = br.findByIdAndStatus3(depositRequest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
@@ -554,7 +554,7 @@ public class ContractServiceImpl implements ContractService {
         paymentEntity.setTotalAmount(contractEntity.getReal_price());
         paymentsRepository.save(paymentEntity);
         // update Contract id = 4;
-        contractEntity.setStatus(3);
+        contractEntity.setStatus(4);
         contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         br.save(contractEntity);
         // response
@@ -576,7 +576,7 @@ public class ContractServiceImpl implements ContractService {
             return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
         }
         // if success
-        ContractEntity contractEntity = br.findByIdAndStatus3(CarReQuest.getContractId());
+        ContractEntity contractEntity = br.findByIdAndStatus4(CarReQuest.getContractId());
         if(ObjectUtils.isEmpty(contractEntity)){
             ResponseVo responseVo = new ResponseVo(false,"Hợp đồng không tồn tại",null);
             return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
@@ -587,11 +587,23 @@ public class ContractServiceImpl implements ContractService {
             if (ObjectUtils.isEmpty(contractDetailEntity)){
                throw new Exception("Xe biển số "+ CarPlateNumber+" Không hợp lệ" );
             }
+            final long OTP_VALID_DURATION =24 * 60 * 60 * 1000;
+            final long OTP_VALID_DURATION_2 = 12 * 60 * 60 *1000;
+            Date date = new Date(System.currentTimeMillis());
+            if(contractDetailEntity.getBooking().getExpected_start_date().getTime()-OTP_VALID_DURATION > date.getTime()){
+                throw new Exception("Chưa đến ngày lấy xe !" );
+            }
+            if(contractDetailEntity.getBooking().getExpected_start_date().getTime()+OTP_VALID_DURATION_2 < date.getTime()){
+                throw new Exception("Quá hạn lấy xe !" );
+            }
+            // Kiểm tra thời gian hiện tại và thời gian trong hợp đồng nếu ít hơn thì báo  : 24h thì báo la " Chưa đến ngày lấy xe"
+            // Nếu lấy xe muộn quá 12h thì quá hạn lấy xe
             contractDetailEntity.setReal_pick_up_date(new Date(System.currentTimeMillis()));
+            contractDetailEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
             bdr.save(contractDetailEntity);
         }
         contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
-        contractEntity.setStatus(4);
+        contractEntity.setStatus(5);
         br.save(contractEntity);
         // response
         ResponseVo responseVo = new ResponseVo(true,"Cập nhật thông tin thành công",null);
