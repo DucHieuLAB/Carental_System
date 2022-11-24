@@ -64,7 +64,7 @@ public class ContractController {
         return contractService.cancelRenting(id, 2);
     }
 
-    @PutMapping("/confirmByStaff/{id}")
+    @PutMapping("/confirmByStaff")
     public ResponseEntity<?> confirmContractByStaff(@RequestBody DepositRequest depositRequest) {
         return contractService.confirmDeposit(depositRequest);
     }
