@@ -36,6 +36,8 @@ public interface ContractService {
 
     @Transactional
     ResponseEntity<?> comfirmGetCar(GetCarReQuest getCarReQuest) throws Exception;
+    @Transactional
+    ResponseEntity<?> confirmDepositCustomer(long id);
 
 //    @Transactional
 //    ResponseEntity<?> updateRentailPrice()

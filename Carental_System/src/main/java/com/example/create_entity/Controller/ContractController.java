@@ -59,6 +59,11 @@ public class ContractController {
         return contractService.updateDriverAndRealPrice(contractDriverRealPriceRequest);
     }
 
+    @GetMapping("/confirmByCustomer/{id}")
+    public ResponseEntity<?> comfirmContractByCustomer(@PathVariable long id){
+        return contractService.confirmDepositCustomer(id);
+    }
+
     @DeleteMapping("/cancelContractByCustomer/{id}")
     public ResponseEntity<?> cancelContract(@PathVariable long id) {
         return contractService.cancelRenting(id, 2);

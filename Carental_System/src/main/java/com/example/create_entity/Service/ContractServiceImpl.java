@@ -404,11 +404,11 @@ public class ContractServiceImpl implements ContractService {
         }
         try {
             if (i == 1) {
-                contractEntity.setStatus(0);
+                contractEntity.setStatus(7);
             }
             if (i == 2) {
                 if (contractEntity.getStatus() == 1) {
-                    contractEntity.setStatus(0);
+                    contractEntity.setStatus(7);
                 }
             }
             br.save(contractEntity);
@@ -608,6 +608,28 @@ public class ContractServiceImpl implements ContractService {
         // response
         ResponseVo responseVo = new ResponseVo(true,"Cập nhật thông tin thành công",null);
         return new ResponseEntity<>(responseVo,HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> confirmDepositCustomer(long id) {
+        //validate
+        if (id <=0){
+            ResponseVo responseVo = new ResponseVo(false,"Mã hợp đồng không chính xác",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        // if not success
+
+        //if success
+        ContractEntity contractEntity = br.findByIdAndStatus2(id);
+        if(ObjectUtils.isEmpty(contractEntity)){
+            ResponseVo responseVo = new ResponseVo(false,"Hợp đồng không tồn tại",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        contractEntity.setStatus(3);
+        br.save(contractEntity);
+        //respone
+        ResponseVo responseVo = new ResponseVo(true,"Câp nhật thành công",null);
+        return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
     }
 
 

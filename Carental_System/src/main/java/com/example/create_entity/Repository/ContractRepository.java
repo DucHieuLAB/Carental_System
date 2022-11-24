@@ -87,9 +87,14 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            LIMIT 1;", nativeQuery = true)
     Optional<ContractEntity> findContractByPlateNumberAndEndDate(String plateNumber, Date endDate);
 
+    @Query("SELECT c FROM ContractEntity c WHERE c.id= ?1 and c.status = 2")
+    ContractEntity findByIdAndStatus2(long id);
+
     @Query("SELECT c FROM ContractEntity c WHERE c.id= ?1 and c.status = 3")
     ContractEntity findByIdAndStatus3(long contractId);
 
     @Query("SELECT c FROM ContractEntity c WHERE c.id= ?1 and c.status = 4")
     ContractEntity findByIdAndStatus4(long contractId);
+
+
 }
