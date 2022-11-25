@@ -258,7 +258,7 @@ public class ContractServiceImpl implements ContractService {
                 return new ResponseEntity<>(pagingContract, HttpStatus.OK);
             } else {
                 messes.setMess("Không có dữ liệu bảng hợp đồng !");
-                return new ResponseEntity<>(messes, HttpStatus.OK);
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             messes.setMess(e.getMessage());
