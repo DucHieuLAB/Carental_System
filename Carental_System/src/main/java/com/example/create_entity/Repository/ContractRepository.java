@@ -62,7 +62,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
     List<ContractEntity> FilterByPhone1(String name, Integer HadDriver, Integer Status);
 
 
-    @Query("SELECT c FROM ContractEntity c WHERE c.id = ?1 and c.status > 0 ")
+    @Query("SELECT c FROM ContractEntity c WHERE c.id = ?1 and c.status > 0 and c.status < 7 ")
     ContractEntity FindByID(Long id);
 
     @Query("SELECT c FROM ContractEntity c WHERE c.customer.ID = ?1 ORDER BY c.expected_start_date DESC")

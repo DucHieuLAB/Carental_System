@@ -1,7 +1,7 @@
 package com.example.create_entity.Service;
 
+import com.example.create_entity.dto.FinishContractRequest;
 import com.example.create_entity.dto.Request.*;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +38,17 @@ public interface ContractService {
     ResponseEntity<?> comfirmGetCar(GetCarReQuest getCarReQuest) throws Exception;
     @Transactional
     ResponseEntity<?> confirmDepositCustomer(long id);
+
+    @Transactional
+    ResponseEntity<?> addSurcharge(SurchargeRequest purchargeRequest);
+
+    @Transactional
+    ResponseEntity<?> returnCar(ReturnCarRequest returnCarRequest);
+
+    @Transactional
+    ResponseEntity<?> finishContract(FinishContractRequest finishContractRequest) throws Exception;
+
+    ResponseEntity<?> getContractPaymentInf(long id);
 
 //    @Transactional
 //    ResponseEntity<?> updateRentailPrice()

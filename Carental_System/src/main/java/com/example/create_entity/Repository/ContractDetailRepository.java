@@ -1,6 +1,7 @@
 package com.example.create_entity.Repository;
 
 import com.example.create_entity.Entity.ContractDetailEntity;
+import com.example.create_entity.Entity.ContractEntity;
 import com.example.create_entity.Entity.DriverEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -122,7 +123,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
 
     @Query(value = "SELECT *\n" +
             "FROM contract_details c\n" +
-            "LEFT JOIN contracts ct on c.contract_id = ct.booking_id and ct.status > 0\n" +
+            "LEFT JOIN contracts ct on c.contract_id = ct.booking_id and ct.status > 0 and ct.status < 7\n" +
             "WHERE c.car_id = ?1 LIMIT 1",nativeQuery = true )
     Optional<ContractDetailEntity> findContractDetailByCar(Long carId);
 
@@ -133,4 +134,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
 
     @Query("SELECT c FROM  ContractDetailEntity c WHERE c.car.plateNumber = ?2 and c.booking.id = ?1")
     ContractDetailEntity findContractDetailByContractIdByPlateNumber(long contractId, String carPlateNumber);
+
+@Query("SELECT c FROM  ContractDetailEntity c WHERE c.driverEntity.id = ?1 and c.booking.expected_start_date > ?2 and c.booking.status > 3 and c.booking.status < 7")
+    List<ContractEntity> checkHadAnyContract(Long id, Date currendate);
 }

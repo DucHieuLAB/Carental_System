@@ -3,8 +3,8 @@ package com.example.create_entity.Service;
 import com.example.create_entity.Entity.*;
 
 import com.example.create_entity.Repository.*;
-import com.example.create_entity.common.Error;
 import com.example.create_entity.common.ValidError;
+import com.example.create_entity.dto.FinishContractRequest;
 import com.example.create_entity.dto.Request.*;
 import com.example.create_entity.dto.Response.*;
 
@@ -16,7 +16,7 @@ import com.example.create_entity.Repository.ParkingRepository;
 import com.example.create_entity.untils.CarRequestValidator;
 import com.example.create_entity.untils.DepositValidator;
 import com.example.create_entity.untils.ResponseVeConvertUntil;
-import org.apache.http.annotation.Contract;
+import com.example.create_entity.untils.SurchargeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -59,6 +59,10 @@ public class ContractServiceImpl implements ContractService {
     StaffRepository staffRepository;
     @Autowired
     DepositValidator depositValidator;
+    @Autowired
+    SurchargeRepository surchargeRepository;
+    @Autowired
+    SurchargeValidator surchargeValidator;
 
     @Override
     public ResponseEntity<?> add(ContractRequest contractRequest) {
@@ -431,7 +435,7 @@ public class ContractServiceImpl implements ContractService {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Giá cho thuê không thể bé hơn hoặc bằng 0", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        // tim contract ti contractId request
+        // tim contract tu contractId request
         ContractEntity contractEntity = br.FindByID(contractDriverRealPriceRequest.getContractId());
         // if contract Entity is null mean contractId is invalid
         if (ObjectUtils.isEmpty(contractEntity)) {
@@ -583,6 +587,10 @@ public class ContractServiceImpl implements ContractService {
         }
         List<String> plateNumber = CarReQuest.getPlateNumber();
         for (String CarPlateNumber : plateNumber){
+            CarEntity carEntity = cr.findCarEntityByPlateNumber(CarPlateNumber);
+            if(ObjectUtils.isEmpty(carEntity)){
+                throw new Exception("Xe biển số "+ CarPlateNumber+" Không tồn tại" );
+            }
             ContractDetailEntity contractDetailEntity = bdr.findContractDetailByContractIdByPlateNumber(CarReQuest.getContractId(),CarPlateNumber);
             if (ObjectUtils.isEmpty(contractDetailEntity)){
                throw new Exception("Xe biển số "+ CarPlateNumber+" Không hợp lệ" );
@@ -601,6 +609,7 @@ public class ContractServiceImpl implements ContractService {
             contractDetailEntity.setReal_pick_up_date(new Date(System.currentTimeMillis()));
             contractDetailEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
             bdr.save(contractDetailEntity);
+            carEntity.setStatus(1);
         }
         contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         contractEntity.setStatus(5);
@@ -614,11 +623,10 @@ public class ContractServiceImpl implements ContractService {
     public ResponseEntity<?> confirmDepositCustomer(long id) {
         //validate
         if (id <=0){
+            // if not success
             ResponseVo responseVo = new ResponseVo(false,"Mã hợp đồng không chính xác",null);
             return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
         }
-        // if not success
-
         //if success
         ContractEntity contractEntity = br.findByIdAndStatus2(id);
         if(ObjectUtils.isEmpty(contractEntity)){
@@ -629,7 +637,174 @@ public class ContractServiceImpl implements ContractService {
         br.save(contractEntity);
         //respone
         ResponseVo responseVo = new ResponseVo(true,"Câp nhật thành công",null);
-        return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseVo,HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> addSurcharge(SurchargeRequest purchargeRequest) {
+        // validate
+       List<ValidError> errors = surchargeValidator.validateSurchargeRequest(purchargeRequest);
+       // if not success
+        if (errors.size()>0){
+            ResponseVo responseVo = new ResponseVo(false,"Lỗi xác thực",errors);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        // verify
+        ContractEntity contractEntity = br.FindByID(purchargeRequest.getContractId());
+        if(ObjectUtils.isEmpty(contractEntity)){
+            ResponseVo responseVo = new ResponseVo(false,"Hợp đồng không tồn tại",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        SurchargeEntity surchargeEntity = new SurchargeEntity();
+        surchargeEntity.setContractEntity(contractEntity);
+        surchargeEntity.setAmount(purchargeRequest.getAmount());
+        surchargeEntity.setNote(purchargeRequest.getNote());
+        surchargeRepository.save(surchargeEntity);
+        // response
+        ResponseVo responseVo = new ResponseVo(true,"Cập nhật Phụ Phí thành công",errors);
+        return new ResponseEntity<>(responseVo,HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> returnCar(ReturnCarRequest returnCarRequest) {
+        // validate
+        if (returnCarRequest.getContractId() <=0){
+            ResponseVo responseVo = new ResponseVo(false,"Mã hợp đồng không hợp lệ",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        if (returnCarRequest.getPlateNumber().length() <=0){
+            ResponseVo responseVo = new ResponseVo(false,"Thông tin xe không hợp lệ",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        //if success
+
+        //verify
+        ContractEntity contractEntity = br.findByIdAndStatus4(returnCarRequest.getContractId());
+        if(ObjectUtils.isEmpty(contractEntity)){
+            ResponseVo responseVo = new ResponseVo(false,"Hợp đồng không tồn tại",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        CarEntity carEntity = cr.findCarEntityByPlateNumber(returnCarRequest.getPlateNumber());
+        if (ObjectUtils.isEmpty(carEntity)){
+            ResponseVo responseVo = new ResponseVo(false,"Xe biển "+returnCarRequest.getPlateNumber()+" không tồn tại",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        ContractDetailEntity contractDetailEntity = bdr.findContractDetailByContractIdByPlateNumber(contractEntity.getId(),returnCarRequest.getPlateNumber());
+        if(ObjectUtils.isEmpty(contractDetailEntity)){
+            ResponseVo responseVo = new ResponseVo(false,"Xe biển "+returnCarRequest.getPlateNumber()+" không tồn tại trong hợp đồng",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+
+        contractDetailEntity.setReal_return_date(new Date(System.currentTimeMillis()));
+        contractDetailEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
+        bdr.save(contractDetailEntity);
+        carEntity.setStatus(0);
+        cr.save(carEntity);
+        contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
+        br.save(contractEntity);
+        //response
+        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true,"Xe : "+returnCarRequest.getPlateNumber()+" đã được trả thành công vào "+ new Date(System.currentTimeMillis()),null);
+        return new ResponseEntity<>(responseVo,HttpStatus.OK);
+    }
+
+
+
+    @Override
+    public ResponseEntity<?> finishContract(FinishContractRequest finishContractRequest) throws Exception{
+        // validate
+
+        // verify
+        Optional<ContractEntity> contractEntity = br.findById(finishContractRequest.getContractId());
+        if(!contractEntity.isPresent()){
+            ResponseVo responseVo = new ResponseVo(false,"Hợp đồng không tồn tại",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        if (contractEntity.get().getStatus() == 7){
+            ResponseVo responseVo = new ResponseVo(false,"Hợp đồng đã bị hủy",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        if (contractEntity.get().getStatus() < 4 ){
+            ResponseVo responseVo = new ResponseVo(false,"Hợp đồng chưa bắt đầu",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        // get list contract response check return all car
+        List<ContractDetailEntity> contractDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.get().getId());
+        for (ContractDetailEntity contractDetailEntity : contractDetailEntities){
+            if (contractDetailEntity.getCar().getStatus() == 1){
+               throw new Exception("Xe biển số "+ contractDetailEntity.getCar().getPlateNumber() +" Chưa được xác nhận trả về");
+            }
+        }
+        // get list purcharge cal total amount
+        List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.get().getId());
+        double totalAmount = contractEntity.get().getReal_price();
+        if (!(surchargeEntities.size() <= 0)){
+            for (SurchargeEntity entity: surchargeEntities) {
+                totalAmount += entity.getAmount();
+            }
+        }
+        // get list Payment cal
+        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(contractEntity.get().getId());
+        double paid = 0;
+        if (!(paymentEntities.size() <= 0)){
+            for (PaymentEntity entity : paymentEntities){
+                paid += entity.getPaid();
+            }
+        }
+        // check if re
+        // response
+        HashMap<String,Object> response = new HashMap<>();
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> getContractPaymentInf(long id) {
+        Optional<ContractEntity> contractEntity = br.findById(id);
+        if(!contractEntity.isPresent()){
+            ResponseVo responseVo = new ResponseVo(false,"Hợp đồng không tồn tại",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        if (contractEntity.get().getStatus() == 7){
+            ResponseVo responseVo = new ResponseVo(false,"Hợp đồng đã bị hủy",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        if (contractEntity.get().getStatus() < 4 ){
+            ResponseVo responseVo = new ResponseVo(false,"Hợp đồng chưa bắt đầu",null);
+            return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        }
+        // get list purcharge cal total amount
+        List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.get().getId());
+        double totalAmount = contractEntity.get().getReal_price();
+        double surchargeAmount = 0;
+
+        if (!(surchargeEntities.size() <= 0)){
+            for (SurchargeEntity entity: surchargeEntities) {
+                totalAmount += entity.getAmount();
+                surchargeAmount += entity.getAmount();
+            }
+        }
+        // get list Payment cal
+        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(contractEntity.get().getId());
+        double paid = 0;
+        double depositPaid = 0;
+        if (!(paymentEntities.size() <= 0)){
+            for (PaymentEntity entity : paymentEntities){
+                if (entity.getDescription().contains("cọc")){
+                    depositPaid += entity.getPaid();
+                }else {
+                    paid += entity.getPaid();
+
+                }
+            }
+        }
+        HashMap<String,Object> reponse = new HashMap<>();
+        reponse.put("rentalPrice",totalAmount);
+        reponse.put("surcharge",surchargeAmount);
+        reponse.put("totalAmount", totalAmount + surchargeAmount);
+        reponse.put("depositPaid",depositPaid);
+        reponse.put("paid",paid);
+        reponse.put("receivables",totalAmount + surchargeAmount - depositPaid - paid);
+        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true,"API Contract Payment", reponse);
+        return new ResponseEntity<>(responseVo,HttpStatus.OK);
     }
 
 

@@ -83,7 +83,6 @@ public class CarController {
                                                   @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
                                                   @RequestParam(required = true) Long PickupParkingId,
                                                   @RequestParam(required = true) Long ReturnParkingId) throws Exception {
-        jwtUtils.verify(auth);
         return carService.getListCarSelfDriver(startDate, endDate, PickupParkingId,ReturnParkingId);
     }
 

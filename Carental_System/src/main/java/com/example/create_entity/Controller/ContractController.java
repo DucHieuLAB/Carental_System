@@ -1,6 +1,7 @@
 package com.example.create_entity.Controller;
 
 import com.example.create_entity.Service.ContractServiceImpl;
+import com.example.create_entity.dto.FinishContractRequest;
 import com.example.create_entity.dto.Request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -78,7 +79,33 @@ public class ContractController {
     public ResponseEntity<?> getCarFromParking(@RequestBody GetCarReQuest getCarReQuest) throws Exception {
         return contractService.comfirmGetCar(getCarReQuest);
     }
-    //
+
+    @PutMapping("/addSurchargeEntity")
+    public ResponseEntity<?> addSurchargeEntity(@RequestBody SurchargeRequest purchargeRequest){
+        return contractService.addSurcharge(purchargeRequest);
+    }
+    // On going --- Create Payment add by Staff
+
+//    @PutMapping("/addContractPaymentEntity")
+//    public ResponseEntity<?> addPaymentOnContract(@RequestBody ){
+//        return
+//    }
+
+    @PutMapping("/returnCarToParking")
+    public ResponseEntity<?> returnCarToParking(@RequestBody ReturnCarRequest returnCarRequest){
+    return contractService.returnCar(returnCarRequest);
+    }
+
+    @GetMapping("/getPaymentInf/{id}")
+    public ResponseEntity<?> getPaymentInf(@PathVariable long id){
+        return contractService.getContractPaymentInf(id);
+    }
+
+    @PutMapping("/finishContract")
+    public ResponseEntity<?> finishContract(@RequestBody FinishContractRequest finishContractRequest) throws Exception {
+        return contractService.finishContract(finishContractRequest);
+    }
+//
 //    @PutMapping("/update/driver")
 //    public ResponseEntity<?> updateDriver(@RequestBody ContractHadDriverRequest contractHadDriverRequest){
 //        return contractService.updateDriver(contractHadDriverRequest);

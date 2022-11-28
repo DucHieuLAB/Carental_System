@@ -244,19 +244,43 @@ public class CarServiceImpl implements CarService {
     @Override
     public ResponseEntity<?> getListDriverByCarPlateNumber(DriverByCarByContractRequest driverByCarByContractRequest) {
         ResponseVo responseVo = null;
+       // validate
         CarEntity carEntity = carRepository.findCarEntityByPlateNumber(driverByCarByContractRequest.getPlateNumber());
         if (ObjectUtils.isEmpty(carEntity)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Biển số xe không đúng Xe:" + driverByCarByContractRequest.getPlateNumber(), null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        List<DriverEntity> driverEntityList = driverRepository.getDriverByPlateNumberExpectedStartDateExpectedEnđate(driverByCarByContractRequest.getExpectedStartDate(),
-                driverByCarByContractRequest.getExpectedEndDate(),
-                driverByCarByContractRequest.getPlateNumber());
+        // get list driver had license valid
+        List<DriverEntity> driverEntityList = driverRepository.getDriverByPlateNumber(driverByCarByContractRequest.getPlateNumber());
         if (driverEntityList.isEmpty()) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không có tài xế nào khả dụng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        List<ListDriverByCarAndContractResponse> listDriverByCarAndContractResponses = ListDriverByCarAndContractResponse.createResponse(driverEntityList);
+        // if driver dont have any contract from now accepted
+        List<DriverEntity> listPass = new ArrayList<>();
+        for (DriverEntity entity: driverEntityList){
+            Date currendate = new Date(System.currentTimeMillis());
+            boolean hadNextStep = true;
+            List<ContractEntity> checkHadContractInvalid = contractDetailRepository.checkHadAnyContract(entity.getId(),currendate);
+            if (checkHadContractInvalid.size() <= 0){
+                listPass.add(entity);
+                hadNextStep = false;
+            }
+            if (hadNextStep){
+                // if driver dont have any contract betwenn start date and end date
+                DriverEntity checkDriverHadInvalidStartAndEndDate = driverRepository.findDriverValidDate(entity.getId(),driverByCarByContractRequest.getExpectedStartDate(),driverByCarByContractRequest.getExpectedEndDate() );
+                if (checkDriverHadInvalidStartAndEndDate == null) {
+                    listPass.add(entity);
+                }
+            }
+
+        }
+        // response
+        if (listPass.size() <= 0){
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Danh sách tài xế xe :" + driverByCarByContractRequest.getPlateNumber() +" trống",null );
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        List<ListDriverByCarAndContractResponse> listDriverByCarAndContractResponses = ListDriverByCarAndContractResponse.createResponse(listPass);
         responseVo = ResponseVeConvertUntil.createResponseVo(true, "Danh sách tài xế xe :" + driverByCarByContractRequest.getPlateNumber(), listDriverByCarAndContractResponses);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
