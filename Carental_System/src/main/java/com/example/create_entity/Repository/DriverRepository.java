@@ -78,18 +78,18 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
     DriverEntity Check_Number_license(String number_license);
 
 
-    @Query(value = "    SELECT * \\n\" +\n" +
-            "            \"FROM driver d \\n\" +\n" +
-            "            \"RIGHT JOIN contract_details c on d.id_diver = c.driver_id and d.id_diver = ?1\" +\n" +
-            "            \"JOIN contracts ct on c.contract_id = ct.booking_id\\n\" +\n" +
-            "            \"WHERE ct.expected_start_date >= ?2 AND ct.expected_start_date <= ?3 and ct.status < 7\\n\" +\n" +
-            "            \"OR ct.expected_start_date < ?2 AND ct.expected_end_date >  ?2 and ct.status < 7 \\n\" +\n" +
-            "            \"OR ct.expected_start_date >=  ?2 AND ct.expected_end_date >  ?3 and ct.status < 7 \\n\" +\n" +
-            "            \"LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT *  \n" +
+            "FROM driver d \n" +
+            "JOIN contract_details c on d.id = c.id_driver and c.id_driver = ?1\n" +
+            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
+            "WHERE ct.expected_start_date >= ?2 AND ct.expected_start_date <= ?3 and ct.status < 6 and ct.status > 2 \n" +
+            "OR ct.expected_start_date < ?2 AND ct.expected_end_date >  ?2 and ct.status < 6 and ct.status > 2 \n" +
+            "OR ct.expected_start_date >=  ?2 AND ct.expected_end_date >  ?3 and ct.status < 6 and ct.status > 2 \n" +
+            "LIMIT 1", nativeQuery = true)
     DriverEntity findDriverValidDate(Long id, Date expected_start_date, Date expected_end_date);
 
     @Query(value = "SELECT * FROM driver\n" +
-            "JOIN cars on cars.plate_number = ?1 and cars.license_id <= driver.license_id;\n",nativeQuery = true)
+            "JOIN cars on cars.plate_number = ?1 and cars.license_id <= driver.license_id;\n", nativeQuery = true)
     List<DriverEntity> getDriverByPlateNumber(String plateNumber);
 
 

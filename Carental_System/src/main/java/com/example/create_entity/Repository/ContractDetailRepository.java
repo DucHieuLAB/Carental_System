@@ -134,7 +134,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
     ContractDetailEntity findContractDetailByContractIdByPlateNumber(long contractId, String carPlateNumber);
 
 @Query("SELECT c FROM  ContractDetailEntity c WHERE c.driverEntity.id = ?1 and c.booking.expected_start_date > ?2 and c.booking.status > 2 and c.booking.status < 6")
-    List<ContractEntity> checkHadAnyContract(Long id, Date currendate);
+    List<ContractDetailEntity> checkHadAnyContract(Long id, Date currendate);
 
     @Query("SELECT c FROM  ContractDetailEntity c WHERE c.car.plateNumber = ?1 and c.booking.expected_start_date > ?2 and c.booking.status > 2 and c.booking.status < 6 ")
     List<ContractDetailEntity> checkCarHadAnyContract(String plateNumber, Date date);

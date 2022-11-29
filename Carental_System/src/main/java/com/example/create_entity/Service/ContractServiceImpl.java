@@ -559,7 +559,7 @@ public class ContractServiceImpl implements ContractService {
         // get list contract response check return all car
         List<ContractDetailEntity> contractDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.get().getId());
         for (ContractDetailEntity contractDetailEntity : contractDetailEntities) {
-            if (contractDetailEntity.getCar().getStatus() == 1) {
+            if (contractDetailEntity.getCar().getStatus() == 2) {
                 throw new Exception("Xe biển số " + contractDetailEntity.getCar().getPlateNumber() + " Chưa được xác nhận trả về");
             }
         }

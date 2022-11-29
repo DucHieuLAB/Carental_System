@@ -261,7 +261,7 @@ public class CarServiceImpl implements CarService {
         for (DriverEntity entity : driverEntityList) {
             Date currendate = new Date(System.currentTimeMillis());
             boolean hadNextStep = true;
-            List<ContractEntity> checkHadContractInvalid = contractDetailRepository.checkHadAnyContract(entity.getId(), currendate);
+            List<ContractDetailEntity> checkHadContractInvalid = contractDetailRepository.checkHadAnyContract(entity.getId(), currendate);
             if (checkHadContractInvalid.size() <= 0) {
                 listPass.add(entity);
                 hadNextStep = false;
