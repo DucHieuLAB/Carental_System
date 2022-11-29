@@ -10,18 +10,6 @@ public interface ContractService {
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> add(ContractRequest contractRequest);
 
-    ResponseEntity<?> ListContract(Integer p);
-
-    ResponseEntity<?> ListContract2(Integer p);
-
-    ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p);
-
-    ResponseEntity<?> FilterByPhone(String name, Integer HadDriver, Integer Status, Integer p);
-
-    ResponseEntity<?> getContractById(Long id);
-
-    ResponseEntity<?> getListContractByCustomerId(long customerId);
-
     @Transactional
     ResponseEntity<?> cancelRenting(long id, int i);
 
@@ -29,13 +17,11 @@ public interface ContractService {
     ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest);
 
     @Transactional
-    ResponseEntity<?> confirmContract(long id, int i);
-
-    @Transactional
     ResponseEntity<?> confirmDeposit(DepositRequest depositRequest);
 
     @Transactional
     ResponseEntity<?> comfirmGetCar(GetCarReQuest getCarReQuest) throws Exception;
+
     @Transactional
     ResponseEntity<?> confirmDepositCustomer(long id);
 
@@ -48,7 +34,24 @@ public interface ContractService {
     @Transactional
     ResponseEntity<?> finishContract(FinishContractRequest finishContractRequest) throws Exception;
 
+    ResponseEntity<?> getContractById(Long id);
+
+    ResponseEntity<?> getListContractByCustomerId(long customerId);
+
     ResponseEntity<?> getContractPaymentInf(long id);
+
+    ResponseEntity<?> ListContract(Integer p);
+
+    ResponseEntity<?> ListContract2(Integer p);
+
+    ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p);
+
+    ResponseEntity<?> FilterByPhone(String name, Integer HadDriver, Integer Status, Integer p);
+
+    @Transactional
+    ResponseEntity<?> addPayment(PaymentRequest paymentRequest) throws Exception;
+
+    ResponseEntity<?> getListPaymentByCustomer(long id);
 
 //    @Transactional
 //    ResponseEntity<?> updateRentailPrice()

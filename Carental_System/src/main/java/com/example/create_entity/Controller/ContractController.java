@@ -84,66 +84,29 @@ public class ContractController {
     public ResponseEntity<?> addSurchargeEntity(@RequestBody SurchargeRequest purchargeRequest){
         return contractService.addSurcharge(purchargeRequest);
     }
-    // On going --- Create Payment add by Staff
 
-//    @PutMapping("/addContractPaymentEntity")
-//    public ResponseEntity<?> addPaymentOnContract(@RequestBody ){
-//        return
-//    }
+    @PutMapping("/addContractPaymentEntity")
+    public ResponseEntity<?> addPaymentOnContract(@RequestBody PaymentRequest paymentRequest) throws Exception {
+        return contractService.addPayment(paymentRequest);
+    }
 
     @PutMapping("/returnCarToParking")
     public ResponseEntity<?> returnCarToParking(@RequestBody ReturnCarRequest returnCarRequest){
     return contractService.returnCar(returnCarRequest);
     }
 
-    @GetMapping("/getPaymentInf/{id}")
-    public ResponseEntity<?> getPaymentInf(@PathVariable long id){
-        return contractService.getContractPaymentInf(id);
+    @GetMapping("getListPaymentByCustomer/{customerAccountId}")
+    public ResponseEntity<?> getListPaymentByCustomerAccountId(@PathVariable long customerAccountId) {
+        return contractService.getListPaymentByCustomer(customerAccountId);
+    }
+
+    @GetMapping("/getPaymentInf/{ContractId}")
+    public ResponseEntity<?> getPaymentInf(@PathVariable long ContractId){
+        return contractService.getContractPaymentInf(ContractId);
     }
 
     @PutMapping("/finishContract")
     public ResponseEntity<?> finishContract(@RequestBody FinishContractRequest finishContractRequest) throws Exception {
         return contractService.finishContract(finishContractRequest);
     }
-//
-//    @PutMapping("/update/driver")
-//    public ResponseEntity<?> updateDriver(@RequestBody ContractHadDriverRequest contractHadDriverRequest){
-//        return contractService.updateDriver(contractHadDriverRequest);
-//    }
-//
-//    @PutMapping("/update/realprice")
-//    public ResponseEntity<?> updateDriver(@RequestBody ContractRealPriceRequest contractRealPriceRequest){
-//        return contractService.updateRealPrice(contractRealPriceRequest);
-//    }
-//
-//    @PutMapping
-//    public ResponseEntity<?> updateContract(@RequestBody ContractRequest contractRequest){
-//        return contractService.update(contractRequest);
-//    }
-
-//    @PutMapping("/update/startContract")
-//    public ResponseEntity<?> updateContractStatus(@RequestBody StartContractRequest startContractRequest){
-//        return contractService.startRenting(startContractRequest);
-//    }
-//
-//    @PutMapping("/confirmByCustomer/{id}")
-//    public ResponseEntity<?> confirmContractByCustomer(@PathVariable long id){
-//        return contractService.confirmContract(id,1);
-//    }
-//
-//
-//    @PutMapping("/startRenting/{id}")
-//    public ResponseEntity<?> startRenting(@PathVariable long id){
-//        return contractService.startRenting(id);
-//    }
-//    @PutMapping("/closeContract")
-//    public ResponseEntity<?> closeContract(@RequestBody StartContractRequest startContractRequest){
-//        return contractService.close();
-//    }
-//
-//    @DeleteMapping("/cancelContractByStaff/{id}")
-//    public ResponseEntity<?> cancelContract(@PathVariable long id){
-//        return contractService.cancelRenting(id,1);
-//    }
-
 }

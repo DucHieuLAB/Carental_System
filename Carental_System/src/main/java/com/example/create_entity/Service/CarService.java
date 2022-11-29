@@ -30,7 +30,7 @@ public interface CarService {
 
     ResponseEntity<?> getListCarSelfDriver(Date startDate, Date endDate, Long pickupParkingId,Long returnParkingId);
 
-    ResponseEntity<?> getListCarHadDriverContract(Integer pageIndex, Integer pageSize, Date startDate, Date endDate, Long parkingId, String cityName);
+    ResponseEntity<?> getListCarHadDriverContract(Date startDate, Date endDate, String cityName);
 
 //    ResponseEntity<?> getListBestSeller();
 

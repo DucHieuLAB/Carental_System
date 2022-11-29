@@ -381,33 +381,23 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public ResponseEntity<?> getListCarHadDriverContract(Integer pageIndex, Integer pageSize, Date startDate, Date endDate, Long parkingId, String cityName) {
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        Page<CarEntity> carPage = null;
-        carPage = carRepository.findByStartDateAndEndDateAndParkingIdAndCitiName(startDate, endDate, parkingId, cityName, pageable);
+    public ResponseEntity<?> getListCarHadDriverContract( Date startDate, Date endDate, String cityName) {
+        List<CarEntity> ListCars = null;
+        List<CarEntity> result = new ArrayList<>();
+        if (ObjectUtils.isEmpty(startDate)) {
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thời gian lấy xe lỗi", startDate);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        if (ObjectUtils.isEmpty(endDate)) {
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thời gian trả xe lỗi", endDate);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        //Create data response Map<String,Objet>
         Map<String, Object> responseData = new HashMap<>();
-        if (carPage.isEmpty()) {
-            responseData.put("cars", carPage.getContent());
-            responseData.put("Total Record", 0);
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "không tìm thấy danh sách", responseData);
-            return new ResponseEntity<>(responseVo, HttpStatus.OK);
-        }
-        List<ListCarResponse> cars = ListCarResponse.createListCarPesponse(carPage.getContent());
-        for (ListCarResponse c : cars) {
-            List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(carImageService.getListCarByPlateNumber(c.getPlateNumber()));
-            c.setListImg(carImageResponses);
-        }
-        responseData.put("cars", cars);
-        responseData.put("startDate", startDate);
-        responseData.put("endDate", endDate);
-        responseData.put("parkingId", parkingId);
-        responseData.put("cityName", cityName);
-        responseData.put("currentPage", pageIndex);
-        responseData.put("totalRecord", carPage.getTotalElements());
-        responseData.put("pageSize", carPage.getSize());
-        responseData.put("totalPage", carPage.getTotalPages());
-        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "Danh sách xe", responseData);
-        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        // Get list Cars valid
+        ListCars = carRepository.findAll();
+
+        return null;
     }
 
 //    @Override

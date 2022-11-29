@@ -48,6 +48,8 @@ public class CustomerController {
         return accountService.UpdateCustomer(updateInfoCustomerRequest);
     }
 
+
+
 //    @RequestMapping(value = "account/Customer/Change_Password", method = RequestMethod.PUT)
 //    public ResponseEntity<?> Change_Password(@RequestBody ChangePassRequest changePassRequest) {
 //        return accountService.change_password_2(changePassRequest);

@@ -78,8 +78,7 @@ public class CarController {
     }
 
     @GetMapping("/SearchCarNoDriver")
-    public ResponseEntity<?> searchCarForContract(@RequestHeader(value = "authorization",defaultValue = "")String auth,
-                                                  @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+    public ResponseEntity<?> searchCarForContract(@RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
                                                   @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
                                                   @RequestParam(required = true) Long PickupParkingId,
                                                   @RequestParam(required = true) Long ReturnParkingId) throws Exception {
@@ -88,19 +87,11 @@ public class CarController {
 
 
     @GetMapping("/SearchCarHadDriver")
-    public ResponseEntity<?> searchCarForDadDriverContract(@RequestParam(required = false) Integer pageIndex,
-                                                           @RequestParam(required = false) Integer pageSize,
+    public ResponseEntity<?> searchCarForDadDriverContract(
                                                            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
                                                            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
-                                                           @RequestParam(required = false) Long parkingId,
                                                            @RequestParam(required = false) String CityName) {
-        if (pageIndex == null) {
-            pageIndex = defaultPage;
-        }
-        if (pageSize == null) {
-            pageSize = defaultSize;
-        }
-        return carService.getListCarHadDriverContract(pageIndex, pageSize,startDate,endDate,parkingId,CityName);
+        return carService.getListCarHadDriverContract(startDate,endDate,CityName);
 
     }
 
