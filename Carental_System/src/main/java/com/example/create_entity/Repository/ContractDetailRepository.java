@@ -121,10 +121,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
     List<ContractDetailEntity>SearchPlateNumber_schedule_Date1(String name,String date1,String date2);
 
 
-    @Query(value = "SELECT *\n" +
-            "FROM contract_details c\n" +
-            "LEFT JOIN contracts ct on c.contract_id = ct.booking_id and ct.status > 0 and ct.status < 7\n" +
-            "WHERE c.car_id = ?1 LIMIT 1",nativeQuery = true )
+    @Query("SELECT cde FROM ContractDetailEntity cde WHERE cde.car.id = ?1 and cde.booking.status > 2 and cde.booking.status < 6")
     Optional<ContractDetailEntity> findContractDetailByCar(Long carId);
 
     @Query(value = "SELECT COUNT(*) FROM contract_details c,contracts ct WHERE c.contract_id = ct.booking_id and ct.status > 0 and ct.status < 6  and c.contract_id = ?1 ",nativeQuery = true)
@@ -136,6 +133,9 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
     @Query("SELECT c FROM  ContractDetailEntity c WHERE c.car.plateNumber = ?2 and c.booking.id = ?1")
     ContractDetailEntity findContractDetailByContractIdByPlateNumber(long contractId, String carPlateNumber);
 
-@Query("SELECT c FROM  ContractDetailEntity c WHERE c.driverEntity.id = ?1 and c.booking.expected_start_date > ?2 and c.booking.status > 3 and c.booking.status < 7")
+@Query("SELECT c FROM  ContractDetailEntity c WHERE c.driverEntity.id = ?1 and c.booking.expected_start_date > ?2 and c.booking.status > 2 and c.booking.status < 6")
     List<ContractEntity> checkHadAnyContract(Long id, Date currendate);
+
+    @Query("SELECT c FROM  ContractDetailEntity c WHERE c.car.plateNumber = ?1 and c.booking.expected_start_date > ?2 and c.booking.status > 2 and c.booking.status < 6 ")
+    List<ContractDetailEntity> checkCarHadAnyContract(String plateNumber, Date date);
 }

@@ -85,7 +85,6 @@ public class CarController {
         return carService.getListCarSelfDriver(startDate, endDate, PickupParkingId,ReturnParkingId);
     }
 
-
     @GetMapping("/SearchCarHadDriver")
     public ResponseEntity<?> searchCarForDadDriverContract(
                                                            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,

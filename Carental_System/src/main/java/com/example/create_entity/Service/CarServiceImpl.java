@@ -244,7 +244,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public ResponseEntity<?> getListDriverByCarPlateNumber(DriverByCarByContractRequest driverByCarByContractRequest) {
         ResponseVo responseVo = null;
-       // validate
+        // validate
         CarEntity carEntity = carRepository.findCarEntityByPlateNumber(driverByCarByContractRequest.getPlateNumber());
         if (ObjectUtils.isEmpty(carEntity)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Biển số xe không đúng Xe:" + driverByCarByContractRequest.getPlateNumber(), null);
@@ -258,17 +258,17 @@ public class CarServiceImpl implements CarService {
         }
         // if driver dont have any contract from now accepted
         List<DriverEntity> listPass = new ArrayList<>();
-        for (DriverEntity entity: driverEntityList){
+        for (DriverEntity entity : driverEntityList) {
             Date currendate = new Date(System.currentTimeMillis());
             boolean hadNextStep = true;
-            List<ContractEntity> checkHadContractInvalid = contractDetailRepository.checkHadAnyContract(entity.getId(),currendate);
-            if (checkHadContractInvalid.size() <= 0){
+            List<ContractEntity> checkHadContractInvalid = contractDetailRepository.checkHadAnyContract(entity.getId(), currendate);
+            if (checkHadContractInvalid.size() <= 0) {
                 listPass.add(entity);
                 hadNextStep = false;
             }
-            if (hadNextStep){
+            if (hadNextStep) {
                 // if driver dont have any contract betwenn start date and end date
-                DriverEntity checkDriverHadInvalidStartAndEndDate = driverRepository.findDriverValidDate(entity.getId(),driverByCarByContractRequest.getExpectedStartDate(),driverByCarByContractRequest.getExpectedEndDate() );
+                DriverEntity checkDriverHadInvalidStartAndEndDate = driverRepository.findDriverValidDate(entity.getId(), driverByCarByContractRequest.getExpectedStartDate(), driverByCarByContractRequest.getExpectedEndDate());
                 if (checkDriverHadInvalidStartAndEndDate == null) {
                     listPass.add(entity);
                 }
@@ -276,8 +276,8 @@ public class CarServiceImpl implements CarService {
 
         }
         // response
-        if (listPass.size() <= 0){
-            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Danh sách tài xế xe :" + driverByCarByContractRequest.getPlateNumber() +" trống",null );
+        if (listPass.size() <= 0) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Danh sách tài xế xe :" + driverByCarByContractRequest.getPlateNumber() + " trống", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         List<ListDriverByCarAndContractResponse> listDriverByCarAndContractResponses = ListDriverByCarAndContractResponse.createResponse(listPass);
@@ -289,14 +289,6 @@ public class CarServiceImpl implements CarService {
     public ResponseEntity<?> getListCarSelfDriver(Date startDate, Date endDate, Long pickupParkingId, Long returnParkingId) {
         List<CarEntity> ListCars = null;
         List<CarEntity> result = new ArrayList<>();
-        if (ObjectUtils.isEmpty(startDate)) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thời gian lấy xe lỗi", startDate);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
-        if (ObjectUtils.isEmpty(endDate)) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thời gian trả xe lỗi", endDate);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
         //Create data response Map<String,Objet>
         Map<String, Object> responseData = new HashMap<>();
         // Get list Cars valid
@@ -306,6 +298,7 @@ public class CarServiceImpl implements CarService {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Danh sac cach xe trong", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
+        List<CarEntity> passValidDate = new ArrayList<>();
         for (CarEntity carEntity : ListCars) {
             // check car had contract detail or not
             boolean hadNextStep = true;
@@ -314,58 +307,41 @@ public class CarServiceImpl implements CarService {
                 result.add(carEntity);
                 hadNextStep = false;
             }
-            CarEntity checkCarHadInvalidContract = carRepository.checkCarValidInTime(startDate, endDate, carEntity.getPlateNumber());
-            if (ObjectUtils.isEmpty(checkCarHadInvalidContract) && hadNextStep) {
-                result.add(carEntity);
+            if (hadNextStep) {
+                CarEntity checkCarHadInvalidContract = carRepository.checkCarValidInTime(startDate, endDate, carEntity.getPlateNumber());
+                if (ObjectUtils.isEmpty(checkCarHadInvalidContract)) {
+                    passValidDate.add(carEntity);
+                }
             }
         }
         // Check select Pickup Parking
         List<CarEntity> listPassDateAndPickupParking = new ArrayList<>();
-        for (CarEntity carEntity : result) {
+        for (CarEntity carEntity : passValidDate) {
             // get Contract near excepted pick Up date
-            boolean hadNextStep = true;
             Optional<ContractEntity> contractEntity = contractRepository.findContractByPlateNumberAndStartDate(carEntity.getPlateNumber(), startDate);
-            if (!contractEntity.isPresent()) {
-                if (carEntity.getParking().getId() == pickupParkingId) {
-                    listPassDateAndPickupParking.add(carEntity);
-                }
-                hadNextStep = false;
+            if (contractEntity.get().getReturn_parking().getId() == pickupParkingId) {
+                listPassDateAndPickupParking.add(carEntity);
             }
-            if (hadNextStep) {
-                if (contractEntity.get().getReturn_parking().getId() == pickupParkingId) {
-                    listPassDateAndPickupParking.add(carEntity);
-                }
-            }
-
-        }
-        if (listPassDateAndPickupParking.size() <= 0) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Khong tim thay danh sach phu hop", null);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         // Check select Return Parking
-        List<CarEntity> listPassDateAndPickUpAndReturn = new ArrayList<>();
         for (CarEntity carEntity : listPassDateAndPickupParking) {
             Optional<ContractEntity> contractEntity = contractRepository.findContractByPlateNumberAndEndDate(carEntity.getPlateNumber(), endDate);
-            boolean hadNextStep = true;
-            if (!contractEntity.isPresent()) {
-                listPassDateAndPickUpAndReturn.add(carEntity);
-                hadNextStep = false;
+            if (contractEntity.get().getPickup_parking().getId() == returnParkingId) {
+                result.add(carEntity);
             }
-            if (hadNextStep) {
-                if (contractEntity.get().getPickup_parking().getId() == returnParkingId) {
-                    listPassDateAndPickUpAndReturn.add(carEntity);
-                }
-            }
-
         }
 
-        if (listPassDateAndPickUpAndReturn.isEmpty()) {
+        if (result.size() <= 0) {
             responseData.put("cars", null);
-            responseData.put("Total Record", 0);
+            responseData.put("startDate", startDate);
+            responseData.put("endDate", endDate);
+            responseData.put("PickupParkingId", pickupParkingId);
+            responseData.put("ReturnParkingId", returnParkingId);
+            responseData.put("totalRecord", 0);
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "không tìm thấy danh sách", responseData);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        List<ListCarResponse> cars = ListCarResponse.createListCarPesponse(listPassDateAndPickUpAndReturn);
+        List<ListCarResponse> cars = ListCarResponse.createListCarPesponse(result);
         for (ListCarResponse c : cars) {
             List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(carImageService.getListCarByPlateNumber(c.getPlateNumber()));
             c.setListImg(carImageResponses);
@@ -381,23 +357,57 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public ResponseEntity<?> getListCarHadDriverContract( Date startDate, Date endDate, String cityName) {
+    public ResponseEntity<?> getListCarHadDriverContract(Date startDate, Date endDate, String cityName) {
+        // validate
         List<CarEntity> ListCars = null;
         List<CarEntity> result = new ArrayList<>();
-        if (ObjectUtils.isEmpty(startDate)) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thời gian lấy xe lỗi", startDate);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
-        if (ObjectUtils.isEmpty(endDate)) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thời gian trả xe lỗi", endDate);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
         //Create data response Map<String,Objet>
         Map<String, Object> responseData = new HashMap<>();
         // Get list Cars valid
         ListCars = carRepository.findAll();
-
-        return null;
+        List<CarEntity> listPassValidStartDateAndEndDate  = new ArrayList<>();
+        for (CarEntity carEntity : ListCars) {
+            // check car had contract detail or not
+            boolean hadNextStep = true;
+            Optional<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId());
+            if (!checkCarHadInDetailContract.isPresent()) {
+                result.add(carEntity);
+                hadNextStep = false;
+            }
+            if (hadNextStep){
+                CarEntity checkCarHadInvalidContract = carRepository.checkCarValidInTime(startDate, endDate, carEntity.getPlateNumber());
+                if (ObjectUtils.isEmpty(checkCarHadInvalidContract) && hadNextStep) {
+                    listPassValidStartDateAndEndDate.add(carEntity);
+                }
+            }
+        }
+        for (CarEntity carEntity : listPassValidStartDateAndEndDate){
+            Optional<ContractEntity> contractEntity = contractRepository.findContractByPlateNumberAndStartDate(carEntity.getPlateNumber(), startDate);
+            if (contractEntity.get().getReturn_parking().getDistrictsEntity().getCity().equals(cityName)) {
+                result.add(carEntity);
+            }
+        }
+        if (result.size() <= 0) {
+            responseData.put("cars", null);
+            responseData.put("startDate", startDate);
+            responseData.put("endDate", endDate);
+            responseData.put("city", cityName);
+            responseData.put("totalRecord", 0);
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "không tìm thấy danh sách", responseData);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        List<ListCarResponse> cars = ListCarResponse.createListCarPesponse(result);
+        for (ListCarResponse c : cars) {
+            List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(carImageService.getListCarByPlateNumber(c.getPlateNumber()));
+            c.setListImg(carImageResponses);
+        }
+        responseData.put("cars", cars);
+        responseData.put("startDate", startDate);
+        responseData.put("endDate", endDate);
+        responseData.put("city", cityName);
+        responseData.put("totalRecord", ListCars.size());
+        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "Danh sách xe", responseData);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
 //    @Override

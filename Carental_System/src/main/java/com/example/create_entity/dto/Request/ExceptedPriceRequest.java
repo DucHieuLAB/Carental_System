@@ -5,14 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
+import java.util.Date;
+import java.util.List;
+
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentRequest {
-    private long contractId;
-    private long accountId;
-    private boolean deposit;
-    private String description;
-    private double paid;
+public class ExceptedPriceRequest {
+    private Date expectedStartDate;
+    private Date expectedEndDate;
+    private List<String> listCarPlateNumber;
 }

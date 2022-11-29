@@ -50,6 +50,11 @@ public class ContractController {
         return contractService.getContractById(id);
     }
 
+    @PutMapping("/rentalPrice")
+    public ResponseEntity<?> getPrice(@RequestBody ExceptedPriceRequest exceptedPriceRequest){
+        return contractService.getExceptedPrice(exceptedPriceRequest);
+    }
+
     @GetMapping("/ListContract/{CustomerId}")
     public ResponseEntity<?> getListResponseEntityByCustomerId(@PathVariable long CustomerId) {
         return contractService.getListContractByCustomerId(CustomerId);
@@ -90,7 +95,7 @@ public class ContractController {
         return contractService.addSurcharge(purchargeRequest);
     }
 
-    @PutMapping("/addContractPaymentEntity")
+    @PutMapping("/addContractPaymentStaff")
     public ResponseEntity<?> addPaymentOnContract(@RequestBody PaymentRequest paymentRequest) throws Exception {
         return contractService.addPayment(paymentRequest);
     }
@@ -110,7 +115,7 @@ public class ContractController {
         return contractService.getContractPaymentInf(ContractId);
     }
 
-    @GetMapping("/finishContract/ContractId")
+    @GetMapping("/finishContract/{ContractId}")
     public ResponseEntity<?> finishContract(@PathVariable long ContractId) throws Exception {
         return contractService.finishContract(ContractId);
     }

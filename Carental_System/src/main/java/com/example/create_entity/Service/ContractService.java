@@ -55,15 +55,5 @@ public interface ContractService {
     @Transactional
     ResponseEntity<?> addPaymentByCustomer(CustomerTransactionRequest customerTransactionRequest) throws Exception;
 
-//    @Transactional
-//    ResponseEntity<?> updateRentailPrice()
-
-//    @Transactional
-//    ResponseEntity<?> updateDriver(ContractHadDriverRequest contractHadDriverRequest);
-
-//    ResponseEntity<?> updateRealPrice(ContractRealPriceRequest contractRealPriceRequest);
-
-//    @Transactional
-//    ResponseEntity<?> update(ContractRequest contractRequest);
-//
+    ResponseEntity<?> getExceptedPrice(ExceptedPriceRequest exceptedPriceRequest);
 }
