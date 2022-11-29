@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface AccountService {
-   ResponseEntity<?> getListStaff(Integer p);
+   ResponseEntity<?>getListStaff(Integer p);
 
    ResponseEntity<?> Create_Staff(StaffRequest staffRequest);
 

@@ -40,9 +40,9 @@ public interface ContractService {
 
     ResponseEntity<?> getContractPaymentInf(long id);
 
-    ResponseEntity<?> ListContract(Integer p);
+    ResponseEntity<?> ListRequest_ofCustomer(Integer p);
 
-    ResponseEntity<?> ListContract2(Integer p);
+    ResponseEntity<?> ListContract(Integer p);
 
     ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p);
 

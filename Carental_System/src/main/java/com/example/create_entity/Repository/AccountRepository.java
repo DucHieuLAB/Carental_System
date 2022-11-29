@@ -21,7 +21,7 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     AccountEntity GetAccountByName(String username);
 
 
-    @Query(value = "    SELECT * FROM accounts where email = ? and  (accounts.status=1 or accounts.status=2) ", nativeQuery = true)
+    @Query(value = "SELECT * FROM accounts where email = ? and  (accounts.status=1 or accounts.status=2) ", nativeQuery = true)
     AccountEntity GetAccountByEmail(String email);
 
     @Query(value = "SELECT * FROM accounts where  email =?", nativeQuery = true)

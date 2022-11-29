@@ -21,11 +21,11 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
     ContractEntity getByCustomerIdAndExpectStartDateAndExpectEndDate(Long id, Date expected_start_date, Date expected_end_date);
 
     @Query(value = "select * from contracts where (status = 1 or status = 2 or status = 3 )    order by expected_start_date ASC", nativeQuery = true)
-    Page<ContractEntity> ListContract(Pageable pageable);
+    Page<ContractEntity>ListRequest_ofCustomer(Pageable pageable);
 
 
     @Query(value = "select * from contracts where (status = 4 or status = 5 or status = 6 or status=7 )    order by expected_start_date ASC", nativeQuery = true)
-    Page<ContractEntity> ListContract_2(Pageable pageable);
+    Page<ContractEntity> ListContract(Pageable pageable);
 
     @Query(value = "select * from contracts left join customers  \n" +
             "            on contracts.id_customer=customers.id \n" +
