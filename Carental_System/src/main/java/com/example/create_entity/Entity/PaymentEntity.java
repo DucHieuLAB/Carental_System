@@ -27,7 +27,7 @@ public class PaymentEntity {
     private ContractEntity contract;
 
     @ManyToOne
-    @JoinColumn(name = "ID_Staff", nullable = false, foreignKey = @ForeignKey(name = "FK_Staff"))
+    @JoinColumn(name = "ID_Staff", nullable = true, foreignKey = @ForeignKey(name = "FK_Staff"))
     private StaffEntity staffEntity;
 
 

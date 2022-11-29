@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +46,10 @@ public class ListContractDetailResponse {
             tmp.setColor(entity.getCar().getColor());
             tmp.setRentalPrice(entity.getCar().getRentalPrice());
             tmp.setCarId(entity.getCar().getId());
+            if(!ObjectUtils.isEmpty(entity.getDriverEntity())){
+                tmp.setDriverId(entity.getDriverEntity().getId());
+                tmp.setDriverName(entity.getDriverEntity().getFullName());
+            }
             result.add(tmp);
         }
         return result;

@@ -127,10 +127,11 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
             "WHERE c.car_id = ?1 LIMIT 1",nativeQuery = true )
     Optional<ContractDetailEntity> findContractDetailByCar(Long carId);
 
-    @Query(value = "SELECT COUNT(*) FROM contract_details c,contracts ct WHERE c.contract_id = ct.booking_id and ct.status > 0 and c.contract_id = ?1 ",nativeQuery = true)
-    int getCountContractDetail(long contractId);
-    @Query(value = "SELECT COUNT(*) FROM contract_details c,contracts ct WHERE c.contract_id = ct.booking_id and ct.status > 0 and c.driver_id = ?1 ",nativeQuery = true)
-    int getCountContractDetailByDriverId(Long id);
+    @Query(value = "SELECT COUNT(*) FROM contract_details c,contracts ct WHERE c.contract_id = ct.booking_id and ct.status > 0 and ct.status < 6  and c.contract_id = ?1 ",nativeQuery = true)
+    long getCountContractDetail(long contractId);
+
+    @Query(value = "SELECT COUNT(*) FROM contract_details c,contracts ct WHERE c.contract_id = ct.booking_id and ct.status > 0 and ct.status < 6 and c.id_driver = ?1 ",nativeQuery = true)
+    long getCountContractDetailByDriverId(Long id);
 
     @Query("SELECT c FROM  ContractDetailEntity c WHERE c.car.plateNumber = ?2 and c.booking.id = ?1")
     ContractDetailEntity findContractDetailByContractIdByPlateNumber(long contractId, String carPlateNumber);

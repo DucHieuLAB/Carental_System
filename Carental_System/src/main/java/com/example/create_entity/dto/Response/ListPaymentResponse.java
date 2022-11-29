@@ -17,7 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListPaymentResponse {
-    private String staffName;
+    private long id;
+
+    private long contractId;
 
     private double paid;
 
@@ -36,7 +38,8 @@ public class ListPaymentResponse {
         }
         for (PaymentEntity entity : paymentEntities){
             ListPaymentResponse listPaymentResponse = new ListPaymentResponse();
-            listPaymentResponse.setStaffName(entity.getStaffEntity().getFullName());
+            listPaymentResponse.setContractId(entity.getContract().getId());
+            listPaymentResponse.setId(entity.getId());
             listPaymentResponse.setPaid(entity.getPaid());
             listPaymentResponse.setReceivables(entity.getReceivables());
             listPaymentResponse.setTotalAmount(entity.getTotalAmount());

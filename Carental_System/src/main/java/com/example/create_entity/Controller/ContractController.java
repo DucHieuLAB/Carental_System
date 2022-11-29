@@ -70,9 +70,14 @@ public class ContractController {
         return contractService.cancelRenting(id, 2);
     }
 
-    @PutMapping("/confirmByStaff")
-    public ResponseEntity<?> confirmContractByStaff(@RequestBody DepositRequest depositRequest) {
-        return contractService.confirmDeposit(depositRequest);
+    @DeleteMapping("/cancelContractByStaff/{id}")
+    public ResponseEntity<?> cancelContractByStaff(@PathVariable long id) {
+        return contractService.cancelRenting(id, 1);
+    }
+
+    @PutMapping("/confirmByStaff/{contractId}")
+    public ResponseEntity<?> confirmContractByStaff(@PathVariable long contractId) {
+        return contractService.confirmDeposit(contractId);
     }
 
     @PutMapping("/getCarFromParking")
@@ -105,8 +110,13 @@ public class ContractController {
         return contractService.getContractPaymentInf(ContractId);
     }
 
-    @PutMapping("/finishContract")
-    public ResponseEntity<?> finishContract(@RequestBody FinishContractRequest finishContractRequest) throws Exception {
-        return contractService.finishContract(finishContractRequest);
+    @GetMapping("/finishContract/ContractId")
+    public ResponseEntity<?> finishContract(@PathVariable long ContractId) throws Exception {
+        return contractService.finishContract(ContractId);
+    }
+
+    @PutMapping("/PaymentByCustomer")
+    public ResponseEntity<?> paymentByCustomer(@RequestBody CustomerTransactionRequest customerTransactionRequest) throws Exception {
+        return contractService.addPaymentByCustomer(customerTransactionRequest);
     }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
 
     @Transactional
-    @Query(value = "SELECT * FROM driver WHERE id_diver = ?1 ", nativeQuery = true)
+    @Query("SELECT d FROM DriverEntity d WHERE d.id = ?1")
     DriverEntity GetDriverById(Long id);
 
     @Query(value = "SELECT dr FROM DriverEntity  dr INNER JOIN AccountEntity ac ON dr.accountEntity.ID = ac.ID WHERE dr.accountEntity.Username = ?1 ")

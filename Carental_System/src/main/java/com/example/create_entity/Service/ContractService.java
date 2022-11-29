@@ -17,7 +17,7 @@ public interface ContractService {
     ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest);
 
     @Transactional
-    ResponseEntity<?> confirmDeposit(DepositRequest depositRequest);
+    ResponseEntity<?> confirmDeposit(long id);
 
     @Transactional
     ResponseEntity<?> comfirmGetCar(GetCarReQuest getCarReQuest) throws Exception;
@@ -32,7 +32,7 @@ public interface ContractService {
     ResponseEntity<?> returnCar(ReturnCarRequest returnCarRequest);
 
     @Transactional
-    ResponseEntity<?> finishContract(FinishContractRequest finishContractRequest) throws Exception;
+    ResponseEntity<?> finishContract(long id) throws Exception;
 
     ResponseEntity<?> getContractById(Long id);
 
@@ -52,6 +52,8 @@ public interface ContractService {
     ResponseEntity<?> addPayment(PaymentRequest paymentRequest) throws Exception;
 
     ResponseEntity<?> getListPaymentByCustomer(long id);
+    @Transactional
+    ResponseEntity<?> addPaymentByCustomer(CustomerTransactionRequest customerTransactionRequest) throws Exception;
 
 //    @Transactional
 //    ResponseEntity<?> updateRentailPrice()
