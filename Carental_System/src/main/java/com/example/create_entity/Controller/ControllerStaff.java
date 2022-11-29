@@ -41,7 +41,7 @@ public class ControllerStaff {
     }
 
     @RequestMapping(value = "/Staff/ChangeStatus", method = RequestMethod.GET)
-    private ResponseEntity<?>FilterByName(@RequestParam(required = false) String username)  {
+    private ResponseEntity<?>ChangeStatus(@RequestParam(required = false) String username)  {
         return accountServiceIml.ChangeStatusStaff(username);
     }
 

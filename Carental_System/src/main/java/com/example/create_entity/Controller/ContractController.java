@@ -23,14 +23,14 @@ public class ContractController {
         return contractService.add(contractRequest);
     }
 
-    @RequestMapping(value = "/ListContract", method = RequestMethod.GET)
+    @RequestMapping(value = "/ListRequest", method = RequestMethod.GET)
     public ResponseEntity<?> List(@RequestParam(value = "p", required = false) Integer p) {
-        return contractService.ListContract(p);
+        return contractService.ListRequest_ofCustomer(p);
     }
 
-    @RequestMapping(value = "/ListContract_2", method = RequestMethod.GET)
+    @RequestMapping(value = "/ListContract", method = RequestMethod.GET)
     public ResponseEntity<?> List2(@RequestParam(value = "p", required = false) Integer p) {
-        return contractService.ListContract2(p);
+        return contractService.ListContract(p);
     }
 
     @RequestMapping(value = "/Search", method = RequestMethod.GET)

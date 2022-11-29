@@ -374,6 +374,9 @@ public class AccountServiceIml implements AccountService {
             if (accountEntity != null && accountEntity.getOtp().equals(OTP.trim()) && accountEntity.isOTPRequired()) {
                 responseVo.setMessage("Xác thực Email thành công !");
                 responseVo.setStatus(true);
+                accountEntity.setOtp("");
+                accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+                accountRepository.save(accountEntity);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             } else {
                 responseVo.setMessage("Mã OTP không chính xác hoặc Không còn tồn tại !");
@@ -392,11 +395,10 @@ public class AccountServiceIml implements AccountService {
         ResponseVo responseVo = new ResponseVo();
         try {
             AccountEntity accountEntity = accountRepository.GetAccountByEmail(response.getEmail().trim());
-            if (accountEntity != null && accountEntity.isOTPRequired() && accountEntity.getOtp().equals(response.getOtp())) {
+            if (accountEntity != null) {
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 String encodedPassword = passwordEncoder.encode(response.getPassword());
                 accountEntity.setPassword(encodedPassword);
-                accountEntity.setOtp("");
                 accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
                 accountRepository.save(accountEntity);
                 responseVo.setMessage("Thay đổi mật khẩu thành công !");

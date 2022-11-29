@@ -746,7 +746,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> ListContract(Integer p) {
+    public ResponseEntity<?> ListRequest_ofCustomer(Integer p) {
         if (p == null) {
             p = 0;
         } else if (p > 0) {
@@ -756,7 +756,7 @@ public class ContractServiceImpl implements ContractService {
         try {
             Pageable pageable = PageRequest.of(p, 5);
 
-            Page<ContractEntity> page = br.ListContract(pageable);
+            Page<ContractEntity> page = br.ListRequest_ofCustomer(pageable);
 
             List<ContractResponse> contractResponse = new ArrayList<>();
 
@@ -787,7 +787,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> ListContract2(Integer p) {
+    public ResponseEntity<?> ListContract(Integer p) {
         if (p == null) {
             p = 0;
         } else if (p > 0) {
@@ -798,7 +798,7 @@ public class ContractServiceImpl implements ContractService {
         try {
             Pageable pageable = PageRequest.of(p, 5);
 
-            Page<ContractEntity> page = br.ListContract_2(pageable);
+            Page<ContractEntity> page = br.ListContract(pageable);
 
             List<ContractResponse> contractResponse = new ArrayList<>();
 
