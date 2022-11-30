@@ -17,9 +17,8 @@ spring:
   servlet:
     multipart:
       enabled: true
-      file-size-threshold: 2MB
-      max-file-size: 5MB
-      max-request-size: 10MB
-
+      file-size-threshold: 10MB
+      max-file-size: 15MB
+      max-request-size: 30MB
 server:
   port: 8080

@@ -33,16 +33,28 @@ public class ContractController {
         return contractService.ListContract(p);
     }
 
-    @RequestMapping(value = "/Search", method = RequestMethod.GET)
-    public ResponseEntity<?> Filter(@RequestParam(required = false) Integer p,
+    @RequestMapping(value = "/SearchContract", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterContract(@RequestParam(required = false) Integer p,
                                     @RequestParam(required = false) String name,
                                     @RequestParam(required = false) Integer HadDriver,
                                     @RequestParam(required = false) Integer Status,
                                     @RequestParam(required = false) String phone) {
         if (phone != null && name == null) {
-            return contractService.FilterByPhone(phone, HadDriver, Status, p);
+            return contractService.FilterByPhoneContract(phone, HadDriver, Status, p);
         }
-        return contractService.FilterByName(name, HadDriver, Status, p);
+        return contractService.FilterByNameContract(name, HadDriver, Status, p);
+    }
+
+    @RequestMapping(value = "/SearchRequest", method = RequestMethod.GET)
+    public ResponseEntity<?> FilterRequest(@RequestParam(required = false) Integer p,
+                                    @RequestParam(required = false) String name,
+                                    @RequestParam(required = false) Integer HadDriver,
+                                    @RequestParam(required = false) Integer Status,
+                                    @RequestParam(required = false) String phone) {
+        if (phone != null && name == null) {
+            return contractService.FilterByPhoneRequest(phone, HadDriver, Status, p);
+        }
+        return contractService.FilterByNameRequest(name, HadDriver, Status, p);
     }
 
     @GetMapping("/Detail/{id}")

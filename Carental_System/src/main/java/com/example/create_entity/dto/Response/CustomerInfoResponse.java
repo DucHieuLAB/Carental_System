@@ -15,6 +15,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerInfoResponse {
+    private Long CustomerID;
+
     private String FullName;
 
     private String Phone;
@@ -51,6 +53,7 @@ public class CustomerInfoResponse {
     public CustomerInfoResponse customerInfoResponse(CustomerEntity customer) {
 
         CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
+        customerInfoResponse.setCustomerID(customer.getID());
         customerInfoResponse.setFullName(customer.getFullName());
         customerInfoResponse.setUserName(customer.getAccountEntity().getUsername());
         customerInfoResponse.setDob(customer.getDOB());
