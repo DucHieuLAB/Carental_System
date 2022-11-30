@@ -319,7 +319,11 @@ public class CarServiceImpl implements CarService {
         for (CarEntity carEntity : passValidDate) {
             // get Contract near excepted pick Up date
             Optional<ContractEntity> contractEntity = contractRepository.findContractByPlateNumberAndStartDate(carEntity.getPlateNumber(), startDate);
-            if (contractEntity.get().getReturn_parking().getId() == pickupParkingId) {
+            if (contractEntity.isPresent()){
+                if (contractEntity.get().getReturn_parking().getId() == pickupParkingId) {
+                    listPassDateAndPickupParking.add(carEntity);
+                }
+            }else {
                 listPassDateAndPickupParking.add(carEntity);
             }
         }
@@ -383,9 +387,14 @@ public class CarServiceImpl implements CarService {
         }
         for (CarEntity carEntity : listPassValidStartDateAndEndDate){
             Optional<ContractEntity> contractEntity = contractRepository.findContractByPlateNumberAndStartDate(carEntity.getPlateNumber(), startDate);
-            if (contractEntity.get().getReturn_parking().getDistrictsEntity().getCity().equals(cityName)) {
+            if (contractEntity.isPresent()){
+                if (contractEntity.get().getReturn_parking().getDistrictsEntity().getCity().equals(cityName)) {
+                    result.add(carEntity);
+                }
+            }{
                 result.add(carEntity);
             }
+
         }
         if (result.size() <= 0) {
             responseData.put("cars", null);

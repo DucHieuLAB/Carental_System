@@ -74,7 +74,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "\t\t\t      LEFT JOIN contract_details c on cars.id = c.car_id\n" +
             "            LEFT JOIN contracts ct on c.contract_id = ct.booking_id  \n" +
             "\t\t\t      WHERE cars.plate_number = ?1 and DATEDIFF(ct.expected_end_date,?2) < 0\n" +
-            "            ORDER BY  dayDiff DESC LIMIT 1;", nativeQuery = true)
+            "            ORDER BY  dayDiff DESC LIMIT 1", nativeQuery = true)
     Optional<ContractEntity> findContractByPlateNumberAndStartDate(String plateNumber, Date startDate);
 
     @Query(value = "     SELECT *, DATEDIFF(ct.expected_start_date,?2) as dayDiff\n" +
