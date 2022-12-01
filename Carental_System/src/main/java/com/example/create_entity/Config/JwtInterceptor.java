@@ -1,6 +1,8 @@
 package com.example.create_entity.Config;
 
+import com.example.create_entity.dto.Request.AccountMetaRequest;
 import com.example.create_entity.untils.JwtUtils;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -13,13 +15,21 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private JwtUtils jwtUtils;
 
+//    private AccountMetaRequest accountMetaRequest;
+//
+//    public JwtInterceptor(AccountMetaRequest accountMetaRequest){
+//        this.accountMetaRequest = accountMetaRequest;
+//    }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println(request.getRequestURI());
-        if(!(request.getRequestURI().contains("login")|| request.getRequestURI().contains("Register"))){
-            String author = request.getHeader("authorization");
-//            jwtUtils.validateToken(author);
-        }
+//        if((request.getRequestURI().contains("contract/add"))){
+//            String author = request.getHeader("authorization");
+//            Claims claims = jwtUtils.verify(author);
+//            long id = Long.parseLong(claims.getSubject());
+//            accountMetaRequest.setId(id);
+//            accountMetaRequest.setRoleId(Long.parseLong(claims.get("role").toString()));
+//        }
         return super.preHandle(request,response,handler);
     }
 }

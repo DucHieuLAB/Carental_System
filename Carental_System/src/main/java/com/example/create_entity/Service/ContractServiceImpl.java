@@ -114,7 +114,6 @@ public class ContractServiceImpl implements ContractService {
             newContract.setReturn_parking(returnParking.get());
             newContract.setCustomer(customer);
             newContract.setQuantity(contractRequest.getListCarPlateNumber().size());
-
             Date date = new Date(System.currentTimeMillis());
             newContract.setLastModifiedDate(date);
             newContract.setCreatedDate(date);
@@ -146,7 +145,6 @@ public class ContractServiceImpl implements ContractService {
                             contractRequest.getDistricReturnAddress().getWards(),
                             contractRequest.getDistricReturnAddress().getDistrictName());
                 }
-
                 entity.setPickup_district_id(districPickUpAddress.getId());
                 entity.setReturn_district_id(districReturnAddress.getId());
                 entity.setPickup_address(contractRequest.getPickUpAddress());
@@ -414,7 +412,7 @@ public class ContractServiceImpl implements ContractService {
             ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        if (contractEntity.getStatus() != 4){
+        if (contractEntity.getStatus() != 4) {
             ResponseVo responseVo = new ResponseVo(false, "Hợp đồng chưa có hiệu lực", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
@@ -532,6 +530,7 @@ public class ContractServiceImpl implements ContractService {
         contractDetailEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         bdr.save(contractDetailEntity);
         carEntity.setStatus(1);
+        carEntity.setParking(contractEntity.getReturn_parking());
         cr.save(carEntity);
         contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         br.save(contractEntity);
@@ -579,6 +578,7 @@ public class ContractServiceImpl implements ContractService {
                 paid += entity.getPaid();
             }
         }
+
         // update contract set status = 6 if customer pay all bill
         HashMap<String, Object> reponse = new HashMap<>();
         if (totalAmount - paid <= 0) {
@@ -601,21 +601,30 @@ public class ContractServiceImpl implements ContractService {
         // validate
 
         // verifi
+
         ContractEntity contractEntity = br.findByIdAndStatusValid(paymentRequest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        StaffEntity staffEntity = staffRepository.staffEntity(paymentRequest.getAccountId());
-        if (ObjectUtils.isEmpty(staffEntity)) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy nhân viên ID = " + paymentRequest.getAccountId(), null);
+        if (paymentRequest.getPaid() < contractEntity.getDeposit_amount()) {
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Số tiền cọc không được phép nhỏ hơn trong hợp đồng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
+//        StaffEntity staffEntity = staffRepository.staffEntity(paymentRequest.getAccountId());
+//        if (ObjectUtils.isEmpty(staffEntity)) {
+//            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy nhân viên ID = " + paymentRequest.getAccountId(), null);
+//            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+//        }
         // cal total
         List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
-        double totalAmount = contractEntity.getReal_price();
+        double totalAmount = 0;
+        if (contractEntity.isHad_driver()) {
+            totalAmount = contractEntity.getReal_price();
+        } else {
+            totalAmount = contractEntity.getExpected_rental_price();
+        }
         double surchargeAmount = 0;
-
         if (!(surchargeEntities.size() <= 0)) {
             for (SurchargeEntity entity : surchargeEntities) {
                 totalAmount += entity.getAmount();
@@ -635,9 +644,22 @@ public class ContractServiceImpl implements ContractService {
                 }
             }
         }
-        // save
+        // update status = 4 if it is deposit
+        if (paymentRequest.isDeposit()) {
+            if (contractEntity.getStatus() > 3) {
+                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Hợp đồng đã được thanh toán tiền cọc", null);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            }
+            if (contractEntity.getDeposit_amount() > paymentRequest.getPaid()){
+                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Số tiền cọc phải hơn hơn hoặc bằng " +contractEntity.getDeposit_amount(), null);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            }
+            contractEntity.setStatus(4);
+            br.save(contractEntity);
+        }
+        // save payment
         PaymentEntity paymentEntity = new PaymentEntity();
-        paymentEntity.setStaffEntity(staffEntity);
+//        paymentEntity.setStaffEntity(staffEntity);
         paymentEntity.setContract(contractEntity);
         String des = paymentRequest.isDeposit() == true ? "Cọc hợp đồng" : "Thanh toán hợp đồng";
         paymentEntity.setDescription(des);
@@ -647,14 +669,22 @@ public class ContractServiceImpl implements ContractService {
         paymentEntity.setReceivables(totalAmount - paid - depositPaid);
         paymentEntity.setTotalAmount(totalAmount);
         paymentsRepository.save(paymentEntity);
-        if (paymentRequest.isDeposit()) {
-            contractEntity = br.findByIdAndStatus2(paymentRequest.getContractId());
-            if (ObjectUtils.isEmpty(contractEntity)) {
-                ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);
-                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        // change status = 6 (done contract)
+        // check return all car
+        boolean isReturnCar = true;
+        List<ContractDetailEntity> contractDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.getId());
+        for (ContractDetailEntity contractDetailEntity : contractDetailEntities) {
+            if (contractDetailEntity.getReal_return_date() == null) {
+                isReturnCar = false;
             }
-            contractEntity.setStatus(3);
-            br.save(contractEntity);
+        }
+        // if return all car
+        if (isReturnCar) {
+            // check customer pay all set contract status = 6
+            if ((totalAmount - paid - depositPaid) <= 0) {
+                contractEntity.setStatus(6);
+                br.save(contractEntity);
+            }
         }
         ResponseVo responseVo = new ResponseVo(true, "Cập nhật thông tin thành công", null);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -700,16 +730,16 @@ public class ContractServiceImpl implements ContractService {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-//        StaffEntity staffEntity = staffRepository.staffEntity(customerTransactionRequest.getAccountId());
-//        if (ObjectUtils.isEmpty(staffEntity)) {
-//            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy nhân viên ID = " + paymentRequest.getAccountId(), null);
-//            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-//        }
         // cal total
         List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
-        double totalAmount = contractEntity.getReal_price();
+        // if contract is had driver total = getReal_price else total = getExpected_rental_price;
+        double totalAmount = 0;
+        if (contractEntity.isHad_driver()) {
+            totalAmount = contractEntity.getReal_price();
+        } else {
+            totalAmount = contractEntity.getExpected_rental_price();
+        }
         double surchargeAmount = 0;
-
         if (!(surchargeEntities.size() <= 0)) {
             for (SurchargeEntity entity : surchargeEntities) {
                 totalAmount += entity.getAmount();
@@ -730,6 +760,33 @@ public class ContractServiceImpl implements ContractService {
             }
         }
         try {
+            // change status = 4 ( done )
+            if (customerTransactionRequest.isDeposit()) {
+                if (contractEntity.getStatus() > 3) {
+                    ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Hợp đồng đã được thanh toán tiền cọc", null);
+                    return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+                }
+                contractEntity.setStatus(4);
+                br.save(contractEntity);
+            }
+            // change status = 6 (done contract)
+            // check return all car
+            boolean isReturnCar = true;
+            List<ContractDetailEntity> contractDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.getId());
+            for (ContractDetailEntity contractDetailEntity : contractDetailEntities) {
+                if (contractDetailEntity.getReal_return_date() == null) {
+                    isReturnCar = false;
+                }
+            }
+            // if return all car
+            if (isReturnCar) {
+                // check customer pay all set contract status = 6
+                if ((totalAmount - paid - depositPaid) <= 0) {
+                    contractEntity.setStatus(6);
+                    br.save(contractEntity);
+                }
+            }
+
             // save
             PaymentEntity paymentEntity = new PaymentEntity();
 //          paymentEntity.setStaffEntity(staffEntity);
@@ -742,17 +799,6 @@ public class ContractServiceImpl implements ContractService {
             paymentEntity.setReceivables(totalAmount - paid - depositPaid);
             paymentEntity.setTotalAmount(totalAmount);
             paymentsRepository.save(paymentEntity);
-
-            // change status
-            if (customerTransactionRequest.isDeposit()) {
-                contractEntity = br.findByIdAndStatus2(customerTransactionRequest.getContractId());
-                if (ObjectUtils.isEmpty(contractEntity)) {
-                    ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);
-                    return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-                }
-                contractEntity.setStatus(3);
-                br.save(contractEntity);
-            }
             ResponseVo responseVo = new ResponseVo(true, "Lưu thành công", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (Exception e) {
@@ -765,23 +811,23 @@ public class ContractServiceImpl implements ContractService {
         double expectedRentalPrice = 0;
         long diffInMillies = Math.abs(exceptedPriceRequest.getExpectedEndDate().getTime() - exceptedPriceRequest.getExpectedStartDate().getTime());
         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-        for (String plateNumber : exceptedPriceRequest.getListCarPlateNumber()){
+        for (String plateNumber : exceptedPriceRequest.getListCarPlateNumber()) {
             CarEntity carEntity = cr.findCarEntityByPlateNumber(plateNumber);
-            if (ObjectUtils.isEmpty(carEntity)){
-                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false,"Xe biển số :"+ plateNumber +" Không tồn tại",null );
-                return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+            if (ObjectUtils.isEmpty(carEntity)) {
+                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Xe biển số :" + plateNumber + " Không tồn tại", null);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
             expectedRentalPrice += carEntity.getRentalPrice() * diff;
         }
 
-        HashMap<String,Object> reponse = new HashMap<>();
-        reponse.put("startDate",exceptedPriceRequest.getExpectedStartDate());
-        reponse.put("endDate",exceptedPriceRequest.getExpectedEndDate());
-        reponse.put("listCar",exceptedPriceRequest.getListCarPlateNumber());
+        HashMap<String, Object> reponse = new HashMap<>();
+        reponse.put("startDate", exceptedPriceRequest.getExpectedStartDate());
+        reponse.put("endDate", exceptedPriceRequest.getExpectedEndDate());
+        reponse.put("listCar", exceptedPriceRequest.getListCarPlateNumber());
         NumberFormat formatter = new DecimalFormat("#0.00");
-        reponse.put("exceptedPrice",formatter.format(expectedRentalPrice));
-        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true,"API get excepted price",reponse );
-        return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+        reponse.put("exceptedPrice", formatter.format(expectedRentalPrice));
+        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "API get excepted price", reponse);
+        return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
     }
 
     @Override

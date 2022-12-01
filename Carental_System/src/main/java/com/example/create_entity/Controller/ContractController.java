@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 public class ContractController {
 
     private final ContractServiceImpl contractService;
-
+//    @Autowired
+//    private AccountMetaRequest accountMetaRequest;
     @Autowired
     public ContractController(ContractServiceImpl contractService1) {
         this.contractService = contractService1;
