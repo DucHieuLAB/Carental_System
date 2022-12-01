@@ -31,35 +31,87 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            on contracts.id_customer=customers.id \n" +
             "            where customers.full_name like %?1% \n" +
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
-            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END AND (contracts.status = 4 or contracts.status = 5 or contracts.status = 6 or contracts.status = 7)\n" +
             "            ", nativeQuery = true)
-    List<ContractEntity> FilterByName(String name, Integer HadDriver, Integer Status, Pageable pageable);
+    List<ContractEntity> FilterByNameContract1(String name, Integer HadDriver, Integer Status, Pageable pageable);
 
 
     @Query(value = "  select * from contracts left join customers  \n" +
             "            on contracts.id_customer=customers.id \n" +
             "            where customers.full_name like %?1% \n" +
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
-            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END\n" +
-            "            ", nativeQuery = true)
-    List<ContractEntity> FilterByName1(String name, Integer HadDriver, Integer Status);
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END AND " +
+            "(contracts.status = 4 or contracts.status = 5 or contracts.status = 6 or contracts.status = 7) \n",nativeQuery = true)
+    List<ContractEntity> FilterByNameContract2(String name, Integer HadDriver, Integer Status);
 
     @Query(value = "  select * from contracts left join customers \n" +
             "            on contracts.id_customer=customers.id \n" +
             "            where customers.phone like %?1% \n" +
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
-            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END " +
+            "AND (contracts.status = 4 or contracts.status = 5 or contracts.status = 6 or contracts.status = 7)\n" +
             "            ", nativeQuery = true)
-    List<ContractEntity> FilterByPhone(String name, Integer HadDriver, Integer Status, Pageable pageable);
+    List<ContractEntity> FilterByPhoneContract1(String phone, Integer HadDriver, Integer Status, Pageable pageable);
 
 
     @Query(value = "  select * from contracts left join customers   \n" +
             "            on contracts.id_customer=customers.id \n" +
             "            where customers.phone like %?1% \n" +
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
-            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END " +
+            "AND(contracts.status = 4 or contracts.status = 5 or contracts.status = 6 or contracts.status = 7)\n" +
             "            ", nativeQuery = true)
-    List<ContractEntity> FilterByPhone1(String name, Integer HadDriver, Integer Status);
+    List<ContractEntity> FilterByPhoneContract2(String phone, Integer HadDriver, Integer Status);
+
+
+
+/// List Request
+
+    @Query(value = "select * from contracts left join customers  \n" +
+            "            on contracts.id_customer=customers.id \n" +
+            "            where customers.full_name like %?1% \n" +
+            "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END AND " +
+            "(contracts.status = 1 or contracts.status = 2 or contracts.status = 3)\n" +
+            "            ", nativeQuery = true)
+    List<ContractEntity> FilterByNameRequest1(String name, Integer HadDriver, Integer Status, Pageable pageable);
+
+
+    @Query(value = "  select * from contracts left join customers  \n" +
+            "            on contracts.id_customer=customers.id \n" +
+            "            where customers.full_name like %?1% \n" +
+            "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END AND " +
+            "(contracts.status = 1 or contracts.status = 2 or contracts.status = 6 or contracts.status = 3) \n",nativeQuery = true)
+    List<ContractEntity> FilterByNameRequest2(String name, Integer HadDriver, Integer Status);
+
+    @Query(value = "  select * from contracts left join customers \n" +
+            "            on contracts.id_customer=customers.id \n" +
+            "            where customers.phone like %?1% \n" +
+            "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END " +
+            "AND (contracts.status = 1 or contracts.status = 2 or contracts.status = 3)", nativeQuery = true)
+    List<ContractEntity> FilterByPhoneRequest1(String phone, Integer HadDriver, Integer Status, Pageable pageable);
+
+
+    @Query(value = "  select * from contracts left join customers   \n" +
+            "            on contracts.id_customer=customers.id \n" +
+            "            where customers.phone like %?1% \n" +
+            "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
+            "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END " +
+            "AND(contracts.status = 1 or contracts.status = 2 or contracts.status = 3)", nativeQuery = true)
+    List<ContractEntity> FilterByPhoneRequest2(String phone, Integer HadDriver, Integer Status);
+
+
+
+
+
+
+
+
+
+
+
 
 
     @Query("SELECT c FROM ContractEntity c WHERE c.id = ?1 and c.status > 0 and c.status < 7 ")

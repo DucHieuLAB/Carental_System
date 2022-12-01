@@ -30,11 +30,6 @@ public class AccountController {
         return accountService.Confirm_Register_OTPEmail(confirmOTPRegisterRequest);
     }
 
-
-
-
-
-
     @RequestMapping(value = "/account/forgot/SendOTP", method = RequestMethod.GET)
     public ResponseEntity<?> Forgot_Password(@RequestParam(required = false) String Email) {
       return   accountService.SendOTPtoEmail(Email);

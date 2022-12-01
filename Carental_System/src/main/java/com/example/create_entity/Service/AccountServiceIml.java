@@ -444,7 +444,6 @@ public class AccountServiceIml implements AccountService {
                 customer.setIdentity_Number(updateInfoCustomerRequest.getIdentity_number());
                 customer.setPhone(updateInfoCustomerRequest.getPhone());
                 customer.setFullName(updateInfoCustomerRequest.getFullName());
-                customer.setStatus(updateInfoCustomerRequest.getStatus());
                 customer.setGender(updateInfoCustomerRequest.getGender());
                 customer.setModifiedDate(new Date(System.currentTimeMillis()));
 

@@ -911,7 +911,7 @@ public class ContractServiceImpl implements ContractService {
             if (!page.isEmpty()) {
                 return new ResponseEntity<>(pagingContract, HttpStatus.OK);
             } else {
-                messes.setMess("Không có dữ liệu bảng hợp đồng !");
+                messes.setMess("Không có dữ liệu của bảng !");
                 return new ResponseEntity<>(messes, HttpStatus.OK);
             }
         } catch (Exception e) {
@@ -953,7 +953,7 @@ public class ContractServiceImpl implements ContractService {
             if (!page.isEmpty()) {
                 return new ResponseEntity<>(pagingContract, HttpStatus.OK);
             } else {
-                messes.setMess("Không có dữ liệu bảng hợp đồng !");
+                messes.setMess("Không có dữ liệu của bảng  !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
@@ -1000,26 +1000,48 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p) {
+    public ResponseEntity<?> FilterByNameContract(String name, Integer HadDriver, Integer Status, Integer p) {
 
         p = CheckNullPaging(p);
         Integer size = 5;
         Pageable pageable = PageRequest.of(p, size);
-        List<ContractEntity> contractEntities = br.FilterByName(name, HadDriver, Status, pageable);
-        List<ContractEntity> contractEntities1 = br.FilterByName1(name, HadDriver, Status);
+        List<ContractEntity> contractEntities = br.FilterByNameContract1(name, HadDriver, Status, pageable);
+        List<ContractEntity> contractEntities1 = br.FilterByNameContract2(name, HadDriver, Status);
 
         return responseResultContract(contractEntities, contractEntities1, size, p);
 
     }
 
     @Override
-    public ResponseEntity<?> FilterByPhone(String phone, Integer HadDriver, Integer Status, Integer p) {
+    public ResponseEntity<?> FilterByPhoneContract(String phone, Integer HadDriver, Integer Status, Integer p) {
 
         p = CheckNullPaging(p);
         Integer size = 5;
         Pageable pageable = PageRequest.of(p, size);
-        List<ContractEntity> contractEntities = br.FilterByPhone(phone, HadDriver, Status, pageable);
-        List<ContractEntity> contractEntities1 = br.FilterByPhone1(phone, HadDriver, Status);
+        List<ContractEntity> contractEntities = br.FilterByPhoneContract1(phone, HadDriver, Status, pageable);
+        List<ContractEntity> contractEntities1 = br.FilterByPhoneContract2(phone, HadDriver, Status);
+
+        return responseResultContract(contractEntities, contractEntities1, size, p);
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByNameRequest(String name, Integer HadDriver, Integer Status, Integer p) {
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageable = PageRequest.of(p, size);
+        List<ContractEntity> contractEntities = br.FilterByNameRequest1(name, HadDriver, Status, pageable);
+        List<ContractEntity> contractEntities1 = br.FilterByNameRequest2(name, HadDriver, Status);
+
+        return responseResultContract(contractEntities, contractEntities1, size, p);
+    }
+
+    @Override
+    public ResponseEntity<?> FilterByPhoneRequest(String phone, Integer HadDriver, Integer Status, Integer p) {
+        p = CheckNullPaging(p);
+        Integer size = 5;
+        Pageable pageable = PageRequest.of(p, size);
+        List<ContractEntity> contractEntities = br.FilterByPhoneRequest1(phone,HadDriver,Status,pageable);
+        List<ContractEntity> contractEntities1 = br.FilterByPhoneRequest2(phone,HadDriver, Status);
 
         return responseResultContract(contractEntities, contractEntities1, size, p);
     }

@@ -44,9 +44,14 @@ public interface ContractService {
 
     ResponseEntity<?> ListContract(Integer p);
 
-    ResponseEntity<?> FilterByName(String name, Integer HadDriver, Integer Status, Integer p);
+    ResponseEntity<?> FilterByNameContract(String name, Integer HadDriver, Integer Status, Integer p);
 
-    ResponseEntity<?> FilterByPhone(String name, Integer HadDriver, Integer Status, Integer p);
+    ResponseEntity<?> FilterByPhoneContract(String name, Integer HadDriver, Integer Status, Integer p);
+
+    ResponseEntity<?> FilterByNameRequest(String name, Integer HadDriver, Integer Status, Integer p);
+
+    ResponseEntity<?> FilterByPhoneRequest(String name, Integer HadDriver, Integer Status, Integer p);
+
 
     @Transactional
     ResponseEntity<?> addPayment(PaymentRequest paymentRequest) throws Exception;
