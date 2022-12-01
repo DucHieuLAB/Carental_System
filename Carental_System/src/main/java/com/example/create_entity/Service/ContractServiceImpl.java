@@ -650,8 +650,8 @@ public class ContractServiceImpl implements ContractService {
                 ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Hợp đồng đã được thanh toán tiền cọc", null);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
-            if (contractEntity.getDeposit_amount() > paymentRequest.getPaid()){
-                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Số tiền cọc phải hơn hơn hoặc bằng " +contractEntity.getDeposit_amount(), null);
+            if (contractEntity.getDeposit_amount() > paymentRequest.getPaid()) {
+                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Số tiền cọc phải hơn hơn hoặc bằng " + contractEntity.getDeposit_amount(), null);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
             contractEntity.setStatus(4);
@@ -847,7 +847,13 @@ public class ContractServiceImpl implements ContractService {
         }
         // get list purcharge cal total amount
         List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.get().getId());
-        double totalAmount = contractEntity.get().getReal_price();
+        double totalAmount = 0;
+        if (contractEntity.get().isHad_driver()) {
+            totalAmount = contractEntity.get().getReal_price();
+        }else {
+            totalAmount = contractEntity.get().getExpected_rental_price();
+        }
+
         double surchargeAmount = 0;
 
         if (!(surchargeEntities.size() <= 0)) {
@@ -1040,8 +1046,8 @@ public class ContractServiceImpl implements ContractService {
         p = CheckNullPaging(p);
         Integer size = 5;
         Pageable pageable = PageRequest.of(p, size);
-        List<ContractEntity> contractEntities = br.FilterByPhoneRequest1(phone,HadDriver,Status,pageable);
-        List<ContractEntity> contractEntities1 = br.FilterByPhoneRequest2(phone,HadDriver, Status);
+        List<ContractEntity> contractEntities = br.FilterByPhoneRequest1(phone, HadDriver, Status, pageable);
+        List<ContractEntity> contractEntities1 = br.FilterByPhoneRequest2(phone, HadDriver, Status);
 
         return responseResultContract(contractEntities, contractEntities1, size, p);
     }
