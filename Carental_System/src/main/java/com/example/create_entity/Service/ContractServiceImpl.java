@@ -258,7 +258,9 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> cancelRenting(long id, int i) {
+    public ResponseEntity<?> cancelRenting(CancelContractRequest cancelContractRequest) {
+        long id = cancelContractRequest.getContractId();
+        long i = cancelContractRequest.getRole();
         ContractEntity contractEntity = br.FindByID(id);
         if (i != 2 || i != 1) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "role chưa hợp lệ", null);
@@ -270,10 +272,12 @@ public class ContractServiceImpl implements ContractService {
         }
         try {
             if (i == 1) {
+                contractEntity.setNote(cancelContractRequest.getNote());
                 contractEntity.setStatus(7);
             }
             if (i == 2) {
                 if (contractEntity.getStatus() <= 3) {
+                    contractEntity.setNote(cancelContractRequest.getNote());
                     contractEntity.setStatus(7);
                 }
             }
@@ -601,7 +605,6 @@ public class ContractServiceImpl implements ContractService {
         // validate
 
         // verifi
-
         ContractEntity contractEntity = br.findByIdAndStatusValid(paymentRequest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);

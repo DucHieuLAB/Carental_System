@@ -83,14 +83,14 @@ public class ContractController {
         return contractService.confirmDepositCustomer(id);
     }
 
-    @DeleteMapping("/cancelContractByCustomer/{id}")
-    public ResponseEntity<?> cancelContract(@PathVariable long id) {
-        return contractService.cancelRenting(id, 2);
+    @DeleteMapping("/cancelContractByCustomer")
+    public ResponseEntity<?> cancelContract(@RequestBody CancelContractRequest cancelContractRequest) {
+        return contractService.cancelRenting(cancelContractRequest);
     }
 
-    @DeleteMapping("/cancelContractByStaff/{id}")
-    public ResponseEntity<?> cancelContractByStaff(@PathVariable long id) {
-        return contractService.cancelRenting(id, 1);
+    @DeleteMapping("/cancelContractByStaff")
+    public ResponseEntity<?> cancelContractByStaff(@RequestBody CancelContractRequest cancelContractRequest) {
+        return contractService.cancelRenting(cancelContractRequest);
     }
 
     @PutMapping("/confirmByStaff/{contractId}")

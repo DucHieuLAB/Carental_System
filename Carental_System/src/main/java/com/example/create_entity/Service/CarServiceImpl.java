@@ -302,8 +302,8 @@ public class CarServiceImpl implements CarService {
         for (CarEntity carEntity : ListCars) {
             // check car had contract detail or not
             boolean hadNextStep = true;
-            Optional<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId());
-            if (!checkCarHadInDetailContract.isPresent()) {
+            List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId());
+            if (checkCarHadInDetailContract.size() <= 0 ) {
                 result.add(carEntity);
                 hadNextStep = false;
             }
@@ -330,8 +330,15 @@ public class CarServiceImpl implements CarService {
         // Check select Return Parking
         for (CarEntity carEntity : listPassDateAndPickupParking) {
             Optional<ContractEntity> contractEntity = contractRepository.findContractByPlateNumberAndEndDate(carEntity.getPlateNumber(), endDate);
-            if (contractEntity.get().getPickup_parking().getId() == returnParkingId) {
+            boolean hadFuterContract = true;
+            if (!contractEntity.isPresent()){
                 result.add(carEntity);
+                hadFuterContract = false;
+            }
+            if (hadFuterContract){
+                if (contractEntity.get().getPickup_parking().getId() == returnParkingId) {
+                    result.add(carEntity);
+                }
             }
         }
 
@@ -373,8 +380,8 @@ public class CarServiceImpl implements CarService {
         for (CarEntity carEntity : ListCars) {
             // check car had contract detail or not
             boolean hadNextStep = true;
-            Optional<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId());
-            if (!checkCarHadInDetailContract.isPresent()) {
+            List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId());
+            if (checkCarHadInDetailContract.size() <= 0) {
                 result.add(carEntity);
                 hadNextStep = false;
             }
@@ -391,8 +398,10 @@ public class CarServiceImpl implements CarService {
                 if (contractEntity.get().getReturn_parking().getDistrictsEntity().getCity().equals(cityName)) {
                     result.add(carEntity);
                 }
-            }{
-                result.add(carEntity);
+            }else {
+                if (carEntity.getParking().getDistrictsEntity().getCity().equals(cityName)){
+                    result.add(carEntity);
+                }
             }
 
         }

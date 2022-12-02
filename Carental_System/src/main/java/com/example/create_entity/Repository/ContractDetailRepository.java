@@ -121,8 +121,8 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
     List<ContractDetailEntity>SearchPlateNumber_schedule_Date1(String name,String date1,String date2);
 
 
-    @Query("SELECT cde FROM ContractDetailEntity cde WHERE cde.car.id = ?1 and cde.booking.status > 2 and cde.booking.status < 6")
-    Optional<ContractDetailEntity> findContractDetailByCar(Long carId);
+    @Query("SELECT cde FROM ContractDetailEntity cde WHERE cde.car.id = ?1 and cde.booking.status > 2 and cde.booking.status < 6 ")
+    List<ContractDetailEntity> findContractDetailByCar(Long carId);
 
     @Query(value = "SELECT COUNT(*) FROM contract_details c,contracts ct WHERE c.contract_id = ct.booking_id and ct.status > 0 and ct.status < 6  and c.contract_id = ?1 ",nativeQuery = true)
     long getCountContractDetail(long contractId);

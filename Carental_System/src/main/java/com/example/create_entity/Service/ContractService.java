@@ -11,7 +11,7 @@ public interface ContractService {
     ResponseEntity<?> add(ContractRequest contractRequest);
 
     @Transactional
-    ResponseEntity<?> cancelRenting(long id, int i);
+    ResponseEntity<?> cancelRenting(CancelContractRequest cancelContractRequestlong);
 
     @Transactional
     ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest);

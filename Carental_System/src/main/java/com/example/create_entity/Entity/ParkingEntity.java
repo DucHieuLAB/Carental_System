@@ -29,7 +29,7 @@ public class ParkingEntity {
     @Column(name = "address")
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "district_id",nullable = false)
     private DistrictsEntity districtsEntity;
 
