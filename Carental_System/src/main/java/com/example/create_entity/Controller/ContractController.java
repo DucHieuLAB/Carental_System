@@ -107,6 +107,10 @@ public class ContractController {
     public ResponseEntity<?> addSurchargeEntity(@RequestBody SurchargeRequest purchargeRequest){
         return contractService.addSurcharge(purchargeRequest);
     }
+    @GetMapping("/getSurchargeByContract/{contractId}")
+    public ResponseEntity<?> getListSurchargeByContract(@PathVariable long contractId){
+        return contractService.getListSurchargeByContract(contractId);
+    }
 
     @PutMapping("/addContractPaymentStaff")
     public ResponseEntity<?> addPaymentOnContract(@RequestBody PaymentRequest paymentRequest) throws Exception {
@@ -137,4 +141,6 @@ public class ContractController {
     public ResponseEntity<?> paymentByCustomer(@RequestBody CustomerTransactionRequest customerTransactionRequest) throws Exception {
         return contractService.addPaymentByCustomer(customerTransactionRequest);
     }
+
+
 }

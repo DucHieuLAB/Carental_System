@@ -494,6 +494,7 @@ public class ContractServiceImpl implements ContractService {
         surchargeEntity.setContractEntity(contractEntity);
         surchargeEntity.setAmount(purchargeRequest.getAmount());
         surchargeEntity.setNote(purchargeRequest.getNote());
+        surchargeEntity.setCreatedDate(new Date(System.currentTimeMillis()));
         surchargeRepository.save(surchargeEntity);
         // response
         ResponseVo responseVo = new ResponseVo(true, "Cập nhật Phụ Phí thành công", null);
@@ -831,6 +832,19 @@ public class ContractServiceImpl implements ContractService {
         reponse.put("exceptedPrice", formatter.format(expectedRentalPrice));
         ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "API get excepted price", reponse);
         return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public ResponseEntity<?> getListSurchargeByContract(long contractId) {
+        ContractEntity contractEntity = br.findByIdAndStatusValid(contractId);
+        if (ObjectUtils.isEmpty(contractEntity)) {
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
+        List<ListSurchargeResponse> listSurchargeResponse = ListSurchargeResponse.createListSurchargeResponse(surchargeEntities);
+        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true,"API get list Surcharge From Contract",listSurchargeResponse);
+        return new ResponseEntity<>(responseVo,HttpStatus.OK);
     }
 
     @Override

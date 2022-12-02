@@ -61,4 +61,6 @@ public interface ContractService {
     ResponseEntity<?> addPaymentByCustomer(CustomerTransactionRequest customerTransactionRequest) throws Exception;
 
     ResponseEntity<?> getExceptedPrice(ExceptedPriceRequest exceptedPriceRequest);
+
+    ResponseEntity<?> getListSurchargeByContract(long contractId);
 }
