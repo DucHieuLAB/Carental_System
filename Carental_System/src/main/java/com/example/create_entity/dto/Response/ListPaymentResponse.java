@@ -34,6 +34,8 @@ public class ListPaymentResponse {
 
     private String staffName;
 
+    private boolean hadDriver;
+
     public static List<ListPaymentResponse> createListPaymentResponse (List<PaymentEntity> paymentEntities){
         List<ListPaymentResponse> result = new ArrayList<>();
         if (paymentEntities.size() <= 0){
@@ -51,6 +53,7 @@ public class ListPaymentResponse {
             if (!ObjectUtils.isEmpty(entity.getStaffEntity())){
                 listPaymentResponse.setStaffName(entity.getStaffEntity().getFullName());
             }
+            listPaymentResponse.setHadDriver(entity.getContract().isHad_driver());
             result.add(listPaymentResponse);
         }
         return result;
