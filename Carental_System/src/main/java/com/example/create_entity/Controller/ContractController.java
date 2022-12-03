@@ -85,11 +85,13 @@ public class ContractController {
 
     @DeleteMapping("/cancelContractByCustomer")
     public ResponseEntity<?> cancelContract(@RequestBody CancelContractRequest cancelContractRequest) {
+        cancelContractRequest.setDoCustomer(true);
         return contractService.cancelRenting(cancelContractRequest);
     }
 
     @DeleteMapping("/cancelContractByStaff")
     public ResponseEntity<?> cancelContractByStaff(@RequestBody CancelContractRequest cancelContractRequest) {
+        cancelContractRequest.setDoCustomer(false);
         return contractService.cancelRenting(cancelContractRequest);
     }
 
@@ -125,6 +127,11 @@ public class ContractController {
     @GetMapping("getListPaymentByCustomer/{customerAccountId}")
     public ResponseEntity<?> getListPaymentByCustomerAccountId(@PathVariable long customerAccountId) {
         return contractService.getListPaymentByCustomer(customerAccountId);
+    }
+
+    @GetMapping("/listPayment/{ContractId}")
+    public ResponseEntity<?> getListPaymentByContract(@PathVariable long ContractId){
+        return contractService.getListPaymentByStaff(ContractId);
     }
 
     @GetMapping("/getPaymentInf/{ContractId}")

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.Column;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class ListPaymentResponse {
 
     private String description;
 
+    private String staffName;
+
     public static List<ListPaymentResponse> createListPaymentResponse (List<PaymentEntity> paymentEntities){
         List<ListPaymentResponse> result = new ArrayList<>();
         if (paymentEntities.size() <= 0){
@@ -45,6 +48,9 @@ public class ListPaymentResponse {
             listPaymentResponse.setTotalAmount(entity.getTotalAmount());
             listPaymentResponse.setLastModifiedDate(entity.getLastModifiedDate());
             listPaymentResponse.setDescription(entity.getDescription());
+            if (!ObjectUtils.isEmpty(entity.getStaffEntity())){
+                listPaymentResponse.setStaffName(entity.getStaffEntity().getFullName());
+            }
             result.add(listPaymentResponse);
         }
         return result;

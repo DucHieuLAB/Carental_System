@@ -63,4 +63,6 @@ public interface ContractService {
     ResponseEntity<?> getExceptedPrice(ExceptedPriceRequest exceptedPriceRequest);
 
     ResponseEntity<?> getListSurchargeByContract(long contractId);
+
+    ResponseEntity<?> getListPaymentByStaff(long contractId);
 }

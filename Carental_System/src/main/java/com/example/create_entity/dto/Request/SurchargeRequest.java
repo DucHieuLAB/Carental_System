@@ -13,4 +13,5 @@ public class SurchargeRequest {
     private long contractId;
     private double amount;
     private String note;
+    private long staffAccountId;
 }

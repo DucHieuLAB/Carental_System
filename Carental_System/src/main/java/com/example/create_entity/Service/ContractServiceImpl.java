@@ -213,13 +213,18 @@ public class ContractServiceImpl implements ContractService {
             ObjectResponse.put("Booking", response);
             List<ContractDetailEntity> contractDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.getId());
             List<ListContractDetailResponse> listContractDetailRespons = ListContractDetailResponse.createListBookingDetailResponse(contractDetailEntities);
+            boolean isReturncar = true;
             for (ListContractDetailResponse l : listContractDetailRespons) {
                 if (l.getDriverId() > 0) {
                     DriverEntity driverEntity = dr.GetDriverById(l.getDriverId());
                     l.setDriverName(driverEntity.getFullName());
                 }
+                if (l.getRealReturnDate() == null){
+                    isReturncar = false;
+                }
             }
             ObjectResponse.put("BookingDetail", listContractDetailRespons);
+            ObjectResponse.put("isReturnCar",isReturncar);
             // if had driver = > put into response
             if (contractEntity.isHad_driver()) {
                 ContractHadDriverEntity entity = chdr.getByContractID(id);
@@ -232,6 +237,8 @@ public class ContractServiceImpl implements ContractService {
                     ObjectResponse.put("HadDriver", contractHadDriverReponse);
                 }
             }
+            // if contract status = 5 put isReturnCar
+
             responseVo = ResponseVeConvertUntil.createResponseVo(true, "Lấy thông tin Hợp đồng thành công", ObjectResponse);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (NumberFormatException e) {
@@ -260,9 +267,9 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public ResponseEntity<?> cancelRenting(CancelContractRequest cancelContractRequest) {
         long id = cancelContractRequest.getContractId();
-        long i = cancelContractRequest.getRole();
+        long i = cancelContractRequest.isDoCustomer() == true ? 2 : 1;
         ContractEntity contractEntity = br.FindByID(id);
-        if (i != 2 || i != 1) {
+        if (i < 1 || i > 2) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "role chưa hợp lệ", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
@@ -490,10 +497,17 @@ public class ContractServiceImpl implements ContractService {
             ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
+
+        StaffEntity staffEntity = staffRepository.staffEntity(purchargeRequest.getStaffAccountId());
+        if (ObjectUtils.isEmpty(staffEntity)) {
+            ResponseVo responseVo = new ResponseVo(false, "Staff ID Không đúng", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
         SurchargeEntity surchargeEntity = new SurchargeEntity();
         surchargeEntity.setContractEntity(contractEntity);
         surchargeEntity.setAmount(purchargeRequest.getAmount());
         surchargeEntity.setNote(purchargeRequest.getNote());
+        surchargeEntity.setStaffEntity(staffEntity);
         surchargeEntity.setCreatedDate(new Date(System.currentTimeMillis()));
         surchargeRepository.save(surchargeEntity);
         // response
@@ -615,11 +629,15 @@ public class ContractServiceImpl implements ContractService {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Số tiền cọc không được phép nhỏ hơn trong hợp đồng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-//        StaffEntity staffEntity = staffRepository.staffEntity(paymentRequest.getAccountId());
-//        if (ObjectUtils.isEmpty(staffEntity)) {
-//            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy nhân viên ID = " + paymentRequest.getAccountId(), null);
-//            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-//        }
+        StaffEntity staffEntity = null;
+        if (!(paymentRequest.getAccountId() <= 0)) {
+            staffEntity = staffRepository.staffEntity(paymentRequest.getAccountId());
+            if (ObjectUtils.isEmpty(staffEntity)){
+                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Staff AccountId không đúng", null);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            }
+        }
+
         // cal total
         List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
         double totalAmount = 0;
@@ -663,7 +681,9 @@ public class ContractServiceImpl implements ContractService {
         }
         // save payment
         PaymentEntity paymentEntity = new PaymentEntity();
-//        paymentEntity.setStaffEntity(staffEntity);
+        if (staffEntity != null) {
+            paymentEntity.setStaffEntity(staffEntity);
+        }
         paymentEntity.setContract(contractEntity);
         String des = paymentRequest.isDeposit() == true ? "Cọc hợp đồng" : "Thanh toán hợp đồng";
         paymentEntity.setDescription(des);
@@ -843,8 +863,22 @@ public class ContractServiceImpl implements ContractService {
         }
         List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
         List<ListSurchargeResponse> listSurchargeResponse = ListSurchargeResponse.createListSurchargeResponse(surchargeEntities);
-        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true,"API get list Surcharge From Contract",listSurchargeResponse);
-        return new ResponseEntity<>(responseVo,HttpStatus.OK);
+        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "API get list Surcharge From Contract", listSurchargeResponse);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> getListPaymentByStaff(long contractId) {
+        // list Contract
+        ContractEntity contractEntity = br.FindByID(contractId);
+        if (ObjectUtils.isEmpty(contractEntity)) {
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy hợp đồng", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(contractId);
+        List<ListPaymentResponse> listPaymentResponses = ListPaymentResponse.createListPaymentResponse(paymentEntities);
+        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "API get List Payment By Contract ID", listPaymentResponses);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
     @Override
@@ -867,7 +901,7 @@ public class ContractServiceImpl implements ContractService {
         double totalAmount = 0;
         if (contractEntity.get().isHad_driver()) {
             totalAmount = contractEntity.get().getReal_price();
-        }else {
+        } else {
             totalAmount = contractEntity.get().getExpected_rental_price();
         }
 

@@ -12,5 +12,5 @@ import lombok.Setter;
 public class CancelContractRequest {
     private long contractId;
     private String note;
-    private long role;
+    private boolean doCustomer;
 }

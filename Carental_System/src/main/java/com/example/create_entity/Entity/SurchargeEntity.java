@@ -30,6 +30,11 @@ public class SurchargeEntity {
     @Column(name = "note")
     private String note;
 
+    @ManyToOne
+    @JoinColumn(name = "staff_id", nullable = true, foreignKey = @ForeignKey(name = "FK_Surcharge_Staff"))
+    private StaffEntity staffEntity;
+
+
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     @Column(name = "createdDate", nullable = false)

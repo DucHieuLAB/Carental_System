@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface StaffRepository extends JpaRepository<StaffEntity,Long> {
 
-    @Query(value = "SELECT * FROM carrental_v2.staffs Where staffs.account_id= ?1 ",nativeQuery = true)
+    @Query(value = "SELECT * FROM staffs Where staffs.account_id= ?1 and staffs.status = 1",nativeQuery = true)
     StaffEntity staffEntity(Long ac_id);
 
     @Query(value = "SELECT cs FROM StaffEntity cs INNER JOIN AccountEntity  ac ON cs.accountEntity.ID = ac.ID WHERE  cs.accountEntity.Username = ?1 ")

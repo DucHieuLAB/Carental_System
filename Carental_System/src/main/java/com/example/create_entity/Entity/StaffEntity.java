@@ -70,4 +70,7 @@ public class StaffEntity {
     @OneToMany(mappedBy = "staffEntity", cascade = CascadeType.ALL)
     private List<PaymentEntity> paymentEntities =new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "staffEntity", cascade = CascadeType.ALL)
+    private List<SurchargeEntity> surchargeEntities =new ArrayList<>();
 }
