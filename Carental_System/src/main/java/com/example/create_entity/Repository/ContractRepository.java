@@ -102,18 +102,6 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "AND(contracts.status = 1 or contracts.status = 2 or contracts.status = 3)", nativeQuery = true)
     List<ContractEntity> FilterByPhoneRequest2(String phone, Integer HadDriver, Integer Status);
 
-
-
-
-
-
-
-
-
-
-
-
-
     @Query("SELECT c FROM ContractEntity c WHERE c.id = ?1 ")
     ContractEntity FindByID(Long id);
 
@@ -150,4 +138,12 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
 
     @Query("SELECT c FROM ContractEntity c WHERE c.id= ?1 and c.status < 6 and c.status > 0")
     ContractEntity findByIdAndStatusValid(long contractId);
+
+    @Query(value = "SELECT *\n" +
+            "FROM contracts\n" +
+            "WHERE ADDDATE(contracts.expected_start_date, INTERVAL 1 DAY) < CURDATE()", nativeQuery = true)
+    List<ContractEntity> getListInvaliContract();
+
+//    @Query("SELECT c FROM ContractEntity c WHERE c.expected_start_date ")
+//    List<ContractEntity> getListInvalidContract();
 }

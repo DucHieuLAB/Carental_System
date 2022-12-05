@@ -89,9 +89,13 @@ public class ContractServiceImpl implements ContractService {
 
         try {
             ContractEntity exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
+
             if (!ObjectUtils.isEmpty(exsitBooking)) {
-                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn đã đặt booking tương tự", null);
-                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+                if (exsitBooking.isHad_driver() == contractRequest.isHad_driver()){
+                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn đã đặt booking tương tự", null);
+                    return new ResponseEntity<>(responseVo, HttpStatus.OK);
+                }
+
             }
             ContractEntity newContract = ContractRequest.convertToContractEntity(contractRequest);
             Optional<ParkingEntity> pickUpParking = pr.findById(contractRequest.getPickupParkingId());
@@ -119,6 +123,9 @@ public class ContractServiceImpl implements ContractService {
             newContract.setCreatedDate(date);
             long diffInMillies = Math.abs(newContract.getExpected_end_date().getTime() - newContract.getExpected_start_date().getTime());
             long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            if(diff < 1){
+                diff = 1;
+            }
             br.save(newContract);
             newContract = br.getByCustomerIdAndExpectStartDateAndExpectEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
             ContractHadDriverReponse contractHadDriverReponse = null;
@@ -835,12 +842,16 @@ public class ContractServiceImpl implements ContractService {
         double expectedRentalPrice = 0;
         long diffInMillies = Math.abs(exceptedPriceRequest.getExpectedEndDate().getTime() - exceptedPriceRequest.getExpectedStartDate().getTime());
         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        if(diff < 1){
+            diff = 1;
+        }
         for (String plateNumber : exceptedPriceRequest.getListCarPlateNumber()) {
             CarEntity carEntity = cr.findCarEntityByPlateNumber(plateNumber);
             if (ObjectUtils.isEmpty(carEntity)) {
                 ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Xe biển số :" + plateNumber + " Không tồn tại", null);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
+
             expectedRentalPrice += carEntity.getRentalPrice() * diff;
         }
 
@@ -880,6 +891,17 @@ public class ContractServiceImpl implements ContractService {
         ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "API get List Payment By Contract ID", listPaymentResponses);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
+
+    @Override
+    public List<ContractEntity> getListInvalidContract() {
+        return br.getListInvaliContract();
+    }
+
+    @Override
+    public void save(ContractEntity contractEntity) {
+        br.save(contractEntity);
+    }
+
 
     @Override
     public ResponseEntity<?> getContractPaymentInf(long id) {
@@ -1099,7 +1121,6 @@ public class ContractServiceImpl implements ContractService {
         Pageable pageable = PageRequest.of(p, size);
         List<ContractEntity> contractEntities = br.FilterByPhoneRequest1(phone, HadDriver, Status, pageable);
         List<ContractEntity> contractEntities1 = br.FilterByPhoneRequest2(phone, HadDriver, Status);
-
         return responseResultContract(contractEntities, contractEntities1, size, p);
     }
 

@@ -1,9 +1,12 @@
 package com.example.create_entity.Service;
 
+import com.example.create_entity.Entity.ContractEntity;
 import com.example.create_entity.dto.FinishContractRequest;
 import com.example.create_entity.dto.Request.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 public interface ContractService {
@@ -52,7 +55,6 @@ public interface ContractService {
 
     ResponseEntity<?> FilterByPhoneRequest(String name, Integer HadDriver, Integer Status, Integer p);
 
-
     @Transactional
     ResponseEntity<?> addPayment(PaymentRequest paymentRequest) throws Exception;
 
@@ -65,4 +67,8 @@ public interface ContractService {
     ResponseEntity<?> getListSurchargeByContract(long contractId);
 
     ResponseEntity<?> getListPaymentByStaff(long contractId);
+    
+    List<ContractEntity> getListInvalidContract();
+
+    void save(ContractEntity contractEntity);
 }

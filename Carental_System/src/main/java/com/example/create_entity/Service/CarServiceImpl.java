@@ -304,7 +304,9 @@ public class CarServiceImpl implements CarService {
             boolean hadNextStep = true;
             List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId());
             if (checkCarHadInDetailContract.size() <= 0 ) {
-                result.add(carEntity);
+                if (carEntity.getParking().getId() == pickupParkingId){
+                    result.add(carEntity);
+                }
                 hadNextStep = false;
             }
             if (hadNextStep) {

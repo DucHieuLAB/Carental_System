@@ -82,9 +82,9 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
             "FROM driver d \n" +
             "JOIN contract_details c on d.id = c.id_driver and c.id_driver = ?1\n" +
             "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
-            "WHERE ct.expected_start_date >= ?2 AND ct.expected_start_date <= ?3 and ct.status < 6 and ct.status > 2 \n" +
-            "OR ct.expected_start_date < ?2 AND ct.expected_end_date >  ?2 and ct.status < 6 and ct.status > 2 \n" +
-            "OR ct.expected_start_date >=  ?2 AND ct.expected_end_date >  ?3 and ct.status < 6 and ct.status > 2 \n" +
+            "WHERE ct.expected_start_date >= ?2 AND ct.expected_start_date <= ?3 and ct.status < 6 and ct.status > 1 \n" +
+            "OR ct.expected_start_date < ?2 AND ct.expected_end_date >  ?2 and ct.status < 6 and ct.status > 1 \n" +
+            "OR ct.expected_start_date >=  ?2 AND ct.expected_end_date >  ?3 and ct.status < 6 and ct.status > 1 \n" +
             "LIMIT 1", nativeQuery = true)
     DriverEntity findDriverValidDate(Long id, Date expected_start_date, Date expected_end_date);
 
