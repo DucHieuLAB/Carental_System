@@ -652,7 +652,7 @@ public class ContractServiceImpl implements ContractService {
         }
         // get list Payment cal
         List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(contractEntity.getId());
-        double paid = 0;
+        double paid =  paymentRequest.getPaid();
         double depositPaid = 0;
         if (!(paymentEntities.size() <= 0)) {
             for (PaymentEntity entity : paymentEntities) {
@@ -691,7 +691,7 @@ public class ContractServiceImpl implements ContractService {
         paymentEntity.setPaid(paymentRequest.getPaid());
         paymentEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         // cal  Receivables; = realprice - total paid
-        paymentEntity.setReceivables(totalAmount - paymentRequest.getPaid() - paid - depositPaid);
+        paymentEntity.setReceivables(totalAmount  - paid - depositPaid);
         paymentEntity.setTotalAmount(totalAmount);
         paymentsRepository.save(paymentEntity);
         // change status = 6 (done contract)
@@ -773,7 +773,7 @@ public class ContractServiceImpl implements ContractService {
         }
         // get list Payment cal
         List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(contractEntity.getId());
-        double paid = 0;
+        double paid = customerTransactionRequest.getPaid();
         double depositPaid = 0;
         if (!(paymentEntities.size() <= 0)) {
             for (PaymentEntity entity : paymentEntities) {
