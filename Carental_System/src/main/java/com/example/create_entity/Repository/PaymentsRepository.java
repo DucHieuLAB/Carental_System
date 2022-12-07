@@ -18,6 +18,6 @@ public interface PaymentsRepository extends JpaRepository<PaymentEntity,Long> {
 
     @Query(value = "SELECT * from payments inner join contracts on payments.contract_id = contracts.booking_id " +
             "where year(contracts.create_date)=  year(current_date()) and contracts.had_driver = 0 ",nativeQuery = true)
-    List<PaymentEntity> Total_Paid_NoDriver_Quarter();
+    List<PaymentEntity> Total_Paid_Self_driving_Quarter();
 
 }

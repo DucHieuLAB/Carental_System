@@ -19,6 +19,8 @@ public interface ContractDetailService {
 
     ResponseEntity<?>Current_Schedule(String username);
 
+    ResponseEntity<?>History_schedule(String username);
+
 //    ResponseEntity<?> SearchName_Schedule(String name,String expected_start_date1 ,String expected_start_date2 ,Integer p) ;
 //
 //

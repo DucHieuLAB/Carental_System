@@ -230,8 +230,8 @@ public class AccountServiceIml implements AccountService {
         StaffDetailResponse detailResponse = new StaffDetailResponse();
         try {
             StaffEntity staffEntities = staffRepository.GetStaffByUserName(UserName.trim());
-            if(staffEntities==null){
-              messes.setMess("Đã xảy ra lỗi hệ thống !");
+            if (staffEntities == null) {
+                messes.setMess("Đã xảy ra lỗi hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             }
             detailResponse = detailResponse.staffDetailResponse(staffEntities);
@@ -300,7 +300,7 @@ public class AccountServiceIml implements AccountService {
             customerRepository.save(customerEntity);
 
 
-            emailSenderService.sendSimpleEmail(REQUEST.getEmail(), "Đăng kí tài khoản của Hệ thống Carrental  - Đây là mã xác thực (OTP) - Hiệu lực của mã là 5 phút!",Code_OTP);
+            emailSenderService.sendSimpleEmail(REQUEST.getEmail(), "Đăng kí tài khoản của Hệ thống Carrental  - Đây là mã xác thực (OTP) - Hiệu lực của mã là 5 phút!", Code_OTP);
             responseVo.setMessage("Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
             responseVo.setStatus(true);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -347,10 +347,10 @@ public class AccountServiceIml implements AccountService {
             if (accountEntity != null) {
                 String Code_OTP = randomString.generateRandomString();
                 emailSenderService.sendSimpleEmail(email, "Đặt lại password của hệ thống Carrental  - Đây là mã  (OTP)  - Hiệu lực 5 phút!", Code_OTP);
-               accountEntity.setOtp(Code_OTP);
-               accountEntity.setOtp_requested_time(new Date(System.currentTimeMillis()));
-               accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
-               accountRepository.save(accountEntity);
+                accountEntity.setOtp(Code_OTP);
+                accountEntity.setOtp_requested_time(new Date(System.currentTimeMillis()));
+                accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+                accountRepository.save(accountEntity);
                 responseVo.setMessage("Vui Lòng Kiểm tra mã OTP ở Email để xác thực !");
                 responseVo.setStatus(true);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -368,7 +368,7 @@ public class AccountServiceIml implements AccountService {
 
 
     @Override
-    public ResponseEntity<?> ConfirmOTPForgot(String Email,String OTP) {
+    public ResponseEntity<?> ConfirmOTPForgot(String Email, String OTP) {
         ResponseVo responseVo = new ResponseVo();
         try {
             AccountEntity accountEntity = accountRepository.GetAccountByEmail(Email.trim());
@@ -416,7 +416,6 @@ public class AccountServiceIml implements AccountService {
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }
-
 
 
     @Override
@@ -542,7 +541,7 @@ public class AccountServiceIml implements AccountService {
             Page<CustomerEntity> page = customerRepository.GetListCustomer(pageable);
             ListCustomerResponse listCustomerResponse = new ListCustomerResponse();
             List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
-            if(listCustomerResponses.isEmpty()){
+            if (listCustomerResponses.isEmpty()) {
                 messes.setMess("Không có dữ liệu trong bảng Customer");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             }
@@ -564,7 +563,7 @@ public class AccountServiceIml implements AccountService {
         ReposMesses messes = new ReposMesses();
         try {
             CustomerEntity customer = customerRepository.GetCustomerByName(username);
-            if(customer==null){
+            if (customer == null) {
                 messes.setMess("Đã xảy ra lỗi hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             }
@@ -714,25 +713,26 @@ public class AccountServiceIml implements AccountService {
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }
+
     @Override
     public ResponseEntity<?> SendOTP_Login(String username) {
         ResponseVo responseVo = new ResponseVo();
-       AccountEntity accountEntity = accountRepository.GetAccountByName(username);
-       if(accountEntity.getStatus()==1){
-           String OTP = randomString.generateRandomString();
-           accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
-           accountEntity.setOtp(OTP);
-           accountEntity.setOtp_requested_time(new Date(System.currentTimeMillis()));
-           accountRepository.save(accountEntity);
-           emailSenderService.sendSimpleEmail(accountEntity.getEmail(),"Xác minh tài khoản  - Đây là mã  (OTP)  - Hiệu lực 5 phút!",OTP);
-           responseVo.setMessage("Vui Lòng kiểm tra Email để xác thực tài khoản !");
-           responseVo.setStatus(true);
-           return new ResponseEntity<>(responseVo,HttpStatus.OK);
-       }else{
-           responseVo.setMessage("Đã xảy ra lỗi hệ thống !");
-           responseVo.setStatus(false);
-           return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
-       }
+        AccountEntity accountEntity = accountRepository.GetAccountByName(username);
+        if (accountEntity.getStatus() == 1) {
+            String OTP = randomString.generateRandomString();
+            accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+            accountEntity.setOtp(OTP);
+            accountEntity.setOtp_requested_time(new Date(System.currentTimeMillis()));
+            accountRepository.save(accountEntity);
+            emailSenderService.sendSimpleEmail(accountEntity.getEmail(), "Xác minh tài khoản  - Đây là mã  (OTP)  - Hiệu lực 5 phút!", OTP);
+            responseVo.setMessage("Vui Lòng kiểm tra Email để xác thực tài khoản !");
+            responseVo.setStatus(true);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        } else {
+            responseVo.setMessage("Đã xảy ra lỗi hệ thống !");
+            responseVo.setStatus(false);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
@@ -753,4 +753,38 @@ public class AccountServiceIml implements AccountService {
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Override
+    public ResponseEntity<?> ChangeStatus(String username) {
+        CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
+        ResponseVo responseVo = new ResponseVo();
+        CustomerEntity customerEntity = customerRepository.GetCustomerByName(username);
+        if (customerEntity == null) {
+            responseVo.setStatus(false);
+            responseVo.setMessage("Thay đổi trạng thái thất bại !");
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        } else {
+            if (customerEntity != null && customerEntity.getStatus() == 1 && customerEntity.getAccountEntity().getStatus() == 2) {
+                customerEntity.getAccountEntity().setStatus(0);
+                customerEntity.setStatus(0);
+                Date date = new Date(System.currentTimeMillis());
+                customerEntity.setModifiedDate(date);
+                customerRepository.save(customerEntity);
+                customerInfoResponse = customerInfoResponse.customerInfoResponse(customerEntity);
+
+            } else if (customerEntity != null && customerEntity.getStatus() == 0 && customerEntity.getAccountEntity().getStatus() == 0) {
+                customerEntity.getAccountEntity().setStatus(2);
+                customerEntity.setStatus(1);
+                Date date = new Date(System.currentTimeMillis());
+                customerEntity.setModifiedDate(date);
+                customerRepository.save(customerEntity);
+                customerInfoResponse = customerInfoResponse.customerInfoResponse(customerEntity);
+            }
+            responseVo.setStatus(true);
+            responseVo.setMessage("Thay đổi trạng thái thành công !");
+            responseVo.setData(customerInfoResponse);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+    }
 }
+

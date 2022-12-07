@@ -57,4 +57,6 @@ public interface AccountService {
     ResponseEntity<?> SendOTP_Login(String username);
 
    ResponseEntity<?> ConfirmOTP_Login(ConfirmOTPRequest confirmOTPRequest);
+
+    ResponseEntity<?> ChangeStatus(String username);
 }

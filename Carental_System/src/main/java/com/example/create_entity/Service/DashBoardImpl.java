@@ -164,10 +164,10 @@ public class DashBoardImpl implements DashBoardService {
     }
 
     @Override
-    public ResponseEntity<?> Total_Paid_NoDriver() {
+    public ResponseEntity<?> Total_Paid_Self_driving() {
         ResponseVo responseVo = new ResponseVo();
         ArrayList<Object> objects;
-        List<PaymentEntity> paymentEntityList = paymentsRepository.Total_Paid_NoDriver_Quarter();
+        List<PaymentEntity> paymentEntityList = paymentsRepository.Total_Paid_Self_driving_Quarter();
         objects = this.ResponseTotalPaid(paymentEntityList);
         responseVo.setMessage("Doanh thu cho thuê xe tự lái trong 1 năm ");
         responseVo.setData(objects);

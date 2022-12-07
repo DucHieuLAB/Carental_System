@@ -18,4 +18,9 @@ public class CarResponse {
     private int capacity;
 
     private List<ListCarImageResponse> listImg;
+
+
+
+
+
 }

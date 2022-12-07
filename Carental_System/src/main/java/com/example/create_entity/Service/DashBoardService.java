@@ -19,5 +19,5 @@ public interface DashBoardService {
 
     ResponseEntity<?> Total_Paid_HadDriver();
 
-    ResponseEntity<?> Total_Paid_NoDriver();
+    ResponseEntity<?> Total_Paid_Self_driving();
 }

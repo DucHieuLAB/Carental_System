@@ -47,7 +47,7 @@ public class ContractDetailServiceImpl implements ContractDetailService {
         contractDetailResponse.setReal_Return_Date(contractDetailEntity.getReal_return_date());
         contractDetailResponse.setCarID(contractDetailEntity.getCar().getId());
 
-        return new ResponseEntity<>(contractDetailEntity,HttpStatus.OK);
+        return new ResponseEntity<>(contractDetailEntity, HttpStatus.OK);
 
 
     }
@@ -58,10 +58,17 @@ public class ContractDetailServiceImpl implements ContractDetailService {
         List<ContractDetailEntity> contractDetailEntities = contractDetailRepository.Future_Schedule(username);
         return this.responseFutureSchedule(contractDetailEntities);
     }
+
     @Override
     public ResponseEntity<?> Current_Schedule(String username) {
         List<ContractDetailEntity> contractDetailEntities = contractDetailRepository.Current_Schedule(username);
         return this.responseCurrentSchedule(contractDetailEntities);
+    }
+
+    @Override
+    public ResponseEntity<?>History_schedule(String username) {
+        List<ContractDetailEntity> contractDetailEntities = contractDetailRepository.History_schedule(username);
+        return this.responseHistorySchedule(contractDetailEntities);
     }
 
 //    public ResponseEntity<?> responseEntity(Integer p, List<ContractDetailEntity> contractDetailEntities, List<ContractDetailEntity> Total_Page, Integer size) {
@@ -101,7 +108,7 @@ public class ContractDetailServiceImpl implements ContractDetailService {
             });
 
             responseVo.setStatus(true);
-            responseVo.setMessage("Lịch trình đang chạy ");
+            responseVo.setMessage("Lịch trình đang chạy : ");
             responseVo.setData(scheduleResponses);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } else {
@@ -127,6 +134,27 @@ public class ContractDetailServiceImpl implements ContractDetailService {
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } else {
             responseVo.setMessage("Không có lịch trình sắp tới nào !");
+            responseVo.setStatus(false);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> responseHistorySchedule(List<ContractDetailEntity> contractDetailEntities) {
+        ResponseVo responseVo = new ResponseVo();
+        if (!contractDetailEntities.isEmpty()) {
+            List<ScheduleResponse> scheduleResponses = new ArrayList<>();
+            contractDetailEntities.forEach(ContractDetailEntity -> {
+                ScheduleResponse response = new ScheduleResponse();
+                response = response.scheduleResponse(ContractDetailEntity);
+                scheduleResponses.add(response);
+            });
+
+            responseVo.setStatus(true);
+            responseVo.setMessage("Lịch trình đã hoàn thành  : ");
+            responseVo.setData(scheduleResponses);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        } else {
+            responseVo.setMessage("Chưa hoàn thành lịch trình nào !");
             responseVo.setStatus(false);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
