@@ -42,6 +42,14 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
             "AND ct.had_driver = true ")
     List<ContractDetailEntity> Current_Schedule(String username);
 
+    @Query("SELECT ctd FROM  ContractDetailEntity ctd " +
+            "INNER JOIN ContractEntity  ct ON ctd.booking.id = ct.id " +
+            "WHERE ctd.driverEntity.accountEntity.Username = ?1 " +
+            "AND ct.status=7 " +
+            "AND ct.had_driver = true ")
+    List<ContractDetailEntity> History_schedule(String username);
+
+
 //    @Query(value = "SELECT * FROM contract_details inner join contracts on contract_details.contract_id=contracts.booking_id\n" +
 //            "where  contract_details.id_driver= ?1 \n" +
 //            "AND   contracts.status = 4  \n" +

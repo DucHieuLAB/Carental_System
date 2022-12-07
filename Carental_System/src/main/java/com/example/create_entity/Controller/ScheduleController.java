@@ -20,13 +20,19 @@ public class ScheduleController {
     ContractDetailServiceImpl contractDetailService;
 
     @RequestMapping(value = "/manager/Future_Schedule", method = RequestMethod.GET)
-    public ResponseEntity<?> MangerFutureSchedule(@RequestParam(required = false) String username) {
+    public ResponseEntity<?> FutureSchedule(@RequestParam(required = false) String username) {
         return contractDetailService.Future_Schedule(username);
     }
 
+
     @RequestMapping(value = "/manager/Current_Schedule", method = RequestMethod.GET)
-    public ResponseEntity<?> MangerCurrentSchedule(@RequestParam(required = false) String username) {
-    return contractDetailService.Current_Schedule(username);
+    public ResponseEntity<?> CurrentSchedule(@RequestParam(required = false) String username) {
+        return contractDetailService.Current_Schedule(username);
+    }
+
+    @RequestMapping(value = "/manager/History_schedule", method = RequestMethod.GET)
+    public ResponseEntity<?> HistorySchedule(@RequestParam(required = false) String username) {
+        return contractDetailService.History_schedule(username);
     }
 //    @RequestMapping(value = "/manager/DetailSchedule", method = RequestMethod.GET)
 //    public ResponseEntity<?> DetailSchedule(@RequestParam(required = false) Long ID) {
@@ -53,4 +59,4 @@ public class ScheduleController {
 //
 //            return contractDetailService.Search_PlateNumber_Schedule(plate_number, date_start1, date_start2, p);
 //        }
-    }
+}

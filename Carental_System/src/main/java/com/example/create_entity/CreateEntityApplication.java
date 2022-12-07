@@ -29,11 +29,9 @@ public class CreateEntityApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(CreateEntityApplication.class, args);
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        Boolean a = passwordEncoder.matches("12312272123", "$2a$10$p4D5aEFKUkMiN6wYPhW0T.ml0PXS1jD10Fg/1qdr\n9DK4T03Gf62eW");
-        System.out.println(a);
-
-
+//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        Boolean a = passwordEncoder.matches("12312272123", "$2a$10$p4D5aEFKUkMiN6wYPhW0T.ml0PXS1jD10Fg/1qdr\n9DK4T03Gf62eW");
+//        System.out.println(a);
     }
 
 

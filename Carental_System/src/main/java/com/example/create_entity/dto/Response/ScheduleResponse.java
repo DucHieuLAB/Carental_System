@@ -1,12 +1,12 @@
 package com.example.create_entity.dto.Response;
 
-import com.example.create_entity.Entity.ContractDetailEntity;
-import com.example.create_entity.Entity.CustomerEntity;
-import com.example.create_entity.Entity.DistrictsEntity;
-import com.example.create_entity.Entity.ParkingEntity;
+import com.example.create_entity.Entity.*;
+import com.example.create_entity.dto.Request.CarImgRequest;
 import lombok.*;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Getter
@@ -26,9 +26,12 @@ public class ScheduleResponse {
     private String Name_Return_Parking;
     private DistrictReponse District_Return_Parking;
     private CustomerInfoResponse customerInfoResponse;
+    private List<Object> listImg;
+
 
     public ScheduleResponse scheduleResponse(ContractDetailEntity contractDetailEntity) {
         CustomerInfoResponse infoResponse = new CustomerInfoResponse();
+        CarImageEntity carImageEntity = new CarImageEntity();
         ScheduleResponse response = new ScheduleResponse();
         response.setDistrict_Pickup_Parking(DistrictReponse.createDistricReponse(contractDetailEntity.getBooking().getPickup_parking().getDistrictsEntity()));
         response.setDistrict_Return_Parking(DistrictReponse.createDistricReponse(contractDetailEntity.getBooking().getReturn_parking().getDistrictsEntity()));
@@ -42,8 +45,8 @@ public class ScheduleResponse {
         response.setId(contractDetailEntity.getId());
         response.setId_driver(contractDetailEntity.getDriverEntity().getId());
         response.setCustomerInfoResponse(infoResponse.customerInfoResponse(contractDetailEntity.getBooking().getCustomer()));
+        response.setListImg(carImageEntity.ResponseImg(contractDetailEntity.getCar().getCarImageEntities()));
         return response;
     }
-
 
 }

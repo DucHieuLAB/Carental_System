@@ -54,7 +54,7 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> 
 
     @Query(value = "SELECT  *  from customers " +
             "inner join accounts on customers.account_id = accounts.account_id " +
-            "WHERE accounts.create_date >= DATE(NOW()) - INTERVAL 30 DAY ",nativeQuery = true)
+            "WHERE accounts.create_date >= DATE(NOW()) - INTERVAL 30 DAY",nativeQuery = true)
    List<CustomerEntity> CountNewCustomer();
 
 

@@ -48,6 +48,11 @@ public class CustomerController {
         return accountService.UpdateCustomer(updateInfoCustomerRequest);
     }
 
+    @RequestMapping(value = "account/Customer/ChangeStatus", method = RequestMethod.PUT)
+    public ResponseEntity<?>ChangeStatus(@RequestParam(name = "username") String username) {
+        return accountService.ChangeStatus(username);
+    }
+
 
 
 //    @RequestMapping(value = "account/Customer/Change_Password", method = RequestMethod.PUT)

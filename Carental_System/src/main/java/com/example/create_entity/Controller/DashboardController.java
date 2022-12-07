@@ -49,7 +49,7 @@ public class DashboardController {
         return dashBoardService.Total_Paid_HadDriver();
     }
     @RequestMapping(value = "/DashBoard/Total_Paid_NoDriver", method = RequestMethod.GET)
-    public ResponseEntity<?> Total_Paid_NoDriver() {
-        return dashBoardService.Total_Paid_NoDriver();
+    public ResponseEntity<?> Total_Paid_SelfDriving() {
+        return dashBoardService.Total_Paid_Self_driving();
     }
 }
