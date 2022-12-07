@@ -43,7 +43,7 @@ public interface ContractService {
 
     ResponseEntity<?> getContractPaymentInf(long id);
 
-    ResponseEntity<?> ListRequest_ofCustomer(Integer p);
+    ResponseEntity<?> ListRequest(Integer p);
 
     ResponseEntity<?> ListContract(Integer p);
 

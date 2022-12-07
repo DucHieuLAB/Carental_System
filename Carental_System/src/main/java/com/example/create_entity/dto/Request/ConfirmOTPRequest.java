@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConfirmOTPRegisterRequest {
+public class ConfirmOTPRequest {
    private String username;
    private String otp;
 }

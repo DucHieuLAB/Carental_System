@@ -15,10 +15,12 @@ public interface ContractDetailService {
 
     ResponseEntity<?> ListBookingDetail(Long id);
 
-    ResponseEntity<?> Schedule(Integer p);
+    ResponseEntity<?>Future_Schedule(String username);
 
-    ResponseEntity<?> SearchName_Schedule(String name,String expected_start_date1 ,String expected_start_date2 ,Integer p) ;
+    ResponseEntity<?>Current_Schedule(String username);
 
-
-    ResponseEntity<?> Search_PlateNumber_Schedule(String name, String date_start1, String date_start2, Integer p);
+//    ResponseEntity<?> SearchName_Schedule(String name,String expected_start_date1 ,String expected_start_date2 ,Integer p) ;
+//
+//
+//    ResponseEntity<?> Search_PlateNumber_Schedule(String name, String date_start1, String date_start2, Integer p);
 }

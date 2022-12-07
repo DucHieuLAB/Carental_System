@@ -25,34 +25,34 @@ public class ContractController {
     }
 
     @RequestMapping(value = "/ListRequest", method = RequestMethod.GET)
-    public ResponseEntity<?> List(@RequestParam(value = "p", required = false) Integer p) {
-        return contractService.ListRequest_ofCustomer(p);
+    public ResponseEntity<?> ListRequestCustomer(@RequestParam(value = "p", required = false) Integer p) {
+        return contractService.ListRequest(p);
     }
 
     @RequestMapping(value = "/ListContract", method = RequestMethod.GET)
-    public ResponseEntity<?> List2(@RequestParam(value = "p", required = false) Integer p) {
+    public ResponseEntity<?> ListContractCustomer(@RequestParam(value = "p", required = false) Integer p) {
         return contractService.ListContract(p);
     }
 
     @RequestMapping(value = "/SearchContract", method = RequestMethod.GET)
-    public ResponseEntity<?> FilterContract(@RequestParam(required = false) Integer p,
+    public ResponseEntity<?> FilterListContract(@RequestParam(required = false) Integer p,
                                     @RequestParam(required = false) String name,
                                     @RequestParam(required = false) Integer HadDriver,
                                     @RequestParam(required = false) Integer Status,
                                     @RequestParam(required = false) String phone) {
-        if (phone != null && name == null) {
+        if (phone != null &&  (name == null || name=="")) {
             return contractService.FilterByPhoneContract(phone, HadDriver, Status, p);
         }
         return contractService.FilterByNameContract(name, HadDriver, Status, p);
     }
 
     @RequestMapping(value = "/SearchRequest", method = RequestMethod.GET)
-    public ResponseEntity<?> FilterRequest(@RequestParam(required = false) Integer p,
+    public ResponseEntity<?> FilterListRequest(@RequestParam(required = false) Integer p,
                                     @RequestParam(required = false) String name,
                                     @RequestParam(required = false) Integer HadDriver,
                                     @RequestParam(required = false) Integer Status,
                                     @RequestParam(required = false) String phone) {
-        if (phone != null && name == null) {
+        if (phone != null && (name == null || name=="")) {
             return contractService.FilterByPhoneRequest(phone, HadDriver, Status, p);
         }
         return contractService.FilterByNameRequest(name, HadDriver, Status, p);

@@ -25,7 +25,7 @@ public interface AccountService {
 
    ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST);
 
-   ResponseEntity<?> Confirm_Register_OTPEmail(ConfirmOTPRegisterRequest confirmOTPRegisterRequest);
+   ResponseEntity<?> Confirm_Register_OTPEmail(ConfirmOTPRequest confirmOTPRegisterRequest);
 
    ResponseEntity<?> SendOTPtoEmail(String email);
 
@@ -53,4 +53,8 @@ public interface AccountService {
     ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest);
 
    ResponseEntity<?> change_new_password(ChangePassRequest changePassRequest);
+
+    ResponseEntity<?> SendOTP_Login(String username);
+
+   ResponseEntity<?> ConfirmOTP_Login(ConfirmOTPRequest confirmOTPRequest);
 }

@@ -960,7 +960,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> ListRequest_ofCustomer(Integer p) {
+    public ResponseEntity<?> ListRequest(Integer p) {
         if (p == null) {
             p = 0;
         } else if (p > 0) {
@@ -970,7 +970,7 @@ public class ContractServiceImpl implements ContractService {
         try {
             Pageable pageable = PageRequest.of(p, 5);
 
-            Page<ContractEntity> page = br.ListRequest_ofCustomer(pageable);
+            Page<ContractEntity> page = br.ListRequest(pageable);
 
             List<ContractResponse> contractResponse = new ArrayList<>();
 

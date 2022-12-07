@@ -17,7 +17,7 @@ public class AdminInfoResponse {
 
     private String Phone;
 
-    private String UserName;
+    private String User_Name;
 
     private Date Dob;
 
@@ -50,7 +50,7 @@ public class AdminInfoResponse {
 
 
         this.setFullName(adminEntity.getFullName());
-        this.setUserName(adminEntity.getAccountEntity().getUsername());
+        this.setUser_Name(adminEntity.getAccountEntity().getUsername());
         this.setDob(adminEntity.getDOB());
         this.setEmail(adminEntity.getAccountEntity().getEmail());
         this.setGender(adminEntity.getGender());

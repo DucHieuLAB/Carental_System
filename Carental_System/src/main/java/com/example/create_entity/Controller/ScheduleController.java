@@ -19,27 +19,38 @@ public class ScheduleController {
     @Autowired
     ContractDetailServiceImpl contractDetailService;
 
-    @RequestMapping(value = "/manager/Schedule", method = RequestMethod.GET)
-    public ResponseEntity<?> MangerSchedule(@RequestParam(value = "p", required = false) Integer p) {
-        return contractDetailService.Schedule(p);
+    @RequestMapping(value = "/manager/Future_Schedule", method = RequestMethod.GET)
+    public ResponseEntity<?> MangerFutureSchedule(@RequestParam(required = false) String username) {
+        return contractDetailService.Future_Schedule(username);
     }
 
-    @RequestMapping(value = "/manager/SearchName_Schedule", method = RequestMethod.GET)
-    public ResponseEntity<?> SearchName_Schedule(@RequestParam(value = "p", required = false) Integer p,
-                                                 @RequestParam(value = "name", required = false, defaultValue = "") String name,
-                                                 @RequestParam(value = "date_start1", required = false, defaultValue = "") String date_start1,
-                                                 @RequestParam(value = "date_start2", required = false, defaultValue = "") String date_start2) {
-        return contractDetailService.SearchName_Schedule(name, date_start1, date_start2, p);
-
+    @RequestMapping(value = "/manager/Current_Schedule", method = RequestMethod.GET)
+    public ResponseEntity<?> MangerCurrentSchedule(@RequestParam(required = false) String username) {
+    return contractDetailService.Current_Schedule(username);
     }
-
-        @RequestMapping(value = "/manager/SearchPlateNumber_Schedule", method = RequestMethod.GET)
-        public ResponseEntity<?> Search_PlateNumber_Schedule(@RequestParam(value = "p", required = false) Integer p,
-                @RequestParam(value = "plate_number", required = false, defaultValue = "") String plate_number,
-                @RequestParam(value = "date_start1", required = false, defaultValue = "") String date_start1,
-                @RequestParam(value = "date_start2", required = false, defaultValue = "") String date_start2){
+//    @RequestMapping(value = "/manager/DetailSchedule", method = RequestMethod.GET)
+//    public ResponseEntity<?> DetailSchedule(@RequestParam(required = false) Long ID) {
+//        return contractDetailService.Current_Schedule(DriverID);
+//    }
 
 
-            return contractDetailService.Search_PlateNumber_Schedule(plate_number, date_start1, date_start2, p);
-        }
+//
+//    @RequestMapping(value = "/manager/SearchName_Schedule", method = RequestMethod.GET)
+//    public ResponseEntity<?> SearchName_Schedule(@RequestParam(value = "p", required = false) Integer p,
+//                                                 @RequestParam(value = "name", required = false, defaultValue = "") String name,
+//                                                 @RequestParam(value = "date_start1", required = false, defaultValue = "") String date_start1,
+//                                                 @RequestParam(value = "date_start2", required = false, defaultValue = "") String date_start2) {
+//        return contractDetailService.SearchName_Schedule(name, date_start1, date_start2, p);
+//
+//    }
+//
+//        @RequestMapping(value = "/manager/SearchPlateNumber_Schedule", method = RequestMethod.GET)
+//        public ResponseEntity<?> Search_PlateNumber_Schedule(@RequestParam(value = "p", required = false) Integer p,
+//                @RequestParam(value = "plate_number", required = false, defaultValue = "") String plate_number,
+//                @RequestParam(value = "date_start1", required = false, defaultValue = "") String date_start1,
+//                @RequestParam(value = "date_start2", required = false, defaultValue = "") String date_start2){
+//
+//
+//            return contractDetailService.Search_PlateNumber_Schedule(plate_number, date_start1, date_start2, p);
+//        }
     }

@@ -21,7 +21,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
     ContractEntity getByCustomerIdAndExpectStartDateAndExpectEndDate(Long id, Date expected_start_date, Date expected_end_date);
 
     @Query(value = "select * from contracts where (status = 1 or status = 2 or status = 3 )    order by expected_start_date ASC", nativeQuery = true)
-    Page<ContractEntity>ListRequest_ofCustomer(Pageable pageable);
+    Page<ContractEntity>ListRequest(Pageable pageable);
 
 
     @Query(value = "select * from contracts where (status = 4 or status = 5 or status = 6 or status=7 )    order by expected_start_date ASC", nativeQuery = true)
@@ -102,6 +102,18 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "AND(contracts.status = 1 or contracts.status = 2 or contracts.status = 3)", nativeQuery = true)
     List<ContractEntity> FilterByPhoneRequest2(String phone, Integer HadDriver, Integer Status);
 
+
+
+
+
+
+
+
+
+
+
+
+
     @Query("SELECT c FROM ContractEntity c WHERE c.id = ?1 ")
     ContractEntity FindByID(Long id);
 
@@ -127,6 +139,10 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            LIMIT 1;", nativeQuery = true)
     Optional<ContractEntity> findContractByPlateNumberAndEndDate(String plateNumber, Date endDate);
 
+    @Query("SELECT c FROM ContractEntity c WHERE c.status=1")
+    List<ContractEntity> ListRequestContract();
+
+
     @Query("SELECT c FROM ContractEntity c WHERE c.id= ?1 and c.status = 2")
     ContractEntity findByIdAndStatus2(long id);
 
@@ -138,12 +154,13 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
 
     @Query("SELECT c FROM ContractEntity c WHERE c.id= ?1 and c.status < 6 and c.status > 0")
     ContractEntity findByIdAndStatusValid(long contractId);
+    @Query(value = "SELECT * FROM contracts WHERE contracts.status=7 and contracts.create_date >= DATE(NOW()) - INTERVAL 30 DAY ",nativeQuery = true )
+    List<ContractEntity> ListCloseContract();
 
     @Query(value = "SELECT *\n" +
             "FROM contracts\n" +
             "WHERE ADDDATE(contracts.expected_start_date, INTERVAL 1 DAY) < CURDATE()", nativeQuery = true)
     List<ContractEntity> getListInvaliContract();
 
-//    @Query("SELECT c FROM ContractEntity c WHERE c.expected_start_date ")
-//    List<ContractEntity> getListInvalidContract();
+
 }

@@ -42,6 +42,7 @@ public class AccountServiceIml implements AccountService {
     @Autowired
     StaffRepository staffRepository;
 
+
     public Integer CheckNullPaging(Integer p) {
         if (p == null) {
             p = 0;
@@ -311,15 +312,15 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public ResponseEntity<?> Confirm_Register_OTPEmail(ConfirmOTPRegisterRequest request) {
+    public ResponseEntity<?> Confirm_Register_OTPEmail(ConfirmOTPRequest request) {
         ResponseVo responseVo = new ResponseVo();
         try {
             AccountEntity accountEntity = accountRepository.Check_ConfirmOTP(request.getUsername());
             if (accountEntity != null && request.getOtp().trim().equals(accountEntity.getOtp()) && accountEntity.isOTPRequired()) {
                 accountEntity.setStatus(2);
                 accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
-                accountRepository.save(accountEntity);
                 accountEntity.setOtp("");
+                accountRepository.save(accountEntity);
                 responseVo.setStatus(true);
                 responseVo.setMessage("Xác thực tài khoản thành công !");
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -710,6 +711,45 @@ public class AccountServiceIml implements AccountService {
         } catch (Exception e) {
             responseVo.setMessage(e.getMessage());
             responseVo.setStatus(false);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+    }
+    @Override
+    public ResponseEntity<?> SendOTP_Login(String username) {
+        ResponseVo responseVo = new ResponseVo();
+       AccountEntity accountEntity = accountRepository.GetAccountByName(username);
+       if(accountEntity.getStatus()==1){
+           String OTP = randomString.generateRandomString();
+           accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+           accountEntity.setOtp(OTP);
+           accountEntity.setOtp_requested_time(new Date(System.currentTimeMillis()));
+           accountRepository.save(accountEntity);
+           emailSenderService.sendSimpleEmail(accountEntity.getEmail(),"Xác minh tài khoản  - Đây là mã  (OTP)  - Hiệu lực 5 phút!",OTP);
+           responseVo.setMessage("Vui Lòng kiểm tra Email để xác thực tài khoản !");
+           responseVo.setStatus(true);
+           return new ResponseEntity<>(responseVo,HttpStatus.OK);
+       }else{
+           responseVo.setMessage("Đã xảy ra lỗi hệ thống !");
+           responseVo.setStatus(false);
+           return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
+       }
+    }
+
+    @Override
+    public ResponseEntity<?> ConfirmOTP_Login(ConfirmOTPRequest confirmOTPRequest) {
+        ResponseVo responseVo = new ResponseVo();
+        AccountEntity accountEntity = accountRepository.GetAccountByName(confirmOTPRequest.getUsername());
+        if (accountEntity != null && confirmOTPRequest.getOtp().trim().equals(accountEntity.getOtp()) && accountEntity.isOTPRequired()) {
+            accountEntity.setStatus(2);
+            accountEntity.setModifiedDate(new Date(System.currentTimeMillis()));
+            accountEntity.setOtp("");
+            responseVo.setStatus(true);
+            accountRepository.save(accountEntity);
+            responseVo.setMessage("Xác thực tài khoản thành công !");
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        } else {
+            responseVo.setStatus(false);
+            responseVo.setMessage("Mã OTP không chính xác hoặc Không còn tồn tại !");
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
     }

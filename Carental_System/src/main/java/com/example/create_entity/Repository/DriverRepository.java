@@ -92,6 +92,9 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
             "JOIN cars on cars.plate_number = ?1 and cars.license_id <= driver.license_id;\n", nativeQuery = true)
     List<DriverEntity> getDriverByPlateNumber(String plateNumber);
 
+    @Query("SELECT dr FROM DriverEntity dr WHERE dr.status = 1 and dr.accountEntity.status=2 ")
+    List<DriverEntity> count_driver();
+
 
 ////    @Modifying
 ////    @Transactional

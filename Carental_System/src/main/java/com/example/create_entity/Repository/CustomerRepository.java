@@ -52,4 +52,10 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> 
    CustomerEntity Check_Identity_Update(String Identity,String username,Long id);
 
 
+    @Query(value = "SELECT  *  from customers " +
+            "inner join accounts on customers.account_id = accounts.account_id " +
+            "WHERE accounts.create_date >= DATE(NOW()) - INTERVAL 30 DAY ",nativeQuery = true)
+   List<CustomerEntity> CountNewCustomer();
+
+
 }

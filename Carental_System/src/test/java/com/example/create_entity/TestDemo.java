@@ -2,10 +2,7 @@ package com.example.create_entity;
 
 
 import com.example.create_entity.Entity.*;
-import com.example.create_entity.Repository.AccountRepository;
-import com.example.create_entity.Repository.ContractDetailRepository;
-import com.example.create_entity.Repository.DriverRepository;
-import com.example.create_entity.Repository.RoleRepository;
+import com.example.create_entity.Repository.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +32,18 @@ public class TestDemo {
     RoleRepository roleRepository;
     @Autowired
     ContractDetailRepository contractDetailRepository;
+    @Autowired
+    CustomerRepository customerRepository;
+
 
     @Autowired
     DriverRepository driverRepository;
 
-//
+
 //    @Test
 //    public void testDriver() {
-//        Pageable pageable = PageRequest.of(0, 1);
-//        List<DriverEntity> driverEntities = driverRepository.GetDriverBy_fullName1("Vũ");
-//
-//
-//        System.out.println(driverEntities);
+//        Integer integer = customerRepository.CountNewCustomer();
+//        System.out.println(integer);
 //    }
 //////}
 //

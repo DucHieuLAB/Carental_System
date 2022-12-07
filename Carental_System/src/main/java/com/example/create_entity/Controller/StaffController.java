@@ -1,17 +1,15 @@
 package com.example.create_entity.Controller;
 
 import com.example.create_entity.Service.AccountServiceIml;
-import com.example.create_entity.dto.Request.DriverInfoRequest;
 import com.example.create_entity.dto.Request.StaffRequest;
 import com.example.create_entity.dto.Request.UpdateInfoStaffRequest;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-public class ControllerStaff {
+public class StaffController {
 
     @Autowired
     AccountServiceIml accountServiceIml;

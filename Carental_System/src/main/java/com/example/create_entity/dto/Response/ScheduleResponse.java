@@ -1,6 +1,7 @@
 package com.example.create_entity.dto.Response;
 
 import com.example.create_entity.Entity.ContractDetailEntity;
+import com.example.create_entity.Entity.CustomerEntity;
 import com.example.create_entity.Entity.DistrictsEntity;
 import com.example.create_entity.Entity.ParkingEntity;
 import lombok.*;
@@ -24,8 +25,10 @@ public class ScheduleResponse {
     private DistrictReponse District_Pickup_Parking;
     private String Name_Return_Parking;
     private DistrictReponse District_Return_Parking;
+    private CustomerInfoResponse customerInfoResponse;
 
     public ScheduleResponse scheduleResponse(ContractDetailEntity contractDetailEntity) {
+        CustomerInfoResponse infoResponse = new CustomerInfoResponse();
         ScheduleResponse response = new ScheduleResponse();
         response.setDistrict_Pickup_Parking(DistrictReponse.createDistricReponse(contractDetailEntity.getBooking().getPickup_parking().getDistrictsEntity()));
         response.setDistrict_Return_Parking(DistrictReponse.createDistricReponse(contractDetailEntity.getBooking().getReturn_parking().getDistrictsEntity()));
@@ -38,6 +41,7 @@ public class ScheduleResponse {
         response.setNameCar(contractDetailEntity.getCar().getModelName());
         response.setId(contractDetailEntity.getId());
         response.setId_driver(contractDetailEntity.getDriverEntity().getId());
+        response.setCustomerInfoResponse(infoResponse.customerInfoResponse(contractDetailEntity.getBooking().getCustomer()));
         return response;
     }
 
