@@ -67,13 +67,13 @@ public class ContractServiceImpl implements ContractService {
     SurchargeValidator surchargeValidator;
 
     @Override
-    public ResponseEntity<?> add(ContractRequest contractRequest) {
+    public ResponseEntity<?> add(ContractRequest contractRequest) throws Error {
         ResponseVo responseVo = null;
+        // validate
         if (ObjectUtils.isEmpty(contractRequest)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Contract truyền vào trống", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-
         if (contractRequest.getListCarPlateNumber().isEmpty()) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn chưa chọn xe", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -85,35 +85,42 @@ public class ContractServiceImpl implements ContractService {
                 responseVo = ResponseVeConvertUntil.createResponseVo(false, "không tìm thấy xe biển " + plateNumber, null);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
+            CarEntity exsitCarEntity = cr.checkCarValidInTime(contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate(), plateNumber);
+            if (!ObjectUtils.isEmpty(exsitCarEntity)) {
+                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Xe biển số "+plateNumber+" Bạn chọn hiện không khả dụng trong thời gian mong muốn", null);
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
         }
-
+        // check user dont have same contact type start and end same day
+        ContractEntity exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
+        if (!ObjectUtils.isEmpty(exsitBooking)) {
+            if (exsitBooking.isHad_driver() == contractRequest.isHad_driver()) {
+                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn đã đặt booking tương tự", null);
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+        }
+        // check pickup and return parking is exsit
+        Optional<ParkingEntity> pickUpParking = pr.findById(contractRequest.getPickupParkingId());
+        Optional<ParkingEntity> returnParking = pr.findById(contractRequest.getReturnParkingId());
+        if (!pickUpParking.isPresent() || !returnParking.isPresent()) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin bãi đỗ không đúng", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        // check user exsit
+        CustomerEntity customer = customerRepository.GetCustomerID(contractRequest.getCustomerId());
+        if (ObjectUtils.isEmpty(customer)) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin người dùng không chính xác", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        // check customer info
+        if (customer.getFullName().isEmpty() || customer.getPhone().isEmpty() || customer.getIdentity_Number().isEmpty()) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin người dùng thiếu", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
         try {
-            ContractEntity exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
-
-            if (!ObjectUtils.isEmpty(exsitBooking)) {
-                if (exsitBooking.isHad_driver() == contractRequest.isHad_driver()){
-                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn đã đặt booking tương tự", null);
-                    return new ResponseEntity<>(responseVo, HttpStatus.OK);
-                }
-
-            }
+            // Convert from request to ContractEntiry
             ContractEntity newContract = ContractRequest.convertToContractEntity(contractRequest);
-            Optional<ParkingEntity> pickUpParking = pr.findById(contractRequest.getPickupParkingId());
-            Optional<ParkingEntity> returnParking = pr.findById(contractRequest.getReturnParkingId());
-            if (!pickUpParking.isPresent() || !returnParking.isPresent()) {
-                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin bãi đỗ không đúng", null);
-                return new ResponseEntity<>(responseVo, HttpStatus.OK);
-            }
-            CustomerEntity customer = customerRepository.GetCustomerID(contractRequest.getCustomerId());
-            if (ObjectUtils.isEmpty(customer)) {
-                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin người dùng không chính xác", null);
-                return new ResponseEntity<>(responseVo, HttpStatus.OK);
-            }
-            // check customer info
-            if (customer.getFullName().isEmpty() || customer.getPhone().isEmpty() || customer.getIdentity_Number().isEmpty()) {
-                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin người dùng thiếu", null);
-                return new ResponseEntity<>(responseVo, HttpStatus.OK);
-            }
+            // set pickup return parking , customer , quantity
             newContract.setPickup_parking(pickUpParking.get());
             newContract.setReturn_parking(returnParking.get());
             newContract.setCustomer(customer);
@@ -121,17 +128,15 @@ public class ContractServiceImpl implements ContractService {
             Date date = new Date(System.currentTimeMillis());
             newContract.setLastModifiedDate(date);
             newContract.setCreatedDate(date);
-            long diffInMillies = Math.abs(newContract.getExpected_end_date().getTime() - newContract.getExpected_start_date().getTime());
-            long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-            if(diff < 1){
-                diff = 1;
-            }
+            // save
             br.save(newContract);
+            // get Contract with ID
             newContract = br.getByCustomerIdAndExpectStartDateAndExpectEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
             ContractHadDriverReponse contractHadDriverReponse = null;
             if (newContract.isHad_driver() == true) {
                 ContractHadDriverEntity entity = new ContractHadDriverEntity();
                 entity.set_one_way(contractRequest.isOneWay());
+                // check distric exsit if not create one
                 DistrictsEntity districPickUpAddress = districtRepository.check_districts(contractRequest.getDistricPickUpAddress().getCity(),
                         contractRequest.getDistricPickUpAddress().getWards(),
                         contractRequest.getDistricPickUpAddress().getDistrictName());
@@ -160,7 +165,16 @@ public class ContractServiceImpl implements ContractService {
                 entity.setLastModifiedDate(date);
                 chdr.save(entity);
                 entity = chdr.getByContractID(newContract.getId());
+                // create respone
                 contractHadDriverReponse = ContractHadDriverEntity.convertToContractHadDriverResponse(entity);
+            }
+            // insert contract Detail
+            // cal culate time in contract
+            long diffInMillies = Math.abs(newContract.getExpected_end_date().getTime() - newContract.getExpected_start_date().getTime());
+            long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            // if contract start end with same day dateDiff = 1
+            if (diff < 1) {
+                diff = 1;
             }
             double expectedRentalPrice = 0;
             double depositAmount = 0;
@@ -168,10 +182,6 @@ public class ContractServiceImpl implements ContractService {
             for (String carPlateNumber : contractRequest.getListCarPlateNumber()) {
                 ContractDetailEntity contractDetailEntity = new ContractDetailEntity();
                 CarEntity carEntity = cr.findCarEntityByPlateNumber(carPlateNumber);
-                CarEntity exsitCarEntity = cr.checkCarValidInTime(contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate(), carPlateNumber);
-                if (!ObjectUtils.isEmpty(exsitCarEntity)) {
-                    throw new Exception("Xe Bạn chọn hiện không khả dụng trong thời gian mong muốn");
-                }
                 contractDetailEntity.setBooking(newContract);
                 contractDetailEntity.setCar(carEntity);
                 contractDetailEntity.setLastModifiedDate(date);
@@ -179,14 +189,19 @@ public class ContractServiceImpl implements ContractService {
                 depositAmount += carEntity.getDepositAmount();
                 bookingDetailEntities.add(contractDetailEntity);
             }
+            // save list Booking Detail
             bdr.saveAll(bookingDetailEntities);
+            // set expected rental price and deposit
             newContract.setExpected_rental_price(expectedRentalPrice);
             newContract.setDeposit_amount(depositAmount);
             br.save(newContract);
+            // create reponse
             newContract = br.getByCustomerIdAndExpectStartDateAndExpectEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
-            // save list Booking Detail
             bookingDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(newContract.getId());
-            List<ListContractDetailResponse> listContractDetailRespons = ListContractDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
+            List<ListContractDetailResponse> listContractDetailRespons = null;
+            if (bookingDetailEntities.size() > 0) {
+                listContractDetailRespons = ListContractDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
+            }
             ContractResponse contractResponse = ContractEntity.convertToContractResponse(newContract);
             HashMap<String, Object> reponse = new HashMap<>();
             reponse.put("Booking", contractResponse);
@@ -195,10 +210,8 @@ public class ContractServiceImpl implements ContractService {
             responseVo = ResponseVeConvertUntil.createResponseVo(true, "Tạo Hợp đồng thành công", reponse);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (Exception e) {
-            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Lỗi Khi Tạo Mới Hợp đồng", e.getMessage());
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            throw new Error("loi khi tao hop dong");
         }
-
     }
 
     @Override
@@ -226,12 +239,12 @@ public class ContractServiceImpl implements ContractService {
                     DriverEntity driverEntity = dr.GetDriverById(l.getDriverId());
                     l.setDriverName(driverEntity.getFullName());
                 }
-                if (l.getRealReturnDate() == null){
+                if (l.getRealReturnDate() == null) {
                     isReturncar = false;
                 }
             }
             ObjectResponse.put("BookingDetail", listContractDetailRespons);
-            ObjectResponse.put("isReturnCar",isReturncar);
+            ObjectResponse.put("isReturnCar", isReturncar);
             // if had driver = > put into response
             if (contractEntity.isHad_driver()) {
                 ContractHadDriverEntity entity = chdr.getByContractID(id);
@@ -305,7 +318,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest) {
+    public ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest) throws Exception {
         ResponseVo responseVo = null;
         if (contractDriverRealPriceRequest.getContractId() <= 0) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Thông tin hợp đồng không đúng", null);
@@ -315,11 +328,16 @@ public class ContractServiceImpl implements ContractService {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Giá cho thuê không thể bé hơn hoặc bằng 0", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
-        // tim contract tu contractId request
+        // find contract by id
         ContractEntity contractEntity = br.FindByID(contractDriverRealPriceRequest.getContractId());
         // if contract Entity is null mean contractId is invalid
         if (ObjectUtils.isEmpty(contractEntity)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng ID = " + contractDriverRealPriceRequest.getContractId(), null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        // check if contract is not hadDriver contract
+        if (!contractEntity.isHad_driver()) {
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Hợp đồng trên không thuộc hợp đồng có tài xế", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         // Get List ContractDetailRequest
@@ -328,73 +346,50 @@ public class ContractServiceImpl implements ContractService {
         long count = bdr.getCountContractDetail(contractDriverRealPriceRequest.getContractId());
         if (listContractDetailDriverRequests.size() > count) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Danh sach chi tiet hop dong khong chinh xac", null);
-        }
-        for (ListContractDetailDriverRequest l : listContractDetailDriverRequests) {
-            if (l.getDriverId() <= 0) {
-                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Mã tài xế không hợp lệ", l.getDriverId());
-                return new ResponseEntity<>(responseVo, HttpStatus.OK);
-            }
-            if (l.getBookingDetailId() <= 0) {
-                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Mã  không hợp lệ", l.getBookingDetailId());
-                return new ResponseEntity<>(responseVo, HttpStatus.OK);
-            }
-        }
-        if (!contractEntity.isHad_driver()) {
-            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Hợp đồng trên không thuộc hợp đồng có tài xế", null);
-            return new ResponseEntity<>(responseVo, HttpStatus.OK);
-        }
-        try {
-            for (ListContractDetailDriverRequest l : listContractDetailDriverRequests) {
-                ContractDetailEntity contractDetailEntity = bdr.BookingDetail(l.getBookingDetailId());
-                if (ObjectUtils.isEmpty(contractDetailEntity)) {
-                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đông ", null);
-                    return new ResponseEntity<>(responseVo, HttpStatus.OK);
-                }
-//
-                DriverEntity entity = dr.GetDriverById(l.getDriverId());
-                if (ObjectUtils.isEmpty(entity)) {
-                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin tài xế ID= " + l.getDriverId() + "", null);
-                    return new ResponseEntity<>(responseVo, HttpStatus.OK);
-                }
-                long countByDriver = bdr.getCountContractDetailByDriverId(entity.getId());
-                DriverEntity checkValidDate = null;
-                // if driver dont had any contract
-                if (countByDriver > 0) {
-                    checkValidDate = dr.findDriverValidDate(entity.getId(), contractEntity.getExpected_start_date(), contractEntity.getExpected_end_date());
-                    if (!ObjectUtils.isEmpty(checkValidDate)) {
-                        responseVo = ResponseVeConvertUntil.createResponseVo(false, "Tài Xế: " + entity.getFullName() + " hiện đang có hợp đồng khác", null);
-                        return new ResponseEntity<>(responseVo, HttpStatus.OK);
-                    }
-                }
-                CarEntity carEntity = contractDetailEntity.getCar();
-                LicenseTypeEntity licenseTypeEntity = licenseRepository.getLicenseById(carEntity.getLicenseTypeEntity().getID());
-                if (licenseTypeEntity.getID() > entity.getLicenseTypeEntity().getID()) {
-                    responseVo = ResponseVeConvertUntil.createResponseVo(false, "Tài xế " + entity.getFullName() + " không đủ điều kiện lái loại xe hạng " + licenseTypeEntity.getName_License(), null);
-                    return new ResponseEntity<>(responseVo, HttpStatus.OK);
-                }
-                contractDetailEntity.setDriverEntity(entity);
-                bdr.save(contractDetailEntity);
-            }
-            contractEntity.setReal_price(contractDriverRealPriceRequest.getReal_price());
-            contractEntity.setStatus(2);
-            br.save(contractEntity);
-            contractEntity = br.FindByID(contractDriverRealPriceRequest.getContractId());
-            ContractResponse response = ContractEntity.convertToContractResponse(contractEntity);
-            List<ContractDetailEntity> bookingDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.getId());
-            List<ListContractDetailResponse> listContractDetailRespons = ListContractDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
-            ContractHadDriverEntity entity = chdr.getByContractID(response.getBookingId());
-            ContractHadDriverReponse contractHadDriverReponse = ContractHadDriverEntity.convertToContractHadDriverResponse(entity);
-            HashMap<String, Object> reponse = new HashMap<>();
-            reponse.put("Booking", response);
-            reponse.put("BookingDetail", listContractDetailRespons);
-            reponse.put("HadDriver", contractHadDriverReponse);
-            responseVo = ResponseVeConvertUntil.createResponseVo(true, "Cập Nhật Tài Xế Và Giá thuê thành công", reponse);
-            return new ResponseEntity<>(responseVo, HttpStatus.OK);
-        } catch (Exception e) {
-            responseVo = ResponseVeConvertUntil.createResponseVo(true, "Lỗi khi cập nhật giá thuê và tài xế", e.getMessage());
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-
+        for (ListContractDetailDriverRequest l : listContractDetailDriverRequests) {
+            ContractDetailEntity contractDetailEntity = bdr.BookingDetail(l.getBookingDetailId());
+            if (ObjectUtils.isEmpty(contractDetailEntity)) {
+                throw new Exception("Không tìm thấy thông tin chi tiết đông id = " + l.getBookingDetailId());
+            }
+            DriverEntity entity = dr.GetDriverById(l.getDriverId());
+            if (ObjectUtils.isEmpty(entity)) {
+                throw new Exception("Không tìm thấy thông tin tài xế ID= " + l.getDriverId());
+            }
+            long countByDriver = bdr.getCountContractDetailByDriverId(entity.getId());
+            DriverEntity checkValidDate = null;
+            // if driver dont had any contract
+            if (countByDriver > 0) {
+                checkValidDate = dr.findDriverValidDate(entity.getId(), contractEntity.getExpected_start_date(), contractEntity.getExpected_end_date());
+                if (!ObjectUtils.isEmpty(checkValidDate)) {
+                    throw new Exception("Tài Xế: " + entity.getFullName() + " hiện đang có hợp đồng khác");
+                }
+            }
+            CarEntity carEntity = contractDetailEntity.getCar();
+            LicenseTypeEntity licenseTypeEntity = licenseRepository.getLicenseById(carEntity.getLicenseTypeEntity().getID());
+            if (licenseTypeEntity.getID() > entity.getLicenseTypeEntity().getID()) {
+                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Tài xế " + entity.getFullName() + " không đủ điều kiện lái loại xe hạng " + licenseTypeEntity.getName_License(), null);
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            contractDetailEntity.setDriverEntity(entity);
+            bdr.save(contractDetailEntity);
+        }
+        contractEntity.setReal_price(contractDriverRealPriceRequest.getReal_price());
+        contractEntity.setStatus(2);
+        br.save(contractEntity);
+        contractEntity = br.FindByID(contractDriverRealPriceRequest.getContractId());
+        ContractResponse response = ContractEntity.convertToContractResponse(contractEntity);
+        List<ContractDetailEntity> bookingDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.getId());
+        List<ListContractDetailResponse> listContractDetailRespons = ListContractDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
+        ContractHadDriverEntity entity = chdr.getByContractID(response.getBookingId());
+        ContractHadDriverReponse contractHadDriverReponse = ContractHadDriverEntity.convertToContractHadDriverResponse(entity);
+        HashMap<String, Object> reponse = new HashMap<>();
+        reponse.put("Booking", response);
+        reponse.put("BookingDetail", listContractDetailRespons);
+        reponse.put("HadDriver", contractHadDriverReponse);
+        responseVo = ResponseVeConvertUntil.createResponseVo(true, "Cập Nhật Tài Xế Và Giá thuê thành công", reponse);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
     @Override
@@ -632,19 +627,14 @@ public class ContractServiceImpl implements ContractService {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        if (paymentRequest.getPaid() < contractEntity.getDeposit_amount()) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Số tiền cọc không được phép nhỏ hơn trong hợp đồng", null);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
         StaffEntity staffEntity = null;
         if (!(paymentRequest.getAccountId() <= 0)) {
             staffEntity = staffRepository.staffEntity(paymentRequest.getAccountId());
-            if (ObjectUtils.isEmpty(staffEntity)){
+            if (ObjectUtils.isEmpty(staffEntity)) {
                 ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Staff AccountId không đúng", null);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
         }
-
         // cal total
         List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
         double totalAmount = 0;
@@ -675,6 +665,10 @@ public class ContractServiceImpl implements ContractService {
         }
         // update status = 4 if it is deposit
         if (paymentRequest.isDeposit()) {
+            if (paymentRequest.getPaid() < contractEntity.getDeposit_amount()) {
+                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Số tiền cọc không được phép nhỏ hơn trong hợp đồng", null);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            }
             if (contractEntity.getStatus() > 3) {
                 ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Hợp đồng đã được thanh toán tiền cọc", null);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
@@ -697,7 +691,7 @@ public class ContractServiceImpl implements ContractService {
         paymentEntity.setPaid(paymentRequest.getPaid());
         paymentEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         // cal  Receivables; = realprice - total paid
-        paymentEntity.setReceivables(totalAmount - paid - depositPaid);
+        paymentEntity.setReceivables(totalAmount - paymentRequest.getPaid() - paid - depositPaid);
         paymentEntity.setTotalAmount(totalAmount);
         paymentsRepository.save(paymentEntity);
         // change status = 6 (done contract)
@@ -842,7 +836,7 @@ public class ContractServiceImpl implements ContractService {
         double expectedRentalPrice = 0;
         long diffInMillies = Math.abs(exceptedPriceRequest.getExpectedEndDate().getTime() - exceptedPriceRequest.getExpectedStartDate().getTime());
         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-        if(diff < 1){
+        if (diff < 1) {
             diff = 1;
         }
         for (String plateNumber : exceptedPriceRequest.getListCarPlateNumber()) {

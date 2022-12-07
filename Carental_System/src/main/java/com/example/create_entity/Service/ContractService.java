@@ -10,14 +10,14 @@ import java.util.List;
 
 
 public interface ContractService {
-    @Transactional(rollbackFor = {Exception.class, Throwable.class})
-    ResponseEntity<?> add(ContractRequest contractRequest);
+    @Transactional
+    ResponseEntity<?> add(ContractRequest contractRequest)throws Error;
 
     @Transactional
     ResponseEntity<?> cancelRenting(CancelContractRequest cancelContractRequestlong);
 
-    @Transactional
-    ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest);
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest) throws Exception;
 
     @Transactional
     ResponseEntity<?> confirmDeposit(long id);
@@ -34,7 +34,7 @@ public interface ContractService {
     @Transactional
     ResponseEntity<?> returnCar(ReturnCarRequest returnCarRequest);
 
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> finishContract(long id) throws Exception;
 
     ResponseEntity<?> getContractById(Long id);
@@ -55,11 +55,11 @@ public interface ContractService {
 
     ResponseEntity<?> FilterByPhoneRequest(String name, Integer HadDriver, Integer Status, Integer p);
 
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> addPayment(PaymentRequest paymentRequest) throws Exception;
 
     ResponseEntity<?> getListPaymentByCustomer(long id);
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> addPaymentByCustomer(CustomerTransactionRequest customerTransactionRequest) throws Exception;
 
     ResponseEntity<?> getExceptedPrice(ExceptedPriceRequest exceptedPriceRequest);

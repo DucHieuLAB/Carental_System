@@ -74,7 +74,7 @@ public class ContractController {
     }
 
     @PutMapping("/update/UpdateDriverAndRealPrice")
-    public ResponseEntity<?> updateDriverAndRealPrice(@RequestBody ContractDriverRealPriceRequest contractDriverRealPriceRequest) {
+    public ResponseEntity<?> updateDriverAndRealPrice(@RequestBody ContractDriverRealPriceRequest contractDriverRealPriceRequest) throws Exception {
         return contractService.updateDriverAndRealPrice(contractDriverRealPriceRequest);
     }
 

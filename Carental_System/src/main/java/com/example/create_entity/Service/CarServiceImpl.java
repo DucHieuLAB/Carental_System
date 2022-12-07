@@ -267,13 +267,12 @@ public class CarServiceImpl implements CarService {
                 hadNextStep = false;
             }
             if (hadNextStep) {
-                // if driver dont have any contract betwenn start date and end date
+                // if driver dont have any contract betwenn start date and end date invalid
                 DriverEntity checkDriverHadInvalidStartAndEndDate = driverRepository.findDriverValidDate(entity.getId(), driverByCarByContractRequest.getExpectedStartDate(), driverByCarByContractRequest.getExpectedEndDate());
-                if (checkDriverHadInvalidStartAndEndDate == null) {
+                if (ObjectUtils.isEmpty(checkDriverHadInvalidStartAndEndDate)) {
                     listPass.add(entity);
                 }
             }
-
         }
         // response
         if (listPass.size() <= 0) {
@@ -302,7 +301,7 @@ public class CarServiceImpl implements CarService {
         for (CarEntity carEntity : ListCars) {
             // check car had contract detail or not
             boolean hadNextStep = true;
-            List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId());
+            List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId(),new Date(System.currentTimeMillis()));
             if (checkCarHadInDetailContract.size() <= 0 ) {
                 if (carEntity.getParking().getId() == pickupParkingId){
                     result.add(carEntity);
@@ -382,7 +381,7 @@ public class CarServiceImpl implements CarService {
         for (CarEntity carEntity : ListCars) {
             // check car had contract detail or not
             boolean hadNextStep = true;
-            List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId());
+            List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId(),new Date(System.currentTimeMillis()));
             if (checkCarHadInDetailContract.size() <= 0) {
                 result.add(carEntity);
                 hadNextStep = false;

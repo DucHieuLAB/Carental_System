@@ -159,8 +159,6 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
 
     @Query(value = "SELECT *\n" +
             "FROM contracts\n" +
-            "WHERE ADDDATE(contracts.expected_start_date, INTERVAL 1 DAY) < CURDATE()", nativeQuery = true)
+            "WHERE ADDDATE(contracts.expected_start_date, INTERVAL 1 DAY) < CURDATE() and contracts.status  > 4 and contracts.status < 7", nativeQuery = true)
     List<ContractEntity> getListInvaliContract();
-
-
 }

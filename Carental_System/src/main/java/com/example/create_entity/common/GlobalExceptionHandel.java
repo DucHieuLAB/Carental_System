@@ -17,9 +17,9 @@ public class GlobalExceptionHandel {
         if(e.getMessage()=="Expired JWT token"){
             Error error = new Error();
             error.setId(1);
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false,"Opps something went wrong",e.getMessage());
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false,e.getMessage(),null);
         }
-        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false,"Opps something went wrong",e.getMessage());
+        ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false,e.getMessage(),null);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(responseVo);
     }
 
