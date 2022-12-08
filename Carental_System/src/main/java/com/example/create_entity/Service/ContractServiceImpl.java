@@ -140,9 +140,6 @@ public class ContractServiceImpl implements ContractService {
                 DistrictsEntity districPickUpAddress = districtRepository.check_districts(contractRequest.getDistricPickUpAddress().getCity(),
                         contractRequest.getDistricPickUpAddress().getWards(),
                         contractRequest.getDistricPickUpAddress().getDistrictName());
-                DistrictsEntity districReturnAddress = districtRepository.check_districts(contractRequest.getDistricReturnAddress().getCity(),
-                        contractRequest.getDistricReturnAddress().getWards(),
-                        contractRequest.getDistricReturnAddress().getDistrictName());
                 if (ObjectUtils.isEmpty(districPickUpAddress)) {
                     districPickUpAddress = DistrictsEntity.createDistricEntity(contractRequest.getDistricPickUpAddress());
                     districtRepository.save(districPickUpAddress);
@@ -150,6 +147,9 @@ public class ContractServiceImpl implements ContractService {
                             contractRequest.getDistricPickUpAddress().getWards(),
                             contractRequest.getDistricPickUpAddress().getDistrictName());
                 }
+                DistrictsEntity districReturnAddress = districtRepository.check_districts(contractRequest.getDistricReturnAddress().getCity(),
+                        contractRequest.getDistricReturnAddress().getWards(),
+                        contractRequest.getDistricReturnAddress().getDistrictName());
                 if (ObjectUtils.isEmpty(districReturnAddress)) {
                     districReturnAddress = DistrictsEntity.createDistricEntity(contractRequest.getDistricReturnAddress());
                     districtRepository.save(districReturnAddress);
