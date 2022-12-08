@@ -362,9 +362,10 @@ public class DriverService {
         }
     }
 
+    @Transactional
     public ResponseEntity<?> UpdateDriver(DriverInfoRequest infoRequest) {
         ResponseVo messes = new ResponseVo();
-
+        DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
         try {
 
             DriverEntity driverEntity = driverRepository.Check_Username(infoRequest.getUsername().trim());
@@ -405,11 +406,10 @@ public class DriverService {
                     districtRepository.save(districtsEntity);
                 } else {
                     DistrictsEntity districts = districtRepository.check_districts(
-                            districtsEntity.getCity(),
-                            districtsEntity.getWards(),
-                            districtsEntity.getDistrict_Name());
+                            infoRequest.getCity(),
+                            infoRequest.getWards(),
+                            infoRequest.getDistrict_Name());
                     driverEntity.setDistrictsEntity(districts);
-
                 }
 
                 LicenseTypeEntity licenseTypeEntity;
@@ -422,9 +422,11 @@ public class DriverService {
                 driverEntity.setYear_Experience(infoRequest.getYearExperience());
 
                 driverRepository.save(driverEntity);
+
+                driverInfoDetailResponse = driverInfoDetailResponse.driverInfoResponses(driverEntity);
                 messes.setStatus(true);
                 messes.setMessage("Cập nhật tài khoản thành công !");
-                messes.setData(infoRequest);
+                messes.setData(driverInfoDetailResponse);
                 return new ResponseEntity<>(messes, HttpStatus.OK);
             }
         } catch (Exception e) {

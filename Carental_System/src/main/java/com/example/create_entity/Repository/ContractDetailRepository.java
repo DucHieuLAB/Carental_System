@@ -45,7 +45,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
     @Query("SELECT ctd FROM  ContractDetailEntity ctd " +
             "INNER JOIN ContractEntity  ct ON ctd.booking.id = ct.id " +
             "WHERE ctd.driverEntity.accountEntity.Username = ?1 " +
-            "AND ct.status=7 " +
+            "AND ct.status=6 " +
             "AND ct.had_driver = true ")
     List<ContractDetailEntity> History_schedule(String username);
 

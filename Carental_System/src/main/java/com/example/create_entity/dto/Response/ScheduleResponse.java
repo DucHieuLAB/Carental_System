@@ -27,11 +27,15 @@ public class ScheduleResponse {
     private DistrictReponse District_Return_Parking;
     private CustomerInfoResponse customerInfoResponse;
     private List<Object> listImg;
+    private ContractHadDriverReponse hadDriverResponse;
+    private Date real_pick_up_date;
+    private Date real_return_date;
 
 
-    public ScheduleResponse scheduleResponse(ContractDetailEntity contractDetailEntity) {
+    public ScheduleResponse scheduleResponse(ContractDetailEntity contractDetailEntity, ContractHadDriverEntity hadDriverEntity,DistrictsEntity pickup,DistrictsEntity returnup) {
         CustomerInfoResponse infoResponse = new CustomerInfoResponse();
         CarImageEntity carImageEntity = new CarImageEntity();
+        ContractHadDriverReponse driverResponse = new ContractHadDriverReponse();
         ScheduleResponse response = new ScheduleResponse();
         response.setDistrict_Pickup_Parking(DistrictReponse.createDistricReponse(contractDetailEntity.getBooking().getPickup_parking().getDistrictsEntity()));
         response.setDistrict_Return_Parking(DistrictReponse.createDistricReponse(contractDetailEntity.getBooking().getReturn_parking().getDistrictsEntity()));
@@ -46,6 +50,9 @@ public class ScheduleResponse {
         response.setId_driver(contractDetailEntity.getDriverEntity().getId());
         response.setCustomerInfoResponse(infoResponse.customerInfoResponse(contractDetailEntity.getBooking().getCustomer()));
         response.setListImg(carImageEntity.ResponseImg(contractDetailEntity.getCar().getCarImageEntities()));
+        response.setHadDriverResponse(driverResponse.hadDriverReponse(hadDriverEntity,pickup,returnup));
+        response.setReal_pick_up_date(contractDetailEntity.getReal_pick_up_date());
+        response.setReal_return_date(contractDetailEntity.getReal_return_date());
         return response;
     }
 
