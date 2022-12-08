@@ -530,9 +530,13 @@ public class ContractServiceImpl implements ContractService {
         //if success
 
         //verify
-        ContractEntity contractEntity = br.findByIdAndStatus4(returnCarRequest.getContractId());
+        ContractEntity contractEntity = br.findByIdAndStatusValid(returnCarRequest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
             ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        if (contractEntity.getStatus() < 5 || contractEntity.getStatus() == 6 ){
+            ResponseVo responseVo = new ResponseVo(false, "Trạng thái hợp đồng không hợp lệ", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         CarEntity carEntity = cr.findCarEntityByPlateNumber(returnCarRequest.getPlateNumber());

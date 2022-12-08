@@ -49,7 +49,7 @@ public interface CarRepository extends JpaRepository<CarEntity,Long> {
 
     @Query(value = "SELECT * \n" +
             "FROM cars \n" +
-            "RIGHT JOIN contract_details c on cars.id = c.car_id AND cars.plate_number = ?3\n" +
+            "JOIN contract_details c on cars.id = c.car_id AND cars.plate_number = ?3\n" +
             "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
             "WHERE ct.expected_start_date >= ?1 AND ct.expected_start_date <= ?2\n" +
             "OR ct.expected_start_date < ?1 AND ct.expected_end_date >  ?1 \n" +

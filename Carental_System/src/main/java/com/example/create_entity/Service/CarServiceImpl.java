@@ -290,9 +290,8 @@ public class CarServiceImpl implements CarService {
         List<CarEntity> result = new ArrayList<>();
         //Create data response Map<String,Objet>
         Map<String, Object> responseData = new HashMap<>();
-        // Get list Cars valid
+        // Get list Cars
         ListCars = carRepository.findAll();
-        //Check car Valid in date
         if (ListCars.isEmpty()) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Danh sac cach xe trong", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
@@ -308,6 +307,7 @@ public class CarServiceImpl implements CarService {
                 }
                 hadNextStep = false;
             }
+            //Check car Valid in date
             if (hadNextStep) {
                 CarEntity checkCarHadInvalidContract = carRepository.checkCarValidInTime(startDate, endDate, carEntity.getPlateNumber());
                 if (ObjectUtils.isEmpty(checkCarHadInvalidContract)) {
@@ -424,7 +424,7 @@ public class CarServiceImpl implements CarService {
         responseData.put("startDate", startDate);
         responseData.put("endDate", endDate);
         responseData.put("city", cityName);
-        responseData.put("totalRecord", ListCars.size());
+        responseData.put("totalRecord", cars.size());
         ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "Danh sách xe", responseData);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
