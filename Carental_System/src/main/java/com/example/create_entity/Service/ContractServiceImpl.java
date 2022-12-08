@@ -442,7 +442,7 @@ public class ContractServiceImpl implements ContractService {
             final long OTP_VALID_DURATION = 24 * 60 * 60 * 1000;
             final long OTP_VALID_DURATION_2 = 12 * 60 * 60 * 1000;
             Date date = new Date(System.currentTimeMillis());
-            if (contractDetailEntity.getBooking().getExpected_start_date().getTime() - OTP_VALID_DURATION > date.getTime()) {
+            if (contractDetailEntity.getBooking().getExpected_start_date().getTime()  > date.getTime()) {
                 throw new Exception("Chưa đến ngày lấy xe !");
             }
             if (contractDetailEntity.getBooking().getExpected_start_date().getTime() + OTP_VALID_DURATION_2 < date.getTime()) {

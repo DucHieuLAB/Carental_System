@@ -16,7 +16,7 @@ public class ExpiredSchedular {
     ContractService contractService;
 
     @SneakyThrows
-    @Scheduled(cron = "0 0 23 * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     public void checkInvalidContract(){
         List<ContractEntity> contractEntities = contractService.getListInvalidContract();
         if (contractEntities.size() > 0){
