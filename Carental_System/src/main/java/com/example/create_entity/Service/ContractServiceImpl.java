@@ -99,6 +99,7 @@ public class ContractServiceImpl implements ContractService {
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
         }
+        // kiểm tra khách hàng không có hợp đồng nào startdate <= startdateRequest && endDate > endDateRequest , startdate > startdateRequest endđate <= enddateRequest
         // check pickup and return parking is exsit
         Optional<ParkingEntity> pickUpParking = pr.findById(contractRequest.getPickupParkingId());
         Optional<ParkingEntity> returnParking = pr.findById(contractRequest.getReturnParkingId());
@@ -649,7 +650,6 @@ public class ContractServiceImpl implements ContractService {
         double surchargeAmount = 0;
         if (!(surchargeEntities.size() <= 0)) {
             for (SurchargeEntity entity : surchargeEntities) {
-                totalAmount += entity.getAmount();
                 surchargeAmount += entity.getAmount();
             }
         }
@@ -694,8 +694,8 @@ public class ContractServiceImpl implements ContractService {
         paymentEntity.setPaid(paymentRequest.getPaid());
         paymentEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         // cal  Receivables; = realprice - total paid
-        paymentEntity.setReceivables(totalAmount  - paid - depositPaid);
-        paymentEntity.setTotalAmount(totalAmount);
+        paymentEntity.setReceivables(totalAmount + surchargeAmount  - paid - depositPaid );
+        paymentEntity.setTotalAmount(totalAmount + surchargeAmount);
         paymentsRepository.save(paymentEntity);
         // change status = 6 (done contract)
         // check return all car
@@ -709,7 +709,7 @@ public class ContractServiceImpl implements ContractService {
         // if return all car
         if (isReturnCar) {
             // check customer pay all set contract status = 6
-            if ((totalAmount - paid - depositPaid) <= 0) {
+            if ((totalAmount + surchargeAmount - paid - depositPaid) <= 0) {
                 contractEntity.setStatus(6);
                 br.save(contractEntity);
             }
