@@ -258,7 +258,6 @@ public class ContractServiceImpl implements ContractService {
                 }
             }
             // if contract status = 5 put isReturnCar
-
             responseVo = ResponseVeConvertUntil.createResponseVo(true, "Lấy thông tin Hợp đồng thành công", ObjectResponse);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (NumberFormatException e) {
@@ -925,7 +924,6 @@ public class ContractServiceImpl implements ContractService {
 
         if (!(surchargeEntities.size() <= 0)) {
             for (SurchargeEntity entity : surchargeEntities) {
-                totalAmount += entity.getAmount();
                 surchargeAmount += entity.getAmount();
             }
         }
