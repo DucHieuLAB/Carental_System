@@ -38,7 +38,7 @@ public class CreateEntityApplication extends SpringBootServletInitializer {
 //    @EventListener(ApplicationReadyEvent.class)
 //    public void triggerMail() throws MessagingException {
 //        senderService.sendSimpleEmail("hieunxhe140911@fpt.edu.vn",
-//                "Here's your One Time Password (OTP) - Expire in 5 minutes!",
+//                "Here's your![](C:/Users/Admin/AppData/Local/Temp/download.jpg) One Time Password (OTP) - Expire in 5 minutes!",
 //                "This is email subject");
 //
 //    }
