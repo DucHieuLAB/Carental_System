@@ -197,8 +197,7 @@ public class AccountServiceIml implements AccountService {
         StaffResponse staffResponse = new StaffResponse();
         try {
             StaffEntity staffEntities = staffRepository.GetStaffByUserName(UserName);
-            if (staffEntities != null && (staffEntities.getAccountEntity().getStatus() == 2
-                    || staffEntities.getAccountEntity().getStatus() == 1)) {
+            if (staffEntities != null && (staffEntities.getAccountEntity().getStatus() == 2 && staffEntities.getStatus() == 1)) {
                 Date date = new Date(System.currentTimeMillis());
                 staffEntities.getAccountEntity().setStatus(0);
                 staffEntities.setStatus(0);
@@ -207,7 +206,7 @@ public class AccountServiceIml implements AccountService {
                 staffResponse = staffResponse.staffResponse(staffEntities);
                 staffRepository.save(staffEntities);
                 return new ResponseEntity<>(staffResponse, HttpStatus.OK);
-            } else if (staffEntities != null && staffEntities.getAccountEntity().getStatus() == 0) {
+            } else if (staffEntities != null && staffEntities.getAccountEntity().getStatus() == 0 && staffEntities.getStatus()==0) {
                 Date date = new Date(System.currentTimeMillis());
                 staffEntities.getAccountEntity().setStatus(2);
                 staffEntities.setStatus(1);

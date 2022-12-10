@@ -2,6 +2,10 @@ package com.example.create_entity.Service;
 
 import com.example.create_entity.Entity.ContractDetailEntity;
 
+import com.example.create_entity.Entity.ContractHadDriverEntity;
+import com.example.create_entity.Entity.DistrictsEntity;
+import com.example.create_entity.Repository.ContractHadDriverRepository;
+import com.example.create_entity.Repository.DistrictRepository;
 import com.example.create_entity.dto.Request.ListBookingDetailRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +31,13 @@ public class ContractDetailServiceImpl implements ContractDetailService {
     @Autowired
     ContractDetailRepository contractDetailRepository;
 
+
+    @Autowired
+    ContractHadDriverRepository contractHadDriverRepository;
+
+
+    @Autowired
+    DistrictRepository districtRepository;
 
     @Override
     public ResponseEntity<?> addList(List<ListBookingDetailRequest> listBookingDetailRequests) {
@@ -103,7 +114,10 @@ public class ContractDetailServiceImpl implements ContractDetailService {
             List<ScheduleResponse> scheduleResponses = new ArrayList<>();
             contractDetailEntities.forEach(ContractDetailEntity -> {
                 ScheduleResponse response = new ScheduleResponse();
-                response = response.scheduleResponse(ContractDetailEntity);
+                ContractHadDriverEntity hadDriverEntity = contractHadDriverRepository.getByContractID(ContractDetailEntity.getBooking().getId());
+                DistrictsEntity pickup = districtRepository.findOneById(hadDriverEntity.getPickup_district_id());
+                DistrictsEntity Return = districtRepository.findOneById(hadDriverEntity.getReturn_district_id());
+                response = response.scheduleResponse(ContractDetailEntity,hadDriverEntity,pickup,Return);
                 scheduleResponses.add(response);
             });
 
@@ -124,7 +138,10 @@ public class ContractDetailServiceImpl implements ContractDetailService {
             List<ScheduleResponse> scheduleResponses = new ArrayList<>();
             contractDetailEntities.forEach(ContractDetailEntity -> {
                 ScheduleResponse response = new ScheduleResponse();
-                response = response.scheduleResponse(ContractDetailEntity);
+                ContractHadDriverEntity hadDriverEntity = contractHadDriverRepository.getByContractID(ContractDetailEntity.getBooking().getId());
+                DistrictsEntity pickup = districtRepository.findOneById(hadDriverEntity.getPickup_district_id());
+                DistrictsEntity Return = districtRepository.findOneById(hadDriverEntity.getReturn_district_id());
+                response = response.scheduleResponse(ContractDetailEntity,hadDriverEntity,pickup,Return);
                 scheduleResponses.add(response);
             });
 
@@ -145,7 +162,10 @@ public class ContractDetailServiceImpl implements ContractDetailService {
             List<ScheduleResponse> scheduleResponses = new ArrayList<>();
             contractDetailEntities.forEach(ContractDetailEntity -> {
                 ScheduleResponse response = new ScheduleResponse();
-                response = response.scheduleResponse(ContractDetailEntity);
+                ContractHadDriverEntity hadDriverEntity = contractHadDriverRepository.getByContractID(ContractDetailEntity.getBooking().getId());
+                DistrictsEntity pickup = districtRepository.findOneById(hadDriverEntity.getPickup_district_id());
+                DistrictsEntity Return = districtRepository.findOneById(hadDriverEntity.getReturn_district_id());
+                response = response.scheduleResponse(ContractDetailEntity,hadDriverEntity,pickup,Return);
                 scheduleResponses.add(response);
             });
 

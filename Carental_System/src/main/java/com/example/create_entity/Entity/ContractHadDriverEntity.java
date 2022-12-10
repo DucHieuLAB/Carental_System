@@ -1,9 +1,11 @@
 package com.example.create_entity.Entity;
 
+import com.example.create_entity.Repository.ContractHadDriverRepository;
 import com.example.create_entity.dto.Response.ContractHadDriverReponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.ObjectUtils;
@@ -30,6 +32,7 @@ public class ContractHadDriverEntity {
     @Column(name = "pickup_district_id")
     private long pickup_district_id;
 
+
     @Column(name = "return_district_id")
     private long return_district_id;
 
@@ -46,6 +49,8 @@ public class ContractHadDriverEntity {
     @LastModifiedDate
     @Column(name = "last_modified_date", nullable = false)
     private Date lastModifiedDate;
+
+
     public static ContractHadDriverReponse convertToContractHadDriverResponse(ContractHadDriverEntity entity){
         if(ObjectUtils.isEmpty(entity)){
             return null;
