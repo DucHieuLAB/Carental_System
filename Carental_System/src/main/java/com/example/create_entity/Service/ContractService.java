@@ -10,38 +10,46 @@ import java.util.List;
 
 
 public interface ContractService {
-    @Transactional
-    ResponseEntity<?> add(ContractRequest contractRequest)throws Error;
+    ResponseEntity<?> getListContractByCustomerId(long customerId);
+
+    ResponseEntity<?> getContractPaymentInf(long id);
+
+    ResponseEntity<?> getListSurchargeByContract(long contractId);
+
+    ResponseEntity<?> getListPaymentByStaff(long contractId);
+
+    ResponseEntity<?> getExceptedPrice(ExceptedPriceRequest exceptedPriceRequest);
 
     @Transactional
+    ResponseEntity<?> add(ContractRequest contractRequest) throws Error;
+
+    ResponseEntity<?> getContractById(Long id);
+
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> cancelRenting(CancelContractRequest cancelContractRequestlong);
 
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> updateDriverAndRealPrice(ContractDriverRealPriceRequest contractDriverRealPriceRequest) throws Exception;
 
-    @Transactional
-    ResponseEntity<?> confirmDeposit(long id);
+    ResponseEntity<?> getListPaymentByCustomer(long id);
 
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    ResponseEntity<?> addPaymentByCustomer(CustomerTransactionRequest customerTransactionRequest) throws Exception;
+
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    ResponseEntity<?> addPayment(PaymentRequest paymentRequest) throws Exception;
+
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> comfirmGetCar(GetCarReQuest getCarReQuest) throws Exception;
 
-    @Transactional
-    ResponseEntity<?> confirmDepositCustomer(long id);
-
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> addSurcharge(SurchargeRequest purchargeRequest);
 
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> returnCar(ReturnCarRequest returnCarRequest);
 
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> finishContract(long id) throws Exception;
-
-    ResponseEntity<?> getContractById(Long id);
-
-    ResponseEntity<?> getListContractByCustomerId(long customerId);
-
-    ResponseEntity<?> getContractPaymentInf(long id);
 
     ResponseEntity<?> ListRequest(Integer p);
 
@@ -55,19 +63,6 @@ public interface ContractService {
 
     ResponseEntity<?> FilterByPhoneRequest(String name, Integer HadDriver, Integer Status, Integer p);
 
-    @Transactional(rollbackFor = {Exception.class, Throwable.class})
-    ResponseEntity<?> addPayment(PaymentRequest paymentRequest) throws Exception;
-
-    ResponseEntity<?> getListPaymentByCustomer(long id);
-    @Transactional(rollbackFor = {Exception.class, Throwable.class})
-    ResponseEntity<?> addPaymentByCustomer(CustomerTransactionRequest customerTransactionRequest) throws Exception;
-
-    ResponseEntity<?> getExceptedPrice(ExceptedPriceRequest exceptedPriceRequest);
-
-    ResponseEntity<?> getListSurchargeByContract(long contractId);
-
-    ResponseEntity<?> getListPaymentByStaff(long contractId);
-    
     List<ContractEntity> getListInvalidContract();
 
     void save(ContractEntity contractEntity);

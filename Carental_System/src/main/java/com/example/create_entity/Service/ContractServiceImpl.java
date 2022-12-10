@@ -393,24 +393,6 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> confirmDeposit(long id) {
-
-        // verify
-        ContractEntity contractEntity = br.findByIdAndStatus3(id);
-        if (ObjectUtils.isEmpty(contractEntity)) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
-        // update Contract id = 4;
-        contractEntity.setStatus(4);
-        contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
-        br.save(contractEntity);
-        // response
-        ResponseVo responseVo = new ResponseVo(true, "Cập nhập thông tin thành công", null);
-        return new ResponseEntity<>(responseVo, HttpStatus.OK);
-    }
-
-    @Override
     public ResponseEntity<?> comfirmGetCar(GetCarReQuest CarReQuest) throws Exception {
         // validate
         List<ValidError> errors = CarRequestValidator.validateCarRequest(CarReQuest);
@@ -460,27 +442,6 @@ public class ContractServiceImpl implements ContractService {
         br.save(contractEntity);
         // response
         ResponseVo responseVo = new ResponseVo(true, "Cập nhật thông tin thành công", null);
-        return new ResponseEntity<>(responseVo, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<?> confirmDepositCustomer(long id) {
-        //validate
-        if (id <= 0) {
-            // if not success
-            ResponseVo responseVo = new ResponseVo(false, "Mã hợp đồng không chính xác", null);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
-        //if success
-        ContractEntity contractEntity = br.findByIdAndStatus2(id);
-        if (ObjectUtils.isEmpty(contractEntity)) {
-            ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
-        contractEntity.setStatus(3);
-        br.save(contractEntity);
-        //respone
-        ResponseVo responseVo = new ResponseVo(true, "Câp nhật thành công", null);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 

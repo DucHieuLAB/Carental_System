@@ -78,11 +78,6 @@ public class ContractController {
         return contractService.updateDriverAndRealPrice(contractDriverRealPriceRequest);
     }
 
-    @GetMapping("/confirmByCustomer/{id}")
-    public ResponseEntity<?> comfirmContractByCustomer(@PathVariable long id){
-        return contractService.confirmDepositCustomer(id);
-    }
-
     @DeleteMapping("/cancelContractByCustomer")
     public ResponseEntity<?> cancelContract(@RequestBody CancelContractRequest cancelContractRequest) {
         cancelContractRequest.setDoCustomer(true);
@@ -93,11 +88,6 @@ public class ContractController {
     public ResponseEntity<?> cancelContractByStaff(@RequestBody CancelContractRequest cancelContractRequest) {
         cancelContractRequest.setDoCustomer(false);
         return contractService.cancelRenting(cancelContractRequest);
-    }
-
-    @PutMapping("/confirmByStaff/{contractId}")
-    public ResponseEntity<?> confirmContractByStaff(@PathVariable long contractId) {
-        return contractService.confirmDeposit(contractId);
     }
 
     @PutMapping("/getCarFromParking")
