@@ -37,7 +37,7 @@ public class ContractRequest {
             return null;
         }
         result.setId(br.getId());
-        result.setExpected_start_date(br.expectedStartDate);
+        result.setExpected_start_date(br.getExpectedStartDate());
         result.setExpected_end_date(br.getExpectedEndDate());
         result.setNote(br.getNote());
         result.setExpected_rental_price(br.getExpectedRentalRrice());

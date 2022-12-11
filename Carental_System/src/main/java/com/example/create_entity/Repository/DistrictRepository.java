@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface DistrictRepository extends JpaRepository<DistrictsEntity, Long> {
 
-    @Query(value = "SELECT * FROM districts where city=? and wards=? and district_name=?", nativeQuery = true)
+    @Query(value = "SELECT * FROM districts where city=?1 and wards=?2 and district_name=?3", nativeQuery = true)
     List<DistrictsEntity> check_district(String city,String ward,String district_name);
-    @Query(value = "SELECT  *  FROM districts where city=? and wards=? and district_name=? ORDER BY district_id LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT  *  FROM districts where city= ?1 and wards=?2 and district_name=?3  LIMIT 1", nativeQuery = true)
     DistrictsEntity check_districts(String city,String ward,String district_name);
 
     @Query( value = "SELECT * FROM districts d WHERE d.district_id = ?1 ORDER BY d.district_id LIMIT 1 ", nativeQuery = true)

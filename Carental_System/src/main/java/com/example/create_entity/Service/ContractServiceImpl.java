@@ -4,7 +4,6 @@ import com.example.create_entity.Entity.*;
 
 import com.example.create_entity.Repository.*;
 import com.example.create_entity.common.ValidError;
-import com.example.create_entity.dto.FinishContractRequest;
 import com.example.create_entity.dto.Request.*;
 import com.example.create_entity.dto.Response.*;
 
@@ -13,10 +12,7 @@ import com.example.create_entity.Repository.ContractDetailRepository;
 import com.example.create_entity.Repository.ContractRepository;
 import com.example.create_entity.Repository.ParkingRepository;
 
-import com.example.create_entity.untils.CarRequestValidator;
-import com.example.create_entity.untils.DepositValidator;
-import com.example.create_entity.untils.ResponseVeConvertUntil;
-import com.example.create_entity.untils.SurchargeValidator;
+import com.example.create_entity.untils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -91,15 +87,29 @@ public class ContractServiceImpl implements ContractService {
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
         }
+        // Simple Date Format
+        Date startDate = contractRequest.getExpectedStartDate();
+        Date endDate = contractRequest.getExpectedEndDate();
+        contractRequest.setExpectedStartDate(DateUntil.removeTime(startDate));
+        contractRequest.setExpectedEndDate(DateUntil.removeTime(endDate));
         // check user dont have same contact type start and end same day
-        ContractEntity exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
-        if (!ObjectUtils.isEmpty(exsitBooking)) {
-            if (exsitBooking.isHad_driver() == contractRequest.isHad_driver()) {
+        List<ContractEntity> exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
+        if (!exsitBooking.isEmpty() || exsitBooking.size() > 0) {
+            if (exsitBooking.size() == 2){
+                responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn không thể đặt thêm hợp đồng bắt đầu từ ngày "+contractRequest.getExpectedStartDate()+" đến ngày "+ contractRequest.getExpectedEndDate()+" ", null);
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            if (exsitBooking.get(0).isHad_driver() == contractRequest.isHad_driver()) {
                 responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn đã đặt booking tương tự", null);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
         }
         // kiểm tra khách hàng không có hợp đồng nào startdate <= startdateRequest && endDate > endDateRequest , startdate > startdateRequest endđate <= enddateRequest
+        ContractEntity exitInvalidDateBooking = br.findInvalidDateBooking(contractRequest.getCustomerId(),contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
+        if (!ObjectUtils.isEmpty(exitInvalidDateBooking)){
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn đã đặt hợp đồng thuê xe từ ngày "+exitInvalidDateBooking.getExpected_start_date()+" đên ngày"+exitInvalidDateBooking.getExpected_end_date()+" ", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
         // check pickup and return parking is exsit
         Optional<ParkingEntity> pickUpParking = pr.findById(contractRequest.getPickupParkingId());
         Optional<ParkingEntity> returnParking = pr.findById(contractRequest.getReturnParkingId());
@@ -132,7 +142,7 @@ public class ContractServiceImpl implements ContractService {
             // save
             br.save(newContract);
             // get Contract with ID
-            newContract = br.getByCustomerIdAndExpectStartDateAndExpectEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
+            newContract = br.getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate(),contractRequest.isHad_driver());
             ContractHadDriverReponse contractHadDriverReponse = null;
             if (newContract.isHad_driver() == true) {
                 ContractHadDriverEntity entity = new ContractHadDriverEntity();
@@ -197,8 +207,8 @@ public class ContractServiceImpl implements ContractService {
             newContract.setDeposit_amount(depositAmount);
             br.save(newContract);
             // create reponse
-            newContract = br.getByCustomerIdAndExpectStartDateAndExpectEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
-            bookingDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(newContract.getId());
+            newContract = br.getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate(),contractRequest.isHad_driver());
+            bookingDetailEntities = bdr.getListContractDetailEntitiesByContractId(newContract.getId());
             List<ListContractDetailResponse> listContractDetailRespons = null;
             if (bookingDetailEntities.size() > 0) {
                 listContractDetailRespons = ListContractDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
@@ -232,7 +242,7 @@ public class ContractServiceImpl implements ContractService {
             }
             ContractResponse response = ContractEntity.convertToContractResponse(contractEntity);
             ObjectResponse.put("Booking", response);
-            List<ContractDetailEntity> contractDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.getId());
+            List<ContractDetailEntity> contractDetailEntities = bdr.getListContractDetailEntitiesByContractId(contractEntity.getId());
             List<ListContractDetailResponse> listContractDetailRespons = ListContractDetailResponse.createListBookingDetailResponse(contractDetailEntities);
             boolean isReturncar = true;
             for (ListContractDetailResponse l : listContractDetailRespons) {
@@ -380,7 +390,7 @@ public class ContractServiceImpl implements ContractService {
         br.save(contractEntity);
         contractEntity = br.FindByID(contractDriverRealPriceRequest.getContractId());
         ContractResponse response = ContractEntity.convertToContractResponse(contractEntity);
-        List<ContractDetailEntity> bookingDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.getId());
+        List<ContractDetailEntity> bookingDetailEntities = bdr.getListContractDetailEntitiesByContractId(contractEntity.getId());
         List<ListContractDetailResponse> listContractDetailRespons = ListContractDetailResponse.createListBookingDetailResponse(bookingDetailEntities);
         ContractHadDriverEntity entity = chdr.getByContractID(response.getBookingId());
         ContractHadDriverReponse contractHadDriverReponse = ContractHadDriverEntity.convertToContractHadDriverResponse(entity);
@@ -542,7 +552,7 @@ public class ContractServiceImpl implements ContractService {
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         // get list contract response check return all car
-        List<ContractDetailEntity> contractDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.get().getId());
+        List<ContractDetailEntity> contractDetailEntities = bdr.getListContractDetailEntitiesByContractId(contractEntity.get().getId());
         for (ContractDetailEntity contractDetailEntity : contractDetailEntities) {
             if (contractDetailEntity.getCar().getStatus() == 2) {
                 throw new Exception("Xe biển số " + contractDetailEntity.getCar().getPlateNumber() + " Chưa được xác nhận trả về");
@@ -557,7 +567,7 @@ public class ContractServiceImpl implements ContractService {
             }
         }
         // get list Payment cal
-        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(contractEntity.get().getId());
+        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentByContractId(contractEntity.get().getId());
         double paid = 0;
         if (!(paymentEntities.size() <= 0)) {
             for (PaymentEntity entity : paymentEntities) {
@@ -600,6 +610,7 @@ public class ContractServiceImpl implements ContractService {
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
         }
+
         // cal total
         List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
         double totalAmount = 0;
@@ -615,7 +626,7 @@ public class ContractServiceImpl implements ContractService {
             }
         }
         // get list Payment cal
-        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(contractEntity.getId());
+        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentByContractId(contractEntity.getId());
         double paid =  paymentRequest.getPaid();
         double depositPaid = 0;
         if (!(paymentEntities.size() <= 0)) {
@@ -625,6 +636,11 @@ public class ContractServiceImpl implements ContractService {
                 } else {
                     paid += entity.getPaid();
                 }
+            }
+        }else {
+            if (!paymentRequest.isDeposit()){
+                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Hợp đồng chưa thanh toán tiền cọc " + contractEntity.getDeposit_amount(), null);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
         }
         // update status = 4 if it is deposit
@@ -661,7 +677,7 @@ public class ContractServiceImpl implements ContractService {
         // change status = 6 (done contract)
         // check return all car
         boolean isReturnCar = true;
-        List<ContractDetailEntity> contractDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.getId());
+        List<ContractDetailEntity> contractDetailEntities = bdr.getListContractDetailEntitiesByContractId(contractEntity.getId());
         for (ContractDetailEntity contractDetailEntity : contractDetailEntities) {
             if (contractDetailEntity.getReal_return_date() == null) {
                 isReturnCar = false;
@@ -691,7 +707,7 @@ public class ContractServiceImpl implements ContractService {
         // list payment by contract orderby date
         List<PaymentEntity> result = new ArrayList<>();
         for (ContractEntity entity : contractEntities) {
-            List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(entity.getId());
+            List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentByContractId(entity.getId());
             if (paymentEntities.size() <= 0) {
                 continue;
             } else {
@@ -719,6 +735,12 @@ public class ContractServiceImpl implements ContractService {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
+        if (customerTransactionRequest.isDeposit()){
+            if (customerTransactionRequest.getPaid() < contractEntity.getDeposit_amount()){
+                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Tiền cọc không được bé hơn "+ contractEntity.getDeposit_amount(), null);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            }
+        }
         // cal total
         List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
         // if contract is had driver total = getReal_price else total = getExpected_rental_price;
@@ -736,7 +758,7 @@ public class ContractServiceImpl implements ContractService {
             }
         }
         // get list Payment cal
-        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(contractEntity.getId());
+        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentByContractId(contractEntity.getId());
         double paid = customerTransactionRequest.getPaid();
         double depositPaid = 0;
         if (!(paymentEntities.size() <= 0)) {
@@ -761,7 +783,7 @@ public class ContractServiceImpl implements ContractService {
             // change status = 6 (done contract)
             // check return all car
             boolean isReturnCar = true;
-            List<ContractDetailEntity> contractDetailEntities = bdr.getListBookingDetailEntitiesByBookingId(contractEntity.getId());
+            List<ContractDetailEntity> contractDetailEntities = bdr.getListContractDetailEntitiesByContractId(contractEntity.getId());
             for (ContractDetailEntity contractDetailEntity : contractDetailEntities) {
                 if (contractDetailEntity.getReal_return_date() == null) {
                     isReturnCar = false;
@@ -775,7 +797,6 @@ public class ContractServiceImpl implements ContractService {
                     br.save(contractEntity);
                 }
             }
-
             // save
             PaymentEntity paymentEntity = new PaymentEntity();
 //          paymentEntity.setStaffEntity(staffEntity);
@@ -809,7 +830,6 @@ public class ContractServiceImpl implements ContractService {
                 ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Xe biển số :" + plateNumber + " Không tồn tại", null);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
-
             expectedRentalPrice += carEntity.getRentalPrice() * diff;
         }
 
@@ -820,7 +840,7 @@ public class ContractServiceImpl implements ContractService {
         NumberFormat formatter = new DecimalFormat("#0.00");
         reponse.put("exceptedPrice", formatter.format(expectedRentalPrice));
         ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "API get excepted price", reponse);
-        return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
     @Override
@@ -844,7 +864,7 @@ public class ContractServiceImpl implements ContractService {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy hợp đồng", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(contractId);
+        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentByContractId(contractId);
         List<ListPaymentResponse> listPaymentResponses = ListPaymentResponse.createListPaymentResponse(paymentEntities);
         ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "API get List Payment By Contract ID", listPaymentResponses);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -893,7 +913,7 @@ public class ContractServiceImpl implements ContractService {
             }
         }
         // get list Payment cal
-        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentBtContractId(contractEntity.get().getId());
+        List<PaymentEntity> paymentEntities = paymentsRepository.getListPaymentByContractId(contractEntity.get().getId());
         double paid = 0;
         double depositPaid = 0;
         if (!(paymentEntities.size() <= 0)) {

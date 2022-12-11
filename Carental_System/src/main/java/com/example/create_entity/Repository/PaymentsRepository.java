@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface PaymentsRepository extends JpaRepository<PaymentEntity,Long> {
     @Query("SELECT p FROM PaymentEntity p WHERE p.contract.id = ?1")
-    List<PaymentEntity> getListPaymentBtContractId(long id);
+    List<PaymentEntity> getListPaymentByContractId(long id);
 
     @Query(value = "SELECT * from payments inner join contracts on payments.contract_id = contracts.booking_id " +
             "where year(contracts.create_date)=  year(current_date()) and contracts.had_driver = 1 ",nativeQuery = true)

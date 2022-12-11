@@ -13,12 +13,14 @@ import java.util.Optional;
 
 @Repository
 public interface ContractRepository extends JpaRepository<ContractEntity, Long> {
-    @Query("SELECT b FROM ContractEntity b WHERE b.customer.ID = ?1 AND b.expected_start_date = ?2 AND b.expected_end_date = ?3")
-    ContractEntity findByCustomerIDAndExpectedStartDateAndExpectedEndDate(Long customerId, Date startDate, Date endDate);
+    @Query(value = "SELECT *\n" +
+            "FROM contracts\n" +
+            "WHERE  id_customer = ?1 and expected_start_date = ?2 and expected_end_date = ?3", nativeQuery = true)
+    List<ContractEntity> findByCustomerIDAndExpectedStartDateAndExpectedEndDate(Long customerId, Date startDate, Date endDate);
 
 
-    @Query("SELECT b FROM ContractEntity b WHERE b.customer.ID = ?1 AND b.expected_start_date = ?2 AND b.expected_end_date = ?3 AND b.status > 0 ")
-    ContractEntity getByCustomerIdAndExpectStartDateAndExpectEndDate(Long id, Date expected_start_date, Date expected_end_date);
+    @Query("SELECT b FROM ContractEntity b WHERE b.customer.ID = ?1 AND b.expected_start_date = ?2 AND b.expected_end_date = ?3 AND b.had_driver = ?4 AND b.status > 0 ")
+    ContractEntity getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(Long id, Date expected_start_date, Date expected_end_date,boolean isHadDriver);
 
     @Query(value = "select * from contracts where (status = 1 or status = 2 or status = 3 )    order by expected_start_date ASC", nativeQuery = true)
     Page<ContractEntity>ListRequest(Pageable pageable);
@@ -161,4 +163,10 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "FROM contracts\n" +
             "WHERE ADDDATE(contracts.expected_start_date, INTERVAL 1 DAY) < CURDATE() and contracts.status  > 4 and contracts.status < 7", nativeQuery = true)
     List<ContractEntity> getListInvaliContract();
+//startdate <= startdateRequest && endDate > endDateRequest , startdate > startdateRequest endđate <= enddateRequest
+    @Query("SELECT c FROM ContractEntity c WHERE " +
+            "c.expected_start_date > ?2 and  c.expected_start_date < ?3 and c.customer.ID = ?1" +
+            "or c.expected_end_date > ?2 and c.expected_end_date < ?3 and c.customer.ID = ?1" +
+            "or c.expected_start_date < ?2 and c.expected_end_date > ?3 and c.customer.ID = ?1")
+    ContractEntity findInvalidDateBooking(long customerId, Date expectedStartDate, Date expectedEndDate);
 }
