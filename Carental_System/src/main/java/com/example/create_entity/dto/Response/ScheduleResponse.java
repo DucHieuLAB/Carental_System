@@ -14,7 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleResponse {
-    private Long id;
+    private Long id_contract_detail;
+    private Long id_contract;
     private Long id_driver;
     private String nameCar;
     private String plateNumber;
@@ -32,7 +33,7 @@ public class ScheduleResponse {
     private Date real_return_date;
 
 
-    public ScheduleResponse scheduleResponse(ContractDetailEntity contractDetailEntity, ContractHadDriverEntity hadDriverEntity,DistrictsEntity pickup,DistrictsEntity returnup) {
+    public ScheduleResponse scheduleResponse(ContractDetailEntity contractDetailEntity, ContractHadDriverEntity hadDriverEntity, DistrictsEntity pickup, DistrictsEntity returnup) {
         CustomerInfoResponse infoResponse = new CustomerInfoResponse();
         CarImageEntity carImageEntity = new CarImageEntity();
         ContractHadDriverReponse driverResponse = new ContractHadDriverReponse();
@@ -46,11 +47,12 @@ public class ScheduleResponse {
         response.setExpected_end_date(contractDetailEntity.getBooking().getExpected_end_date());
         response.setExpected_start_date(contractDetailEntity.getBooking().getExpected_start_date());
         response.setNameCar(contractDetailEntity.getCar().getModelName());
-        response.setId(contractDetailEntity.getId());
+        response.setId_contract_detail(contractDetailEntity.getId());
+        response.setId_contract(contractDetailEntity.getBooking().getId());
         response.setId_driver(contractDetailEntity.getDriverEntity().getId());
         response.setCustomerInfoResponse(infoResponse.customerInfoResponse(contractDetailEntity.getBooking().getCustomer()));
         response.setListImg(carImageEntity.ResponseImg(contractDetailEntity.getCar().getCarImageEntities()));
-        response.setHadDriverResponse(driverResponse.hadDriverReponse(hadDriverEntity,pickup,returnup));
+        response.setHadDriverResponse(driverResponse.hadDriverReponse(hadDriverEntity, pickup, returnup));
         response.setReal_pick_up_date(contractDetailEntity.getReal_pick_up_date());
         response.setReal_return_date(contractDetailEntity.getReal_return_date());
         return response;

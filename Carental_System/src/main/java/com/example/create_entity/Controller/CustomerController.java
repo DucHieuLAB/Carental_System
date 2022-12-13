@@ -14,14 +14,14 @@ public class CustomerController {
     AccountServiceIml accountService;
 
     @RequestMapping(value = "account/Customer/Detail", method = RequestMethod.GET)
-    public ResponseEntity<?> GetDetail(@RequestParam(required = false) String username) {
+    public ResponseEntity<?>GetDetail(@RequestParam(required = false) String username) {
         return accountService.DetailCustomer(username);
     }
 
 
     @RequestMapping(value = "account/Customer/List", method = RequestMethod.GET)
-    public ResponseEntity<?> List(@RequestParam(required = false, name = "p") Integer p) {
-        return accountService.ListCustomer(p);
+    public ResponseEntity<?>GetList(@RequestParam(required = false, name = "p") Integer p) {
+        return accountService.GetListCustomer(p);
     }
 
     @RequestMapping(value = "account/Customer/FilterByName", method = RequestMethod.GET)
@@ -49,7 +49,7 @@ public class CustomerController {
 
     @RequestMapping(value = "account/Customer/ChangeStatus", method = RequestMethod.PUT)
     public ResponseEntity<?>ChangeStatus(@RequestParam(name = "username") String username) {
-        return accountService.ChangeStatus(username);
+        return accountService.ChangeStatusCustomer(username);
     }
 
 

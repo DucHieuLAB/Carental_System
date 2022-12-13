@@ -59,20 +59,20 @@ public class ContractDetailServiceImpl implements ContractDetailService {
     }
 
     @Override
-    public ResponseEntity<?> Future_Schedule(String username) {
+    public ResponseEntity<?> FutureSchedule(String username) {
 
         List<ContractDetailEntity> contractDetailEntities = contractDetailRepository.Future_Schedule(username);
         return this.responseFutureSchedule(contractDetailEntities);
     }
 
     @Override
-    public ResponseEntity<?> Current_Schedule(String username) {
+    public ResponseEntity<?> CurrentSchedule(String username) {
         List<ContractDetailEntity> contractDetailEntities = contractDetailRepository.Current_Schedule(username);
         return this.responseCurrentSchedule(contractDetailEntities);
     }
 
     @Override
-    public ResponseEntity<?>History_schedule(String username) {
+    public ResponseEntity<?>Historyschedule(String username) {
         List<ContractDetailEntity> contractDetailEntities = contractDetailRepository.History_schedule(username);
         return this.responseHistorySchedule(contractDetailEntities);
     }

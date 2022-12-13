@@ -22,7 +22,7 @@ public interface StaffRepository extends JpaRepository<StaffEntity,Long> {
     StaffEntity GetStaffByUserName(String username);
 
     @Query(value = "SELECT st FROM StaffEntity st INNER JOIN AccountEntity ac ON st.accountEntity.ID =ac.ID WHERE st.FullName LIKE %?1% ")
-    Page<StaffEntity> FilterByName(String name,Pageable pageable);
+    Page<StaffEntity> SearchByName(String name,Pageable pageable);
 
     @Query(value = "SELECT st FROM StaffEntity st INNER JOIN AccountEntity ac ON st.accountEntity.ID =ac.ID WHERE st.Phone LIKE %?1% ")
     Page<StaffEntity> FilterByPhone(String Phone,Pageable pageable);
@@ -31,7 +31,7 @@ public interface StaffRepository extends JpaRepository<StaffEntity,Long> {
     Page<StaffEntity> FilterByIdentity_Number(String Identity,Pageable pageable);
 
     @Query(value = "SELECT st FROM StaffEntity st ORDER BY st.ModifiedDate DESC ")
-    Page<StaffEntity> List_Staff(Pageable pageable);
+    Page<StaffEntity>FindAll(Pageable pageable);
 
     @Query(value = "SELECT * FROM  staffs where phone = ? ",nativeQuery = true)
     List<StaffEntity> Check_Phone(String phone);

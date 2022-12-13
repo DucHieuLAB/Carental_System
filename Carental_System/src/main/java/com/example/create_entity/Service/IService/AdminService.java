@@ -6,7 +6,7 @@ import com.example.create_entity.dto.Response.AdminInfoResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface AdminService {
-    ResponseEntity<?> Detail(String username);
+    ResponseEntity<?> DetailAdmin(String username);
 
     ResponseEntity<?> Update(UpdateInfoAdminRequest updateInfoAdminRequest);
 }

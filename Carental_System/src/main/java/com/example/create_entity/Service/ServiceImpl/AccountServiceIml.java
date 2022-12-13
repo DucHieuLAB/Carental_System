@@ -52,7 +52,7 @@ public class AccountServiceIml implements AccountService {
 
         p = CheckNullPaging(p);
         Pageable pageable = PageRequest.of(p, 5);
-        Page<StaffEntity> staffRepositories = staffRepository.List_Staff(pageable);
+        Page<StaffEntity> staffRepositories = staffRepository.findAll(pageable);
         return responseEntity(staffRepositories);
 
     }
@@ -73,10 +73,10 @@ public class AccountServiceIml implements AccountService {
             StaffEntity staffEntity = new StaffEntity();
 
 
-            if (!accountRepository.Check_email(infoRequest.getEmail()).isEmpty()) {
+            if (!accountRepository.CheckEmail(infoRequest.getEmail()).isEmpty()) {
                 messes.setMess("Email đã tồn tại trong hệ thống  !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-            } else if (!accountRepository.Check_username(infoRequest.getUser_Name()).isEmpty()) {
+            } else if (!accountRepository.CheckUsername(infoRequest.getUser_Name()).isEmpty()) {
                 messes.setMess("UserName đã tồn tại trong hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else if (!infoRequest.getEmail().matches(regexPattern)) {
@@ -165,7 +165,7 @@ public class AccountServiceIml implements AccountService {
     public ResponseEntity<?> FilterByName(String Name, Integer p) {
         p = CheckNullPaging(p);
         Pageable pageable = PageRequest.of(p, 5);
-        Page<StaffEntity> staffRepositories = staffRepository.FilterByName(Name, pageable);
+        Page<StaffEntity> staffRepositories = staffRepository.SearchByName(Name, pageable);
         return responseEntity(staffRepositories);
 
     }
@@ -219,7 +219,7 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public ResponseEntity<?> GetDetailStaff(String UserName) {
+    public ResponseEntity<?>DetailStaff(String UserName) {
         ReposMesses messes = new ReposMesses();
         StaffDetailResponse detailResponse = new StaffDetailResponse();
         try {
@@ -250,7 +250,7 @@ public class AccountServiceIml implements AccountService {
 
     @Override
     @Transactional
-    public ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST) {
+    public ResponseEntity<?>SendOTPEmailRegister(RegisterInfoRequest REQUEST) {
 
         String regexPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
         ResponseVo responseVo = new ResponseVo();
@@ -258,11 +258,11 @@ public class AccountServiceIml implements AccountService {
         RoleEntity roleEntity = roleRepository.GetRoleDriver("Customer");
         AccountEntity accountEntity = new AccountEntity();
         try {
-            if (!accountRepository.Check_email(REQUEST.getEmail().trim()).isEmpty()) {
+            if (!accountRepository.CheckEmail(REQUEST.getEmail().trim()).isEmpty()) {
                 responseVo.setMessage("Email đã tồn tại trong hệ thống  !");
                 responseVo.setStatus(false);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-            } else if (!accountRepository.Check_username(REQUEST.getUserName().trim()).isEmpty()) {
+            } else if (!accountRepository.CheckUsername(REQUEST.getUserName().trim()).isEmpty()) {
                 responseVo.setMessage("UserName đã tồn tại trong hệ thống !");
                 responseVo.setStatus(false);
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
@@ -386,7 +386,7 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public ResponseEntity<?> Change_password(ChangePassWordRequest response) {
+    public ResponseEntity<?>ChangePassword(ChangePassWordRequest response) {
         ResponseVo responseVo = new ResponseVo();
         try {
             AccountEntity accountEntity = accountRepository.GetAccountByEmail(response.getEmail().trim());
@@ -417,7 +417,7 @@ public class AccountServiceIml implements AccountService {
     public ResponseEntity<?> UpdateCustomer(UpdateInfoCustomerRequest updateInfoCustomerRequest) {
         ResponseVo responseVo = new ResponseVo();
         try {
-            CustomerEntity customer = customerRepository.GetCustomerByName(updateInfoCustomerRequest.getUserName());
+            CustomerEntity customer = customerRepository.GetByUserName(updateInfoCustomerRequest.getUserName());
             String username = updateInfoCustomerRequest.getUserName();
             if (customerRepository.Check_Phone_Update(updateInfoCustomerRequest.getPhone().trim(), username, customer.getID()) != null) {
                 responseVo.setMessage("Số điện thoại đã tồn tại trong hệ thống !");
@@ -527,12 +527,12 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public ResponseEntity<?> ListCustomer(Integer p) {
+    public ResponseEntity<?>GetListCustomer(Integer p) {
         ReposMesses messes = new ReposMesses();
         p = this.CheckNullPaging(p);
         try {
             Pageable pageable = PageRequest.of(p, 5);
-            Page<CustomerEntity> page = customerRepository.GetListCustomer(pageable);
+            Page<CustomerEntity> page = customerRepository.FindAll(pageable);
             ListCustomerResponse listCustomerResponse = new ListCustomerResponse();
             List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
             if (listCustomerResponses.isEmpty()) {
@@ -556,7 +556,7 @@ public class AccountServiceIml implements AccountService {
 
         ReposMesses messes = new ReposMesses();
         try {
-            CustomerEntity customer = customerRepository.GetCustomerByName(username);
+            CustomerEntity customer = customerRepository.GetByUserName(username);
             if (customer == null) {
                 messes.setMess("Đã xảy ra lỗi hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
@@ -576,7 +576,7 @@ public class AccountServiceIml implements AccountService {
         p = this.CheckNullPaging(p);
         try {
             Pageable pageable = PageRequest.of(p, 5);
-            Page<CustomerEntity> page = customerRepository.FilterByName(name, pageable);
+            Page<CustomerEntity> page = customerRepository.SearchByName(name, pageable);
             ListCustomerResponse listCustomerResponse = new ListCustomerResponse();
             List<ListCustomerResponse> listCustomerResponses = listCustomerResponse.listCustomerResponses(page);
 
@@ -658,7 +658,7 @@ public class AccountServiceIml implements AccountService {
         ResponseVo responseVo = new ResponseVo();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         try {
-            CustomerEntity customer = customerRepository.GetCustomerByName(changePassRequest.getUsername());
+            CustomerEntity customer = customerRepository.GetByUserName(changePassRequest.getUsername());
             if (!passwordEncoder.matches(changePassRequest.getOldPass(), customer.getAccountEntity().getPassword())) {
                 responseVo.setStatus(false);
                 responseVo.setMessage("Mật khẩu cũ không chính xác !");
@@ -681,7 +681,7 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public ResponseEntity<?> change_new_password(ChangePassRequest changePassRequest) {
+    public ResponseEntity<?>ChangeNewPass(ChangePassRequest changePassRequest) {
         ResponseVo responseVo = new ResponseVo();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         try {
@@ -730,7 +730,7 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public ResponseEntity<?> ConfirmOTP_Login(ConfirmOTPRequest confirmOTPRequest) {
+    public ResponseEntity<?>ConfirmOTP(ConfirmOTPRequest confirmOTPRequest) {
         ResponseVo responseVo = new ResponseVo();
         AccountEntity accountEntity = accountRepository.GetAccountByName(confirmOTPRequest.getUsername());
         if (accountEntity != null && confirmOTPRequest.getOtp().trim().equals(accountEntity.getOtp()) && accountEntity.isOTPRequired()) {
@@ -749,10 +749,10 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public ResponseEntity<?> ChangeStatus(String username) {
+    public ResponseEntity<?>ChangeStatusCustomer(String username) {
         CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
         ResponseVo responseVo = new ResponseVo();
-        CustomerEntity customerEntity = customerRepository.GetCustomerByName(username);
+        CustomerEntity customerEntity = customerRepository.GetByUserName(username);
         if (customerEntity == null) {
             responseVo.setStatus(false);
             responseVo.setMessage("Thay đổi trạng thái thất bại !");

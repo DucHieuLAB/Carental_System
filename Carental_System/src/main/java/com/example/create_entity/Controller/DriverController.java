@@ -34,34 +34,34 @@ public class DriverController {
 
 
     @RequestMapping(value = "/driver/ListDriver", method = RequestMethod.GET)
-    public ResponseEntity<?> ManagerDriver(@RequestParam(value = "p", required = false) Integer p) {
-        return driverService.ManagerDriver(p);
+    public ResponseEntity<?>GetList(@RequestParam(value = "p", required = false) Integer p) {
+        return driverService.GetListDriver(p);
     }
 
     @RequestMapping(value = "/driver/Search_name", method = RequestMethod.GET)
-    public ResponseEntity<?> Find_By_Name(@RequestParam(required = false) String name,
+    public ResponseEntity<?>FilterByName(@RequestParam(required = false) String name,
                                           @RequestParam(required = false) Integer p) {
-        return driverService.SearchByName(name,p);
+        return driverService.FilterByName(name,p);
     }
 
     @RequestMapping(value = "/driver/Detail", method = RequestMethod.GET)
-    private ResponseEntity<?> DetailDriver(@RequestParam(required = false) String username) {
-        return driverService.DriverDetail(username);
+    private ResponseEntity<?>GetDetail(@RequestParam(required = false) String username) {
+        return driverService.DetailDriver(username);
     }
 
 
     @RequestMapping(value = "/driver/Search_Phone", method = RequestMethod.GET)
-    public ResponseEntity<?> Find_By_Phone(@RequestParam(required = false) String Phone,
+    public ResponseEntity<?>FilterByPhone(@RequestParam(required = false) String Phone,
                                            @RequestParam(required = false) Integer p) {
-        return driverService.Find_By_Phone(Phone,p);
+        return driverService.FilterByPhone(Phone,p);
     }
 
 
     @RequestMapping(value = "/driver/Search_CMT", method = RequestMethod.GET)
-    public ResponseEntity<?> Find_By_CMT(@RequestParam(required = false) String cmt,
+    public ResponseEntity<?>FilterByIdentity(@RequestParam(required = false) String cmt,
                                          @RequestParam(required = false) Integer p) {
 
-        return driverService.Find_By_cmt(cmt, p);
+        return driverService.FilterByIdentity(cmt, p);
     }
 
     @RequestMapping(value = "/driver/List_license", method = RequestMethod.GET)
@@ -71,8 +71,8 @@ public class DriverController {
 
 
     @RequestMapping(value = "/driver/Change_Status", method = RequestMethod.GET)
-    public ResponseEntity<?> Change_Status_Driver(@RequestParam(name = "username") String username) {
-        return driverService.Change_Status_Driver(username);
+    public ResponseEntity<?>ChangeStatus(@RequestParam(name = "username") String username) {
+        return driverService.ChangeStatusDriver(username);
     }
 
 

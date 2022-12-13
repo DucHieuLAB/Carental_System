@@ -51,17 +51,17 @@ public interface ContractService {
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     ResponseEntity<?> finishContract(long id) throws Exception;
 
-    ResponseEntity<?> ListRequest(Integer p);
+    ResponseEntity<?>ManageContract(Integer p);
 
-    ResponseEntity<?> ListContract(Integer p);
+    ResponseEntity<?>ManageRequest(Integer p);
 
-    ResponseEntity<?> FilterByNameContract(String name, Integer HadDriver, Integer Status, Integer p);
+    ResponseEntity<?>SearchByNameContract(String name, Integer HadDriver, Integer Status, Integer p);
 
-    ResponseEntity<?> FilterByPhoneContract(String name, Integer HadDriver, Integer Status, Integer p);
+    ResponseEntity<?>SearchByPhoneContract(String name, Integer HadDriver, Integer Status, Integer p);
 
-    ResponseEntity<?> FilterByNameRequest(String name, Integer HadDriver, Integer Status, Integer p);
+    ResponseEntity<?>SearchByNameRequest(String name, Integer HadDriver, Integer Status, Integer p);
 
-    ResponseEntity<?> FilterByPhoneRequest(String name, Integer HadDriver, Integer Status, Integer p);
+    ResponseEntity<?>SearchByPhoneRequest(String name, Integer HadDriver, Integer Status, Integer p);
 
     List<ContractEntity> getListInvalidContract();
 

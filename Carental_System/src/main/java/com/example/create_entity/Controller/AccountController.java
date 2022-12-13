@@ -19,36 +19,36 @@ public class AccountController {
     AccountServiceIml accountService;
 
     @RequestMapping(value = "/account/Customer/Register", method = RequestMethod.POST)
-    public ResponseEntity<?> Create(@RequestBody RegisterInfoRequest registerInfoRequest) {
-        return accountService.sendOTPEmail_Register(registerInfoRequest);
+    public ResponseEntity<?>SignUp(@RequestBody RegisterInfoRequest registerInfoRequest) {
+        return accountService.SendOTPEmailRegister(registerInfoRequest);
     }
 
     @RequestMapping(value = "/account/Customer/CfOTP", method = RequestMethod.PUT)
-    public ResponseEntity<?> CfOTP(@RequestBody ConfirmOTPRequest confirmOTPRegisterRequest){
+    public ResponseEntity<?>ConfirmOTPRegister(@RequestBody ConfirmOTPRequest confirmOTPRegisterRequest){
 
         return accountService.Confirm_Register_OTPEmail(confirmOTPRegisterRequest);
     }
 
     @RequestMapping(value = "/account/forgot/SendOTP", method = RequestMethod.GET)
-    public ResponseEntity<?> Forgot_Password(@RequestParam(required = false) String Email) {
+    public ResponseEntity<?>SendOTPReset(@RequestParam(required = false) String Email) {
       return   accountService.SendOTPtoEmail(Email);
     }
 
     @RequestMapping(value = "/account/forgot/CfOTP_Forgot", method = RequestMethod.GET)
-    public ResponseEntity<?> Cf_OTP_Forgot(@RequestParam(required = false) String Email,
+    public ResponseEntity<?>VerifyOTPReset(@RequestParam(required = false) String Email,
                                    @RequestParam(required = false) String OTP) {
 
         return accountService.ConfirmOTPForgot(Email,OTP);
     }
 
     @RequestMapping(value = "/account/forgot/ChangePassWord", method = RequestMethod.PUT)
-    public ResponseEntity<?> Create(@RequestBody ChangePassWordRequest response){
-        return accountService.Change_password(response);
+    public ResponseEntity<?>ChangePass(@RequestBody ChangePassWordRequest response){
+        return accountService.ChangePassword(response);
     }
 
     @RequestMapping(value = "/account/ChangeNewPassWord", method = RequestMethod.PUT)
-    public ResponseEntity<?> ChangeNewPass(@RequestBody ChangePassRequest changePassRequest) {
-        return accountService.change_new_password(changePassRequest);
+    public ResponseEntity<?> ChangeNewPassword(@RequestBody ChangePassRequest changePassRequest) {
+        return accountService.ChangeNewPass(changePassRequest);
     }
 
 //    @RequestMapping(value = "/account/ChangeNewPassWord", method = RequestMethod.PUT)
@@ -61,8 +61,8 @@ public class AccountController {
         return   accountService.SendOTP_Login(username);
     }
     @RequestMapping(value = "/account/login/ConfirmOTP_Login", method = RequestMethod.PUT)
-    public ResponseEntity<?>ConfirmOTP_Login(@RequestBody ConfirmOTPRequest confirmOTPRequest) {
-        return   accountService.ConfirmOTP_Login(confirmOTPRequest);
+    public ResponseEntity<?>VerifyOTPLogin(@RequestBody ConfirmOTPRequest confirmOTPRequest) {
+        return   accountService.ConfirmOTP(confirmOTPRequest);
     }
 
 //    @RequestMapping(value = "account/Customer/Detail", method = RequestMethod.GET)

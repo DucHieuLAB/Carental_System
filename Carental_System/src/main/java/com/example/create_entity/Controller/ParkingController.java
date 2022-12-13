@@ -39,7 +39,7 @@ public class ParkingController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getlistPaging(@RequestParam(required = false) Integer pageIndex,
+    public ResponseEntity<?> GetListPaging(@RequestParam(required = false) Integer pageIndex,
                                            @RequestParam(required = false) Integer pageSize) {
         if (pageIndex == null) {
             pageIndex = defaultPage;
@@ -51,7 +51,7 @@ public class ParkingController {
     }
 
     @GetMapping("/Detail/{id}")
-    public ResponseEntity<?> getCar(@PathVariable long id) {
+    public ResponseEntity<?>DetailParking(@PathVariable long id) {
         return parkingService.findById(id);
     }
 }

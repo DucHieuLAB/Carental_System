@@ -44,7 +44,7 @@ public class BrandController {
     }
 
     @GetMapping("/Detail/{id}")
-    public ResponseEntity<?> getById(@PathVariable long id){
+    public ResponseEntity<?>DetailBrand(@PathVariable long id){
         return brandService.findOnedByID(id);
     }
 

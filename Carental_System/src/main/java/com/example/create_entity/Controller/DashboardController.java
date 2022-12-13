@@ -15,39 +15,39 @@ public class DashboardController {
     DashBoardService dashBoardService;
 
     @RequestMapping(value = "/DashBoard/CountRequestContract", method = RequestMethod.GET)
-    public ResponseEntity<?> Count_RequestContract() {
+    public ResponseEntity<?> CountRequestContract() {
         return dashBoardService.CountRequestContract();
     }
 
 
     @RequestMapping(value = "/DashBoard/Count_new_Customer", method = RequestMethod.GET)
-    public ResponseEntity<?>Count_new_customer() {
-        return dashBoardService.Count_new_customer();
+    public ResponseEntity<?>CountNewCustomer() {
+        return dashBoardService.Countnewcustomer();
     }
 
 
     @RequestMapping(value = "/DashBoard/Count_Driver", method = RequestMethod.GET)
-    public ResponseEntity<?>Count_Driver() {
-        return dashBoardService.Count_driver();
+    public ResponseEntity<?>CountDriver() {
+        return dashBoardService.Countdriver();
     }
 
     @RequestMapping(value = "/DashBoard/Count_CloseContract", method = RequestMethod.GET)
-    public ResponseEntity<?> Count_CloseContract() {
-        return dashBoardService.Count_CloseContract();
+    public ResponseEntity<?> CountCloseContract() {
+        return dashBoardService.CountCloseContract();
     }
 
     @RequestMapping(value = "/DashBoard/Count_Car", method = RequestMethod.GET)
-    public ResponseEntity<?> Count_Car() {
-        return dashBoardService.Count_Car();
+    public ResponseEntity<?> CountCar() {
+        return dashBoardService.CountCar();
     }
 
 
     @RequestMapping(value = "/DashBoard/Total_Paid_HadDriver", method = RequestMethod.GET)
-    public ResponseEntity<?> Total_Paid_HadDriver() {
-        return dashBoardService.Total_Paid_HadDriver();
+    public ResponseEntity<?> TotalPaidHadDriver() {
+        return dashBoardService.TotalPaidHadDriver();
     }
     @RequestMapping(value = "/DashBoard/Total_Paid_NoDriver", method = RequestMethod.GET)
-    public ResponseEntity<?> Total_Paid_SelfDriving() {
-        return dashBoardService.Total_Paid_Self_driving();
+    public ResponseEntity<?> TotalPaidSelfDriving() {
+        return dashBoardService.TotalPaidSelfDriving();
     }
 }

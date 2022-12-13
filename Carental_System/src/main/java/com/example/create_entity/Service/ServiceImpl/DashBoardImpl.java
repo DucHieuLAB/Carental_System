@@ -42,7 +42,7 @@ public class DashBoardImpl implements DashBoardService {
     }
 
     @Override
-    public ResponseEntity<?> Count_new_customer() {
+    public ResponseEntity<?> Countnewcustomer() {
         ResponseVo responseVo = new ResponseVo();
         List<CustomerEntity> customerEntityList = customerRepository.CountNewCustomer();
         responseVo.setStatus(true);
@@ -52,9 +52,9 @@ public class DashBoardImpl implements DashBoardService {
     }
 
     @Override
-    public ResponseEntity<?> Count_driver() {
+    public ResponseEntity<?> Countdriver() {
         ResponseVo responseVo = new ResponseVo();
-        List<DriverEntity> driverEntityList = driverRepository.count_driver();
+        List<DriverEntity> driverEntityList = driverRepository.countdriver();
         responseVo.setStatus(true);
         responseVo.setMessage("Tổng số driver đang hoạt động ");
         responseVo.setData(driverEntityList.size());
@@ -62,7 +62,7 @@ public class DashBoardImpl implements DashBoardService {
     }
 
     @Override
-    public ResponseEntity<?> Count_CloseContract() {
+    public ResponseEntity<?> CountCloseContract() {
         ResponseVo responseVo = new ResponseVo();
         List<ContractEntity> contractEntities = contractRepository.ListCloseContract();
         responseVo.setStatus(true);
@@ -78,10 +78,10 @@ public class DashBoardImpl implements DashBoardService {
     Integer Capacity_47 = 0;
 
     @Override
-    public ResponseEntity<?> Count_Car() {
+    public ResponseEntity<?> CountCar() {
         ResponseVo responseVo = new ResponseVo();
 
-        List<ContractDetailEntity> contractDetailEntityList = contractDetailRepository.getList();
+        List<ContractDetailEntity> contractDetailEntityList = contractDetailRepository.CountCar();
         contractDetailEntityList.forEach(ContractDetailEntity -> {
             if (ContractDetailEntity.getCar().getCapacity() == 4) {
                 Capacity_4++;
@@ -153,10 +153,10 @@ public class DashBoardImpl implements DashBoardService {
     }
 
     @Override
-    public ResponseEntity<?> Total_Paid_HadDriver() {
+    public ResponseEntity<?> TotalPaidHadDriver() {
         ResponseVo responseVo = new ResponseVo();
 
-        List<PaymentEntity> paymentEntityList = paymentsRepository.Total_Paid_HadDriver_Quarter();
+        List<PaymentEntity> paymentEntityList = paymentsRepository.TotalPaidHadDriverQuarter();
         ArrayList<Object> objects = this.ResponseTotalPaid(paymentEntityList);
         responseVo.setMessage("Doanh thu cho thuê xe có tài xế trong 1 năm ");
         responseVo.setData(objects);
@@ -165,10 +165,10 @@ public class DashBoardImpl implements DashBoardService {
     }
 
     @Override
-    public ResponseEntity<?> Total_Paid_Self_driving() {
+    public ResponseEntity<?> TotalPaidSelfDriving() {
         ResponseVo responseVo = new ResponseVo();
         ArrayList<Object> objects;
-        List<PaymentEntity> paymentEntityList = paymentsRepository.Total_Paid_Self_driving_Quarter();
+        List<PaymentEntity> paymentEntityList = paymentsRepository.TotalPaidSelfDrivingQuarter();
         objects = this.ResponseTotalPaid(paymentEntityList);
         responseVo.setMessage("Doanh thu cho thuê xe tự lái trong 1 năm ");
         responseVo.setData(objects);

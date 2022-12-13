@@ -27,7 +27,7 @@ public class AdminServiceIml implements AdminService {
     DistrictRepository districtRepository;
 
     @Override
-    public ResponseEntity<?> Detail(String username) {
+    public ResponseEntity<?>DetailAdmin(String username) {
         AdminEntity adminEntity = adminRepository.GetByUsername(username);
         AdminInfoResponse adminInfoResponse = new AdminInfoResponse();
         adminInfoResponse = adminInfoResponse.adminInfoResponse(adminEntity);

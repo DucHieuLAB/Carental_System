@@ -15,14 +15,14 @@ import java.util.List;
 public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> {
 
     @Query(value = "SELECT cs FROM CustomerEntity cs INNER JOIN AccountEntity  ac ON cs.accountEntity.ID = ac.ID WHERE  cs.accountEntity.Username = ?1 ")
-    CustomerEntity GetCustomerByName(String username);
+    CustomerEntity GetByUserName(String username);
 
 
     @Query(value = "SELECT cs FROM CustomerEntity cs INNER JOIN AccountEntity ac ON cs.accountEntity.ID = ac.ID ")
-    Page<CustomerEntity> GetListCustomer(Pageable pageable);
+    Page<CustomerEntity>FindAll(Pageable pageable);
 
     @Query(value = "SELECT cs FROM CustomerEntity cs INNER JOIN AccountEntity ac ON cs.accountEntity.ID = ac.ID WHERE cs.FullName  LIKE %?1% ORDER BY cs.ModifiedDate DESC ")
-    Page<CustomerEntity> FilterByName(String name,Pageable pageable);
+    Page<CustomerEntity>SearchByName(String name,Pageable pageable);
 
     @Query(value = "SELECT cs FROM CustomerEntity cs INNER JOIN AccountEntity ac ON cs.accountEntity.ID = ac.ID WHERE cs.Phone  LIKE %?1% ORDER BY cs.ModifiedDate DESC ")
     Page<CustomerEntity> FilterByPhone(String phone,Pageable pageable);

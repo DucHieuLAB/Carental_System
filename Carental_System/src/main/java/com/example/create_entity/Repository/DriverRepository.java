@@ -26,7 +26,7 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
     DriverEntity Check_Username(String username);
 
     @Query(value = "select *  from driver inner join accounts on driver.account_id=accounts.account_id where accounts.user_name = ?", nativeQuery = true)
-    DriverEntity GetByUsername(String username);
+    DriverEntity GetDriverByUsername(String username);
 
     @Transactional
     @Query(value = "select * from driver where driver.status=1 ", nativeQuery = true)
@@ -37,7 +37,7 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
     List<DriverEntity> GetDriverByStatus1();
 
     @Query(value = "SELECT  dr FROM DriverEntity dr INNER JOIN AccountEntity ac ON dr.accountEntity.ID = ac.ID WHERE dr.FullName LIKE %?1% ")
-    Page<DriverEntity> GetDriverBy_fullName(String name, Pageable pageable);
+    Page<DriverEntity>SearchByName(String name, Pageable pageable);
 
     @Query(value = "SELECT  dr FROM DriverEntity dr INNER JOIN AccountEntity ac ON dr.accountEntity.ID = ac.ID WHERE dr.Phone LIKE %?1%")
     Page<DriverEntity> GetDriverBy_Phone(String phone, Pageable pageable);
@@ -93,7 +93,7 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
     List<DriverEntity> getDriverByPlateNumber(String plateNumber);
 
     @Query("SELECT dr FROM DriverEntity dr WHERE dr.status = 1 and dr.accountEntity.status=2 ")
-    List<DriverEntity> count_driver();
+    List<DriverEntity> countdriver();
 
     @Query("SELECT dr FROM DriverEntity dr WHERE dr.accountEntity.ID = ?1 and dr.status = 1")
     DriverEntity getByAccountEntity(long driverAccountId);

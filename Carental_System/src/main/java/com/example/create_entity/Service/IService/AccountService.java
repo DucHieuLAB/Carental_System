@@ -21,9 +21,11 @@ public interface AccountService {
 
    ResponseEntity<?>ChangeStatusStaff(String UserName);
 
-   ResponseEntity<?>GetDetailStaff(String UserName);
+   ResponseEntity<?>DetailStaff(String UserName);
 
-   ResponseEntity<?> sendOTPEmail_Register(RegisterInfoRequest REQUEST);
+
+
+   ResponseEntity<?>SendOTPEmailRegister(RegisterInfoRequest REQUEST);
 
    ResponseEntity<?> Confirm_Register_OTPEmail(ConfirmOTPRequest confirmOTPRegisterRequest);
 
@@ -35,12 +37,12 @@ public interface AccountService {
 
    ResponseEntity<?> ConfirmOTPForgot(String Email,String OTP);
 
-    ResponseEntity<?> Change_password(ChangePassWordRequest response);
+    ResponseEntity<?>ChangePassword(ChangePassWordRequest response);
 
 
     // Customer
 
-   ResponseEntity<?> ListCustomer (Integer p);
+   ResponseEntity<?>GetListCustomer(Integer p);
    ResponseEntity<?>DetailCustomer (String username);
 
 
@@ -52,11 +54,11 @@ public interface AccountService {
 
     ResponseEntity<?> change_password_2(ChangePassRequest changePassRequest);
 
-   ResponseEntity<?> change_new_password(ChangePassRequest changePassRequest);
+   ResponseEntity<?>ChangeNewPass(ChangePassRequest changePassRequest);
 
     ResponseEntity<?> SendOTP_Login(String username);
 
-   ResponseEntity<?> ConfirmOTP_Login(ConfirmOTPRequest confirmOTPRequest);
+   ResponseEntity<?>ConfirmOTP(ConfirmOTPRequest confirmOTPRequest);
 
-    ResponseEntity<?> ChangeStatus(String username);
+    ResponseEntity<?>ChangeStatusCustomer(String username);
 }

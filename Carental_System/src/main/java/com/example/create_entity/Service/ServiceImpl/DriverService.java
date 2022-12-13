@@ -59,7 +59,7 @@ public class DriverService {
         return infoResponses;
     }
 
-    public ResponseEntity<?> SearchByName(String name, Integer p) {
+    public ResponseEntity<?>FilterByName(String name, Integer p) {
         if (p == null) {
             p = 0;
         } else if (p > 0) {
@@ -68,7 +68,7 @@ public class DriverService {
         ReposMesses messes = new ReposMesses();
         try {
             Pageable pageable = PageRequest.of(p, 5);
-            Page<DriverEntity> driverEntities = driverRepository.GetDriverBy_fullName(name, pageable);
+            Page<DriverEntity> driverEntities = driverRepository.SearchByName(name, pageable);
             PagingDriver pagingDriver = new PagingDriver();
             List<DriverInfoResponse> infoResponses = this.responseEntity(driverEntities);
             pagingDriver.setDriverInfoResponsesList(infoResponses);
@@ -87,7 +87,7 @@ public class DriverService {
     }
 
 
-    public ResponseEntity<?> ManagerDriver(Integer p) {
+    public ResponseEntity<?>GetListDriver(Integer p) {
         if (p == null) {
             p = 0;
         } else if (p > 0) {
@@ -139,10 +139,10 @@ public class DriverService {
             RoleEntity roleEntity = roleRepository.GetRoleDriver("Driver");
 
 
-            if (!accountRepository.Check_email(infoRequest.getEmail()).isEmpty()) {
+            if (!accountRepository.CheckEmail(infoRequest.getEmail()).isEmpty()) {
                 messes.setMess("Email đã tồn tại trong hệ thống  !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-            } else if (!accountRepository.Check_username(infoRequest.getUsername()).isEmpty()) {
+            } else if (!accountRepository.CheckUsername(infoRequest.getUsername()).isEmpty()) {
                 messes.setMess("UserName đã tồn tại trong hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
             } else if (!infoRequest.getEmail().matches(regexPattern)) {
@@ -229,13 +229,13 @@ public class DriverService {
         }
     }
 
-    public ResponseEntity<?> DriverDetail(String username) {
+    public ResponseEntity<?>DetailDriver(String username) {
         ReposMesses messes = new ReposMesses();
 //        if (username.equals(null)) {
 //            username = "";
 //        }
         try {
-            DriverEntity driverEntities = driverRepository.GetByUsername(username.trim());
+            DriverEntity driverEntities = driverRepository.GetDriverByUsername(username.trim());
             if (driverEntities == null) {
                 messes.setMess("Đã xảy ra lỗi hệ thống !");
                 return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
@@ -250,7 +250,7 @@ public class DriverService {
         }
     }
 
-    public ResponseEntity<?> Find_By_Phone(String Phone, Integer p) {
+    public ResponseEntity<?>FilterByPhone(String Phone, Integer p) {
 
         if (p == null) {
             p = 0;
@@ -278,7 +278,7 @@ public class DriverService {
         }
     }
 
-    public ResponseEntity<?> Find_By_cmt(String cmt, Integer p) {
+    public ResponseEntity<?>FilterByIdentity(String cmt, Integer p) {
 
         if (p == null) {
             p = 0;
@@ -331,11 +331,11 @@ public class DriverService {
         }
     }
 
-    public ResponseEntity<?> Change_Status_Driver(String username) {
+    public ResponseEntity<?>ChangeStatusDriver(String username) {
         ReposMesses reposMesses = new ReposMesses();
         try {
             DriverInfoDetailResponse driverInfoDetailResponse = new DriverInfoDetailResponse();
-            DriverEntity driverEntities = driverRepository.GetByUsername(username.trim());
+            DriverEntity driverEntities = driverRepository.GetDriverByUsername(username.trim());
             if (driverEntities != null && driverEntities.getStatus() == 1 && driverEntities.getAccountEntity().getStatus() == 2) {
                 driverEntities.getAccountEntity().setStatus(0);
                 driverEntities.setStatus(0);

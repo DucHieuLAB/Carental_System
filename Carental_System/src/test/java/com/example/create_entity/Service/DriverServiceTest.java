@@ -52,7 +52,7 @@ class DriverServiceTest {
         driverInfoRequest.setWards("Phường Quang Trung");
         driverInfoRequest.setCity("Thành phố Hải Dương");
         ResponseEntity<?> responseEntity = driverService.Create(driverInfoRequest);
-        DriverEntity driverEntity = driverRepository.GetByUsername("khanhpd8");
+        DriverEntity driverEntity = driverRepository.GetDriverByUsername("khanhpd8");
         Assertions.assertNotNull(driverEntity);
     }
 
@@ -86,7 +86,7 @@ class DriverServiceTest {
         driverInfoRequest.setWards("Thị trấn Đông Anh");
         driverInfoRequest.setCity("Thành phố Hà Nội");
         ResponseEntity<?> responseEntity = driverService.Create(driverInfoRequest);
-        DriverEntity driverEntity = driverRepository.GetByUsername("shannguyen");
+        DriverEntity driverEntity = driverRepository.GetDriverByUsername("shannguyen");
         Assertions.assertNull(driverEntity);
     }
 
@@ -154,7 +154,7 @@ class DriverServiceTest {
         driverInfoRequest.setWards("Thị trấn Đông Anh");
         driverInfoRequest.setCity("Thành phố Hà Nội");
         ResponseEntity<?> responseEntity = driverService.Create(driverInfoRequest);
-        DriverEntity driverEntity = driverRepository.GetByUsername("shnanguyen");
+        DriverEntity driverEntity = driverRepository.GetDriverByUsername("shnanguyen");
         Assertions.assertNull(driverEntity);
     }
 
@@ -188,7 +188,7 @@ class DriverServiceTest {
         driverInfoRequest.setWards("Thị trấn Đông Anh");
         driverInfoRequest.setCity("Thành phố Hà Nội");
         ResponseEntity<?> responseEntity = driverService.Create(driverInfoRequest);
-        DriverEntity driverEntity = driverRepository.GetByUsername("shnanguyen");
+        DriverEntity driverEntity = driverRepository.GetDriverByUsername("shnanguyen");
         Assertions.assertNull(driverEntity);
     }
 
@@ -222,7 +222,7 @@ class DriverServiceTest {
         driverInfoRequest.setWards("Thị trấn Đông Anh");
         driverInfoRequest.setCity("Thành phố Hà Nội");
         ResponseEntity<?> responseEntity = driverService.Create(driverInfoRequest);
-        DriverEntity driverEntity = driverRepository.GetByUsername("shnanguyen");
+        DriverEntity driverEntity = driverRepository.GetDriverByUsername("shnanguyen");
         Assertions.assertNull(driverEntity);
     }
 
@@ -256,7 +256,7 @@ class DriverServiceTest {
         driverInfoRequest.setWards("Thị trấn Đông Anh");
         driverInfoRequest.setCity("Thành phố Hà Nội");
         ResponseEntity<?> responseEntity = driverService.Create(driverInfoRequest);
-        DriverEntity driverEntity = driverRepository.GetByUsername("shnanguyen");
+        DriverEntity driverEntity = driverRepository.GetDriverByUsername("shnanguyen");
         Assertions.assertNull(driverEntity);
     }
 
@@ -290,7 +290,7 @@ class DriverServiceTest {
         driverInfoRequest.setWards("Thị trấn Đông Anh");
         driverInfoRequest.setCity("Thành phố Hà Nội");
         ResponseEntity<?> responseEntity = driverService.UpdateDriver(driverInfoRequest);
-        DriverEntity driverEntity = driverRepository.GetByUsername("khanhpd8");
+        DriverEntity driverEntity = driverRepository.GetDriverByUsername("khanhpd8");
         Assertions.assertTrue(driverEntity.getPhone().equals("0986123456"));
         Assertions.assertTrue(driverEntity.getIdentity_Number().equals("020344550020"));
         Assertions.assertTrue(driverEntity.getDriver_Number_License().equals("200340056007"));
@@ -300,8 +300,8 @@ class DriverServiceTest {
     @Test
     @Order(9)
     public void testChangeDriverStatus() {
-        ResponseEntity<?> responseEntity = driverService.Change_Status_Driver("khanhpd8");
-        DriverEntity driverEntity = driverRepository.GetByUsername("khanhpd8");
+        ResponseEntity<?> responseEntity = driverService.ChangeStatusDriver("khanhpd8");
+        DriverEntity driverEntity = driverRepository.GetDriverByUsername("khanhpd8");
         Assertions.assertTrue(driverEntity.getStatus() == 0);
         Assertions.assertTrue(driverEntity.getAccountEntity().getStatus() == 0);
     }

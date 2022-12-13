@@ -46,13 +46,7 @@ public class TestDemo {
 //    }
 //////}
 //
-//    @Test
-//    public void testGet() {
-//        Integer userid = 1;
-//        Optional<DriverEntity> optionalUser = repo.findById(userid);
-//        Assertions.assertThat(optionalUser).isPresent();
-//        System.out.println(optionalUser.get());
-//    }
+
 //
 //    @Test
 //    public void testAccount() throws ParseException {

@@ -9,15 +9,15 @@ public interface DashBoardService {
 
     ResponseEntity<?> CountRequestContract();
 
-    ResponseEntity<?> Count_new_customer();
+    ResponseEntity<?> Countnewcustomer();
 
-    ResponseEntity<?> Count_driver();
+    ResponseEntity<?> Countdriver();
 
-    ResponseEntity<?> Count_CloseContract();
+    ResponseEntity<?> CountCloseContract();
 
-    ResponseEntity<?> Count_Car();
+    ResponseEntity<?> CountCar();
 
-    ResponseEntity<?> Total_Paid_HadDriver();
+    ResponseEntity<?> TotalPaidHadDriver();
 
-    ResponseEntity<?> Total_Paid_Self_driving();
+    ResponseEntity<?> TotalPaidSelfDriving();
 }

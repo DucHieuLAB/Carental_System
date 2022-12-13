@@ -14,7 +14,7 @@ public class StaffController {
     @Autowired
     AccountServiceIml accountServiceIml;
     @RequestMapping(value = "/Staff/ListStaff", method = RequestMethod.GET)
-    public ResponseEntity<?> ManagerStaff(@RequestParam(value = "p", required = false) Integer p) {
+    public ResponseEntity<?>GetListStaff(@RequestParam(value = "p", required = false) Integer p) {
         return accountServiceIml.getListStaff(p);
     }
 
@@ -34,7 +34,7 @@ public class StaffController {
     }
 
     @RequestMapping(value = "/Staff/FilterByIdentity_Number", method = RequestMethod.GET)
-    private ResponseEntity<?>FilterByIdentity_Number(@RequestParam(required = false) String cmt,Integer p)  {
+    private ResponseEntity<?>FilterByIdentity(@RequestParam(required = false) String cmt,Integer p)  {
         return accountServiceIml.FilterByIdentity_Number(cmt,p);
     }
 
@@ -45,7 +45,7 @@ public class StaffController {
 
     @RequestMapping(value = "/Staff/GetDetail", method = RequestMethod.GET)
     private ResponseEntity<?>GetDetail(@RequestParam(required = false) String username)  {
-        return accountServiceIml.GetDetailStaff(username);
+        return accountServiceIml.DetailStaff(username);
     }
 
     @RequestMapping(value = "/Staff/Update", method = RequestMethod.PUT)

@@ -23,7 +23,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
     ContractEntity getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(Long id, Date expected_start_date, Date expected_end_date,boolean isHadDriver);
 
     @Query(value = "select * from contracts where (status = 1 or status = 2 or status = 3 )    order by expected_start_date ASC", nativeQuery = true)
-    Page<ContractEntity>ListRequest(Pageable pageable);
+    Page<ContractEntity>ManagerRequest(Pageable pageable);
 
 
     @Query(value = "select * from contracts where (status = 4 or status = 5 or status = 6 or status=7 )    order by expected_start_date ASC", nativeQuery = true)
@@ -35,7 +35,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END AND (contracts.status = 4 or contracts.status = 5 or contracts.status = 6 or contracts.status = 7)\n" +
             "            ", nativeQuery = true)
-    List<ContractEntity> FilterByNameContract1(String name, Integer HadDriver, Integer Status, Pageable pageable);
+    List<ContractEntity> SearchByNameContract1(String name, Integer HadDriver, Integer Status, Pageable pageable);
 
 
     @Query(value = "  select * from contracts left join customers  \n" +
@@ -44,7 +44,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END AND " +
             "(contracts.status = 4 or contracts.status = 5 or contracts.status = 6 or contracts.status = 7) \n",nativeQuery = true)
-    List<ContractEntity> FilterByNameContract2(String name, Integer HadDriver, Integer Status);
+    List<ContractEntity> SearchByNameContract2(String name, Integer HadDriver, Integer Status);
 
     @Query(value = "  select * from contracts left join customers \n" +
             "            on contracts.id_customer=customers.id \n" +
@@ -53,7 +53,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END " +
             "AND (contracts.status = 4 or contracts.status = 5 or contracts.status = 6 or contracts.status = 7)\n" +
             "            ", nativeQuery = true)
-    List<ContractEntity> FilterByPhoneContract1(String phone, Integer HadDriver, Integer Status, Pageable pageable);
+    List<ContractEntity> SearchByPhoneContract1(String phone, Integer HadDriver, Integer Status, Pageable pageable);
 
 
     @Query(value = "  select * from contracts left join customers   \n" +
@@ -63,7 +63,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END " +
             "AND(contracts.status = 4 or contracts.status = 5 or contracts.status = 6 or contracts.status = 7)\n" +
             "            ", nativeQuery = true)
-    List<ContractEntity> FilterByPhoneContract2(String phone, Integer HadDriver, Integer Status);
+    List<ContractEntity> SearchByPhoneContract2(String phone, Integer HadDriver, Integer Status);
 
 
 
@@ -76,7 +76,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END AND " +
             "(contracts.status = 1 or contracts.status = 2 or contracts.status = 3)\n" +
             "            ", nativeQuery = true)
-    List<ContractEntity> FilterByNameRequest1(String name, Integer HadDriver, Integer Status, Pageable pageable);
+    List<ContractEntity> SearchByNameRequest1(String name, Integer HadDriver, Integer Status, Pageable pageable);
 
 
     @Query(value = "  select * from contracts left join customers  \n" +
@@ -85,7 +85,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END AND " +
             "(contracts.status = 1 or contracts.status = 2 or contracts.status = 6 or contracts.status = 3) \n",nativeQuery = true)
-    List<ContractEntity> FilterByNameRequest2(String name, Integer HadDriver, Integer Status);
+    List<ContractEntity> SearchByNameRequest2(String name, Integer HadDriver, Integer Status);
 
     @Query(value = "  select * from contracts left join customers \n" +
             "            on contracts.id_customer=customers.id \n" +
@@ -93,7 +93,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END " +
             "AND (contracts.status = 1 or contracts.status = 2 or contracts.status = 3)", nativeQuery = true)
-    List<ContractEntity> FilterByPhoneRequest1(String phone, Integer HadDriver, Integer Status, Pageable pageable);
+    List<ContractEntity> SearchByPhoneRequest1(String phone, Integer HadDriver, Integer Status, Pageable pageable);
 
 
     @Query(value = "  select * from contracts left join customers   \n" +
@@ -102,7 +102,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END " +
             "AND(contracts.status = 1 or contracts.status = 2 or contracts.status = 3)", nativeQuery = true)
-    List<ContractEntity> FilterByPhoneRequest2(String phone, Integer HadDriver, Integer Status);
+    List<ContractEntity> SearchByPhoneRequest2(String phone, Integer HadDriver, Integer Status);
 
 
 

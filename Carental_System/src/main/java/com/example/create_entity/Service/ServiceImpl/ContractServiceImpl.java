@@ -950,7 +950,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> ListRequest(Integer p) {
+    public ResponseEntity<?>ManageRequest(Integer p) {
         if (p == null) {
             p = 0;
         } else if (p > 0) {
@@ -960,7 +960,7 @@ public class ContractServiceImpl implements ContractService {
         try {
             Pageable pageable = PageRequest.of(p, 5);
 
-            Page<ContractEntity> page = br.ListRequest(pageable);
+            Page<ContractEntity> page = br.ManagerRequest(pageable);
 
             List<ContractResponse> contractResponse = new ArrayList<>();
 
@@ -991,7 +991,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> ListContract(Integer p) {
+    public ResponseEntity<?>ManageContract(Integer p) {
         if (p == null) {
             p = 0;
         } else if (p > 0) {
@@ -1069,48 +1069,48 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> FilterByNameContract(String name, Integer HadDriver, Integer Status, Integer p) {
+    public ResponseEntity<?>SearchByNameContract(String name, Integer HadDriver, Integer Status, Integer p) {
 
         p = CheckNullPaging(p);
         Integer size = 5;
         Pageable pageable = PageRequest.of(p, size);
-        List<ContractEntity> contractEntities = br.FilterByNameContract1(name, HadDriver, Status, pageable);
-        List<ContractEntity> contractEntities1 = br.FilterByNameContract2(name, HadDriver, Status);
+        List<ContractEntity> contractEntities = br.SearchByNameContract1(name, HadDriver, Status, pageable);
+        List<ContractEntity> contractEntities1 = br.SearchByNameContract2(name, HadDriver, Status);
 
         return responseResultContract(contractEntities, contractEntities1, size, p);
 
     }
 
     @Override
-    public ResponseEntity<?> FilterByPhoneContract(String phone, Integer HadDriver, Integer Status, Integer p) {
+    public ResponseEntity<?>SearchByPhoneContract(String phone, Integer HadDriver, Integer Status, Integer p) {
 
         p = CheckNullPaging(p);
         Integer size = 5;
         Pageable pageable = PageRequest.of(p, size);
-        List<ContractEntity> contractEntities = br.FilterByPhoneContract1(phone, HadDriver, Status, pageable);
-        List<ContractEntity> contractEntities1 = br.FilterByPhoneContract2(phone, HadDriver, Status);
+        List<ContractEntity> contractEntities = br.SearchByPhoneContract1(phone, HadDriver, Status, pageable);
+        List<ContractEntity> contractEntities1 = br.SearchByPhoneContract2(phone, HadDriver, Status);
 
         return responseResultContract(contractEntities, contractEntities1, size, p);
     }
 
     @Override
-    public ResponseEntity<?> FilterByNameRequest(String name, Integer HadDriver, Integer Status, Integer p) {
+    public ResponseEntity<?>SearchByNameRequest(String name, Integer HadDriver, Integer Status, Integer p) {
         p = CheckNullPaging(p);
         Integer size = 5;
         Pageable pageable = PageRequest.of(p, size);
-        List<ContractEntity> contractEntities = br.FilterByNameRequest1(name, HadDriver, Status, pageable);
-        List<ContractEntity> contractEntities1 = br.FilterByNameRequest2(name, HadDriver, Status);
+        List<ContractEntity> contractEntities = br.SearchByNameRequest1(name, HadDriver, Status, pageable);
+        List<ContractEntity> contractEntities1 = br.SearchByNameRequest2(name, HadDriver, Status);
 
         return responseResultContract(contractEntities, contractEntities1, size, p);
     }
 
     @Override
-    public ResponseEntity<?> FilterByPhoneRequest(String phone, Integer HadDriver, Integer Status, Integer p) {
+    public ResponseEntity<?>SearchByPhoneRequest(String phone, Integer HadDriver, Integer Status, Integer p) {
         p = CheckNullPaging(p);
         Integer size = 5;
         Pageable pageable = PageRequest.of(p, size);
-        List<ContractEntity> contractEntities = br.FilterByPhoneRequest1(phone, HadDriver, Status, pageable);
-        List<ContractEntity> contractEntities1 = br.FilterByPhoneRequest2(phone, HadDriver, Status);
+        List<ContractEntity> contractEntities = br.SearchByPhoneRequest1(phone, HadDriver, Status, pageable);
+        List<ContractEntity> contractEntities1 = br.SearchByPhoneRequest2(phone, HadDriver, Status);
         return responseResultContract(contractEntities, contractEntities1, size, p);
     }
 

@@ -16,18 +16,18 @@ public class ScheduleController {
 
     @RequestMapping(value = "/manager/Future_Schedule", method = RequestMethod.GET)
     public ResponseEntity<?> FutureSchedule(@RequestParam(required = false) String username) {
-        return contractDetailService.Future_Schedule(username);
+        return contractDetailService.FutureSchedule(username);
     }
 
 
     @RequestMapping(value = "/manager/Current_Schedule", method = RequestMethod.GET)
     public ResponseEntity<?> CurrentSchedule(@RequestParam(required = false) String username) {
-        return contractDetailService.Current_Schedule(username);
+        return contractDetailService.CurrentSchedule(username);
     }
 
     @RequestMapping(value = "/manager/History_schedule", method = RequestMethod.GET)
     public ResponseEntity<?> HistorySchedule(@RequestParam(required = false) String username) {
-        return contractDetailService.History_schedule(username);
+        return contractDetailService.Historyschedule(username);
     }
 //    @RequestMapping(value = "/manager/DetailSchedule", method = RequestMethod.GET)
 //    public ResponseEntity<?> DetailSchedule(@RequestParam(required = false) Long ID) {

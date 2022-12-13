@@ -15,7 +15,7 @@ import java.util.stream.DoubleStream;
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
     @Query(value = "SELECT * FROM accounts where user_name = ? ", nativeQuery = true)
-    List<AccountEntity> Check_username(String username);
+    List<AccountEntity> CheckUsername(String username);
 
     @Query(value = "SELECT * FROM accounts where user_name = ? ", nativeQuery = true)
     AccountEntity GetAccountByName(String username);
@@ -25,7 +25,7 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     AccountEntity GetAccountByEmail(String email);
 
     @Query(value = "SELECT * FROM accounts where  email =?", nativeQuery = true)
-    List<AccountEntity> Check_email(String email);
+    List<AccountEntity> CheckEmail(String email);
 //    @Query(value = "SELECT * FROM AccountEntity WHERE email = ?1 ", nativeQuery = true)
 //    AccountEntity Check_email(String username);
 

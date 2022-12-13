@@ -18,8 +18,6 @@ import java.util.Arrays;
 public class CreateEntityApplication extends SpringBootServletInitializer {
 
 
-    @Autowired
-    private EmailSenderService senderService;
 
     public static void main(String[] args) {
         SpringApplication.run(CreateEntityApplication.class, args);

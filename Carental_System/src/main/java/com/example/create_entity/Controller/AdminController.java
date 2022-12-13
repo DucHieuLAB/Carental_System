@@ -14,7 +14,7 @@ public class AdminController {
     AdminServiceIml adminServiceIml;
     @RequestMapping(value = "/admin/detail", method = RequestMethod.GET)
     public ResponseEntity<?> Create(@RequestParam(name = "username") String username) {
-    return   adminServiceIml.Detail(username);
+    return   adminServiceIml.DetailAdmin(username);
     }
 
 

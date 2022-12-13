@@ -164,7 +164,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
     @Query(value = "SELECT * FROM carrental.contract_details " +
             "inner join contracts on contract_details.contract_id = contracts.booking_id " +
             "where contracts.create_date >= DATE(NOW()) - INTERVAL 30 DAY ",nativeQuery = true)
-    List<ContractDetailEntity> getList();
+    List<ContractDetailEntity>CountCar();
 
 //    @Query("SELECT ")
 //    ContractDetailEntity Detail_Schedule(Long driverID);

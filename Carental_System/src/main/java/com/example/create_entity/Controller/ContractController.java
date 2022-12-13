@@ -25,12 +25,12 @@ public class ContractController {
 
     @RequestMapping(value = "/ListRequest", method = RequestMethod.GET)
     public ResponseEntity<?> ListRequestCustomer(@RequestParam(value = "p", required = false) Integer p) {
-        return contractService.ListRequest(p);
+        return contractService.ManageRequest(p);
     }
 
     @RequestMapping(value = "/ListContract", method = RequestMethod.GET)
     public ResponseEntity<?> ListContractCustomer(@RequestParam(value = "p", required = false) Integer p) {
-        return contractService.ListContract(p);
+        return contractService.ManageContract(p);
     }
 
     @RequestMapping(value = "/SearchContract", method = RequestMethod.GET)
@@ -40,9 +40,9 @@ public class ContractController {
                                     @RequestParam(required = false) Integer Status,
                                     @RequestParam(required = false) String phone) {
         if (phone != null &&  (name == null || name=="")) {
-            return contractService.FilterByPhoneContract(phone, HadDriver, Status, p);
+            return contractService.SearchByPhoneContract(phone, HadDriver, Status, p);
         }
-        return contractService.FilterByNameContract(name, HadDriver, Status, p);
+        return contractService.SearchByNameContract(name, HadDriver, Status, p);
     }
 
     @RequestMapping(value = "/SearchRequest", method = RequestMethod.GET)
@@ -52,9 +52,9 @@ public class ContractController {
                                     @RequestParam(required = false) Integer Status,
                                     @RequestParam(required = false) String phone) {
         if (phone != null && (name == null || name=="")) {
-            return contractService.FilterByPhoneRequest(phone, HadDriver, Status, p);
+            return contractService.SearchByPhoneRequest(phone, HadDriver, Status, p);
         }
-        return contractService.FilterByNameRequest(name, HadDriver, Status, p);
+        return contractService.SearchByNameRequest(name, HadDriver, Status, p);
     }
 
     @GetMapping("/Detail/{id}")
