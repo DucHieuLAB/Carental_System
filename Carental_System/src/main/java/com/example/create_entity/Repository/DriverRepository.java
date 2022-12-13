@@ -95,6 +95,9 @@ public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
     @Query("SELECT dr FROM DriverEntity dr WHERE dr.status = 1 and dr.accountEntity.status=2 ")
     List<DriverEntity> count_driver();
 
+    @Query("SELECT dr FROM DriverEntity dr WHERE dr.accountEntity.ID = ?1 and dr.status = 1")
+    DriverEntity getByAccountEntity(long driverAccountId);
+
 
 ////    @Modifying
 ////    @Transactional

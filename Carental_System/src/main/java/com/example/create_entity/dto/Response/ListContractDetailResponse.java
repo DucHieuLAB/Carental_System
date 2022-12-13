@@ -1,5 +1,6 @@
 package com.example.create_entity.dto.Response;
 
+import com.example.create_entity.Entity.CarImageEntity;
 import com.example.create_entity.Entity.ContractDetailEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class ListContractDetailResponse {
     private String modelName;
     private String Color;
     private double rentalPrice;
+    private List<ListCarImageResponse> carImage;
 
     public static List<ListContractDetailResponse> createListBookingDetailResponse(List<ContractDetailEntity> bdes) {
         List<ListContractDetailResponse> result = new ArrayList<>();

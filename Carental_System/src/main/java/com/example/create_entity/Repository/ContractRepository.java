@@ -169,4 +169,14 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "or c.expected_end_date > ?2 and c.expected_end_date < ?3 and c.customer.ID = ?1" +
             "or c.expected_start_date < ?2 and c.expected_end_date > ?3 and c.customer.ID = ?1")
     ContractEntity findInvalidDateBooking(long customerId, Date expectedStartDate, Date expectedEndDate);
+
+    @Query(value = "SELECT *  \n" +
+            "FROM driver d \n" +
+            "JOIN contract_details c on d.id = c.id_driver and c.id_driver = ?1\n" +
+            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
+            "WHERE ct.expected_start_date >= ?2 AND ct.expected_start_date <= ?3 and ct.status < 6 and ct.status > 1 \n" +
+            "OR ct.expected_start_date < ?2 AND ct.expected_end_date >  ?2 and ct.status < 6 and ct.status > 1 \n" +
+            "OR ct.expected_start_date <=  ?2 AND ct.expected_end_date >  ?3 and ct.status < 6 and ct.status > 1 \n" +
+            "LIMIT 1", nativeQuery = true)
+    ContractEntity findInvalidDateBookingDriver(Long id, Date expectedStartDate, Date expectedEndDate);
 }

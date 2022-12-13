@@ -1,6 +1,6 @@
 package com.example.create_entity.Controller;
 
-import com.example.create_entity.Service.ContractDetailService;
+import com.example.create_entity.Service.IService.ContractDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

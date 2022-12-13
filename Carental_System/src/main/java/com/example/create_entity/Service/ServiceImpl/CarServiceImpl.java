@@ -1,7 +1,8 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.ServiceImpl;
 
 import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.*;
+import com.example.create_entity.Service.IService.CarService;
 import com.example.create_entity.dto.Request.CarRequest;
 import com.example.create_entity.dto.Request.DriverByCarByContractRequest;
 import com.example.create_entity.dto.Response.*;
@@ -268,7 +269,7 @@ public class CarServiceImpl implements CarService {
             }
             if (hadNextStep) {
                 // if driver dont have any contract betwenn start date and end date invalid
-                DriverEntity checkDriverHadInvalidStartAndEndDate = driverRepository.findDriverValidDate(entity.getId(), driverByCarByContractRequest.getExpectedStartDate(), driverByCarByContractRequest.getExpectedEndDate());
+                ContractEntity checkDriverHadInvalidStartAndEndDate = contractRepository.findInvalidDateBookingDriver(entity.getId(), driverByCarByContractRequest.getExpectedStartDate(), driverByCarByContractRequest.getExpectedEndDate());
                 if (ObjectUtils.isEmpty(checkDriverHadInvalidStartAndEndDate)) {
                     listPass.add(entity);
                 }

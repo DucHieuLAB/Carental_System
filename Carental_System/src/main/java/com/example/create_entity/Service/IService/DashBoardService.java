@@ -1,4 +1,4 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.IService;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;

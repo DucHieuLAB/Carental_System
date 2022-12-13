@@ -1,4 +1,4 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.IService;
 
 import com.example.create_entity.Entity.ParkingEntity;
 import com.example.create_entity.dto.Request.ParkingRequest;

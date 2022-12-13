@@ -1,9 +1,7 @@
 package com.example.create_entity.Controller;
 
-import com.example.create_entity.Service.AdminServiceIml;
-import com.example.create_entity.dto.Request.RegisterInfoRequest;
+import com.example.create_entity.Service.ServiceImpl.AdminServiceIml;
 import com.example.create_entity.dto.Request.UpdateInfoAdminRequest;
-import com.example.create_entity.dto.Request.UpdateInfoCustomerRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

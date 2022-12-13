@@ -18,7 +18,7 @@ import java.util.Date;
 public class ContractDetailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "contract_detail_id",unique = true)
+    @Column(name = "contract_detail_id", unique = true)
     private long id;
 
     @Column
@@ -26,22 +26,21 @@ public class ContractDetailEntity {
     @Column
     private Date real_return_date;
 
-
     @ManyToOne(optional = true)
-    @JoinColumn(name = "ID_Driver",foreignKey = @ForeignKey(name = "FK_Driver"))
+    @JoinColumn(name = "ID_Driver", foreignKey = @ForeignKey(name = "FK_Driver"))
     private DriverEntity driverEntity;
 
     @ManyToOne
-    @JoinColumn(name = "car_id",nullable = false, foreignKey = @ForeignKey(name = "FK_BookingDetail_Car"))
+    @JoinColumn(name = "car_id", nullable = false, foreignKey = @ForeignKey(name = "FK_BookingDetail_Car"))
     CarEntity car;
 
     @ManyToOne
-    @JoinColumn(name = "contract_id", nullable = false,foreignKey = @ForeignKey(name = "FK_BookingDetail_Booking"))
+    @JoinColumn(name = "contract_id", nullable = false, foreignKey = @ForeignKey(name = "FK_BookingDetail_Booking"))
     ContractEntity booking;
 
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
-    @Column(name = "last_modified_date",nullable = false)
+    @Column(name = "last_modified_date", nullable = false)
     private Date lastModifiedDate;
 
 }

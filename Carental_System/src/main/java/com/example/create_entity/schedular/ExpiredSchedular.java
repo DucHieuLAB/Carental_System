@@ -1,14 +1,13 @@
 package com.example.create_entity.schedular;
 
 import com.example.create_entity.Entity.ContractEntity;
-import com.example.create_entity.Service.ContractService;
+import com.example.create_entity.Service.IService.ContractService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.TimeZone;
 
 @Component
 public class ExpiredSchedular {

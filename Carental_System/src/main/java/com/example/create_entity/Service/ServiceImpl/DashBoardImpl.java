@@ -1,7 +1,8 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.ServiceImpl;
 
 import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.*;
+import com.example.create_entity.Service.IService.DashBoardService;
 import com.example.create_entity.dto.Response.ResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -14,4 +14,5 @@ public class SurchargeRequest {
     private double amount;
     private String note;
     private long staffAccountId;
+    private long driverAccountId;
 }

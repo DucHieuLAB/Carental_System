@@ -1,11 +1,11 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.ServiceImpl;
 
 import com.example.create_entity.Entity.AdminEntity;
 import com.example.create_entity.Entity.DistrictsEntity;
 import com.example.create_entity.Repository.AdminRepository;
 import com.example.create_entity.Repository.DistrictRepository;
+import com.example.create_entity.Service.IService.AdminService;
 import com.example.create_entity.dto.Request.UpdateInfoAdminRequest;
-import com.example.create_entity.dto.Request.UpdateInfoCustomerRequest;
 import com.example.create_entity.dto.Response.AdminInfoResponse;
 import com.example.create_entity.dto.Response.ResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,19 +1,16 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.ServiceImpl;
 
 import com.example.create_entity.Entity.CarEntity;
 import com.example.create_entity.Entity.CarImageEntity;
 import com.example.create_entity.Repository.CarImageRepository;
-import com.example.create_entity.dto.Request.CarImgRequest;
-import com.example.create_entity.dto.Response.ResponseVo;
+import com.example.create_entity.Service.IService.CarImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 @Service
-public class CarImageServiceImpl implements CarImageService{
+public class CarImageServiceImpl implements CarImageService {
   @Autowired
     CarImageRepository carImageRepository;
     @Override

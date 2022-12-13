@@ -1,7 +1,6 @@
 package com.example.create_entity.Controller;
 
-import com.example.create_entity.Service.AccountServiceIml;
-import com.example.create_entity.dto.Request.ChangePassRequest;
+import com.example.create_entity.Service.ServiceImpl.AccountServiceIml;
 import com.example.create_entity.dto.Request.UpdateInfoCustomerRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

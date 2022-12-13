@@ -1,20 +1,23 @@
-package com.example.create_entity;
+package com.example.create_entity.Service;
 
 import com.example.create_entity.Entity.CarEntity;
 import com.example.create_entity.Repository.CarRepository;
-import com.example.create_entity.Service.CarServiceImpl;
+import com.example.create_entity.Service.ServiceImpl.CarServiceImpl;
 import com.example.create_entity.dto.Request.CarRequest;
-import com.example.create_entity.dto.Response.ResponseVo;
+import com.example.create_entity.dto.Request.DriverByCarByContractRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CarServiceTest {
     @Autowired
     CarServiceImpl carService;
@@ -113,14 +116,16 @@ public class CarServiceTest {
     // test getlist capacity
     @DisplayName("Get list capacity")
     @Test
+    @Order(4)
     public void getListCapacityTest() {
         List<Integer> result = carRepository.getListCapacity();
         Assertions.assertEquals(result.size(), 1);
     }
 
     // test update car
-    @DisplayName("Test Update Car ")
+    @DisplayName("Test Update Car")
     @Test
+    @Order(5)
     public void updateCarTest() {
         CarRequest carRequest = new CarRequest();
         carRequest.setModelName("Toyota Vios");
@@ -160,8 +165,9 @@ public class CarServiceTest {
     }
 
     // test delete car
-    @DisplayName("Test Delete Car ")
+    @DisplayName("Test Delete Car")
     @Test
+    @Order(6)
     public void deleteCarTest() {
 
     }
@@ -169,6 +175,7 @@ public class CarServiceTest {
     // test getlist car search by capacity
     @DisplayName("Get list car search by capacity")
     @Test
+    @Order(7)
     public void getListCarSearchByCapacityTest() {
 
     }
@@ -176,6 +183,7 @@ public class CarServiceTest {
     // test getlist car search by parkingId
     @DisplayName("Get list car search by parkingId")
     @Test
+    @Order(8)
     public void getListCarSearchByParkingIdTest() {
 
     }
@@ -183,6 +191,7 @@ public class CarServiceTest {
     // test getlist car search by parkingId
     @DisplayName("Get list car search by modelName")
     @Test
+    @Order(9)
     public void getListCarSearchByModelNameTest() {
 
     }
@@ -190,6 +199,7 @@ public class CarServiceTest {
     // test get Car by plateNumber
     @DisplayName("Get car by plateNumber")
     @Test
+    @Order(10)
     public void getCarByPlateNumberTest() {
 
     }
@@ -197,13 +207,30 @@ public class CarServiceTest {
     // get list driver test
     @DisplayName("Get list driver test")
     @Test
+    @Order(11)
     public void getListDriverValidForContractTest() {
+        try{
+            String sDate="14/12/2022";
+            String eDate="15/12/2022";
+            Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
+            Date date2= new SimpleDateFormat ("dd/MM/yyyy").parse(eDate);
+            DriverByCarByContractRequest driverByCarByContractRequest = new DriverByCarByContractRequest();
+            driverByCarByContractRequest.setPlateNumber("34A-158.23");
+            driverByCarByContractRequest.setExpectedEndDate(date2);
+            driverByCarByContractRequest.setExpectedStartDate(date1);
+            carService.getListDriverByCarPlateNumber(driverByCarByContractRequest);
+
+
+        }catch (Exception e){
+
+        }
 
     }
 
     // search car for contract self driver type
     @DisplayName("Search car for contract self driver type")
     @Test
+    @Order(12)
     public void searchCarNoDriverTest() {
 
     }
@@ -211,6 +238,7 @@ public class CarServiceTest {
     // search car for contract had driver type
     @DisplayName("Search car for contract had driver type")
     @Test
+    @Order(13)
     public void searchCarHadDriverTest() {
 
     }

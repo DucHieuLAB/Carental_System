@@ -1,7 +1,7 @@
 package com.example.create_entity.Controller;
 
 import com.example.create_entity.Repository.*;
-import com.example.create_entity.Service.DriverService;
+import com.example.create_entity.Service.ServiceImpl.DriverService;
 import com.example.create_entity.dto.Request.DriverInfoRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

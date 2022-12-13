@@ -21,7 +21,7 @@ import java.util.List;
 @Table(name = "cars")
 public class CarEntity {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
@@ -29,7 +29,7 @@ public class CarEntity {
     private String modelName;
 
     @ManyToOne
-    @JoinColumn(name = "brand_id",nullable = false, foreignKey = @ForeignKey(name = "FK_Car_brand_id"))
+    @JoinColumn(name = "brand_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Car_brand_id"))
     BrandEntity brand;
 
     @OneToMany(
@@ -51,10 +51,10 @@ public class CarEntity {
     @Column(name = "deposit_amount", nullable = false)
     private double depositAmount;
 
-    @Column(name = "plate_number" ,  nullable = false)
+    @Column(name = "plate_number", nullable = false)
     private String plateNumber;
 
-    @Column(name = "capacity",nullable = false)
+    @Column(name = "capacity", nullable = false)
     private int capacity;
 
     @Column(name = "fuel")
@@ -66,22 +66,22 @@ public class CarEntity {
     @Column(name = "color")
     private String color;
 
-    @Column(name = "status",nullable = false)
+    @Column(name = "status", nullable = false)
     private int status;
 
     @Column(name = "description ")
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "license_id",nullable = false,foreignKey= @ForeignKey(name = "FK_Car_license_id") )
-     LicenseTypeEntity licenseTypeEntity;
+    @JoinColumn(name = "license_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Car_license_id"))
+    LicenseTypeEntity licenseTypeEntity;
 
 
     @ManyToOne
-    @JoinColumn(name = "parking_id",nullable = false, foreignKey = @ForeignKey(name = "FK_Car_parking_id"))
+    @JoinColumn(name = "parking_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Car_parking_id"))
     ParkingEntity parking;
 
-    public static CarEntity createCarEntity(CarRequest carRequest){
+    public static CarEntity createCarEntity(CarRequest carRequest) {
         CarEntity result = new CarEntity();
         result.setId(carRequest.getId());
         result.setModelName(carRequest.getModelName());
@@ -98,8 +98,8 @@ public class CarEntity {
         return result;
     }
 
-    public static CarResponseDetailResponse createCarResponseDetailResponse(CarEntity car){
-        if(ObjectUtils.isEmpty(car)){
+    public static CarResponseDetailResponse createCarResponseDetailResponse(CarEntity car) {
+        if (ObjectUtils.isEmpty(car)) {
             return null;
         }
         CarResponseDetailResponse crdp = new CarResponseDetailResponse();

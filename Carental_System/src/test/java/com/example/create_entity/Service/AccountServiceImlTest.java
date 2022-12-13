@@ -2,12 +2,10 @@ package com.example.create_entity.Service;
 
 import com.example.create_entity.Entity.StaffEntity;
 import com.example.create_entity.Repository.StaffRepository;
+import com.example.create_entity.Service.ServiceImpl.AccountServiceIml;
 import com.example.create_entity.dto.Request.StaffRequest;
 import com.example.create_entity.dto.Request.UpdateInfoStaffRequest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +13,8 @@ import org.springframework.http.ResponseEntity;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AccountServiceImlTest {
 
     @Autowired
@@ -292,7 +289,7 @@ class AccountServiceImlTest {
 
     @DisplayName("Update invalid identity staff")
     @Test
-    @Order(9)
+    @Order(10)
     public void testUpdateInvalidIdentityStaff() {
         UpdateInfoStaffRequest updateInfoStaffRequest = new UpdateInfoStaffRequest();
         updateInfoStaffRequest.setUserName("khanhpd9");

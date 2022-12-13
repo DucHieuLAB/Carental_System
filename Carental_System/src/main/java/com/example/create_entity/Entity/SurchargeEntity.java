@@ -34,6 +34,9 @@ public class SurchargeEntity {
     @JoinColumn(name = "staff_id", nullable = true, foreignKey = @ForeignKey(name = "FK_Surcharge_Staff"))
     private StaffEntity staffEntity;
 
+    @ManyToOne
+    @JoinColumn(name = "driver_id", nullable = true, foreignKey = @ForeignKey(name = "FK_Surcharge_Driver"))
+    private DriverEntity driverEntity;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate

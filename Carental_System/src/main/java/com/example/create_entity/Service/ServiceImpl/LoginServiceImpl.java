@@ -1,9 +1,9 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.ServiceImpl;
 
 import com.example.create_entity.Entity.AccountEntity;
-import com.example.create_entity.Entity.RoleEntity;
 import com.example.create_entity.Repository.AccountRepository;
 import com.example.create_entity.Repository.RoleRepository;
+import com.example.create_entity.Service.IService.LoginService;
 import com.example.create_entity.dto.Request.LoginRequest;
 import com.example.create_entity.dto.Response.ResponseVo;
 import com.example.create_entity.untils.JwtUtils;

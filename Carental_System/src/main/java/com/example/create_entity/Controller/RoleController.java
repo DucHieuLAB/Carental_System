@@ -1,7 +1,7 @@
 package com.example.create_entity.Controller;
 
 
-import com.example.create_entity.Service.RoleServiceIml;
+import com.example.create_entity.Service.ServiceImpl.RoleServiceIml;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;

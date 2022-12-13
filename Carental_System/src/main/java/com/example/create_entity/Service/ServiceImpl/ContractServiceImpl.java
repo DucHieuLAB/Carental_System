@@ -1,8 +1,9 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.ServiceImpl;
 
 import com.example.create_entity.Entity.*;
 
 import com.example.create_entity.Repository.*;
+import com.example.create_entity.Service.IService.ContractService;
 import com.example.create_entity.common.ValidError;
 import com.example.create_entity.dto.Request.*;
 import com.example.create_entity.dto.Response.*;
@@ -61,6 +62,8 @@ public class ContractServiceImpl implements ContractService {
     SurchargeRepository surchargeRepository;
     @Autowired
     SurchargeValidator surchargeValidator;
+    @Autowired
+    CarImageRepository carImageRepository;
 
     @Override
     public ResponseEntity<?> add(ContractRequest contractRequest) throws Error {
@@ -253,6 +256,9 @@ public class ContractServiceImpl implements ContractService {
                 if (l.getRealReturnDate() == null) {
                     isReturncar = false;
                 }
+                List<CarImageEntity> carImageEntities = carImageRepository.findCarImageEntitiesByPlateNumber(l.getPlateNumber());
+                List<ListCarImageResponse> listCarImageResponse = ListCarImageResponse.createListCarImagePesponse(carImageEntities);
+                l.setCarImage(listCarImageResponse);
             }
             ObjectResponse.put("BookingDetail", listContractDetailRespons);
             ObjectResponse.put("isReturnCar", isReturncar);
@@ -268,7 +274,6 @@ public class ContractServiceImpl implements ContractService {
                     ObjectResponse.put("HadDriver", contractHadDriverReponse);
                 }
             }
-            // if contract status = 5 put isReturnCar
             responseVo = ResponseVeConvertUntil.createResponseVo(true, "Lấy thông tin Hợp đồng thành công", ObjectResponse);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (NumberFormatException e) {
@@ -313,7 +318,7 @@ public class ContractServiceImpl implements ContractService {
                 contractEntity.setStatus(7);
             }
             if (i == 2) {
-                if (contractEntity.getStatus() <= 3) {
+                if (contractEntity.getStatus() <= 4) {
                     contractEntity.setNote(cancelContractRequest.getNote());
                     contractEntity.setStatus(7);
                 }
@@ -456,31 +461,39 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> addSurcharge(SurchargeRequest purchargeRequest) {
+    public ResponseEntity<?> addSurcharge(SurchargeRequest SurchargeRequest) {
         // validate
-        List<ValidError> errors = surchargeValidator.validateSurchargeRequest(purchargeRequest);
+        List<ValidError> errors = surchargeValidator.validateSurchargeRequest(SurchargeRequest);
         // if not success
         if (errors.size() > 0) {
             ResponseVo responseVo = new ResponseVo(false, "Lỗi xác thực", errors);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         // verify
-        ContractEntity contractEntity = br.FindByID(purchargeRequest.getContractId());
+        ContractEntity contractEntity = br.FindByID(SurchargeRequest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
             ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-
-        StaffEntity staffEntity = staffRepository.staffEntity(purchargeRequest.getStaffAccountId());
-        if (ObjectUtils.isEmpty(staffEntity)) {
-            ResponseVo responseVo = new ResponseVo(false, "Staff ID Không đúng", null);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
         SurchargeEntity surchargeEntity = new SurchargeEntity();
+        if (SurchargeRequest.getStaffAccountId() > 0){
+            StaffEntity staffEntity = staffRepository.staffEntity(SurchargeRequest.getStaffAccountId());
+            if (ObjectUtils.isEmpty(staffEntity)) {
+                ResponseVo responseVo = new ResponseVo(false, "Staff Account ID Không đúng", null);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            }
+            surchargeEntity.setStaffEntity(staffEntity);
+        }else {
+            DriverEntity driverEntity = dr.getByAccountEntity(SurchargeRequest.getDriverAccountId());
+            if (ObjectUtils.isEmpty(driverEntity)){
+                ResponseVo responseVo = new ResponseVo(false, "Driver Account ID Không đúng", null);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            }
+            surchargeEntity.setDriverEntity(driverEntity);
+        }
         surchargeEntity.setContractEntity(contractEntity);
-        surchargeEntity.setAmount(purchargeRequest.getAmount());
-        surchargeEntity.setNote(purchargeRequest.getNote());
-        surchargeEntity.setStaffEntity(staffEntity);
+        surchargeEntity.setAmount(SurchargeRequest.getAmount());
+        surchargeEntity.setNote(SurchargeRequest.getNote());
         surchargeEntity.setCreatedDate(new Date(System.currentTimeMillis()));
         surchargeRepository.save(surchargeEntity);
         // response

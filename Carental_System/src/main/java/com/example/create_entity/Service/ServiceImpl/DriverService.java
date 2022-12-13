@@ -1,4 +1,4 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.ServiceImpl;
 
 import com.example.create_entity.Entity.*;
 import com.example.create_entity.Repository.*;

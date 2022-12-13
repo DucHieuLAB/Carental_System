@@ -1,21 +1,14 @@
-package com.example.create_entity;
+package com.example.create_entity.Service;
 
-import com.example.create_entity.Entity.ContractDetailEntity;
-import com.example.create_entity.Entity.ContractEntity;
-import com.example.create_entity.Entity.ContractHadDriverEntity;
-import com.example.create_entity.Entity.PaymentEntity;
-import com.example.create_entity.Repository.ContractDetailRepository;
-import com.example.create_entity.Repository.ContractHadDriverRepository;
-import com.example.create_entity.Repository.ContractRepository;
-import com.example.create_entity.Repository.PaymentsRepository;
-import com.example.create_entity.Service.ContractServiceImpl;
+import com.example.create_entity.Entity.*;
+import com.example.create_entity.Repository.*;
+import com.example.create_entity.Service.ServiceImpl.ContractServiceImpl;
 import com.example.create_entity.dto.Request.*;
 import com.example.create_entity.dto.Response.ContractResponse;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ContractServiceTest {
     @Autowired
     ContractServiceImpl contractService;
@@ -41,8 +35,12 @@ public class ContractServiceTest {
     @Autowired
     PaymentsRepository paymentsRepository;
 
+    @Autowired
+    CarRepository carRepository;
+
     @DisplayName("Test Find Contract By CustomerID , ExceptedStartDate, ExceptedEndDate")
     @Test
+    @Order(2)
     public void getListExsitContract(){
         String sDate="17/12/2022";
         String eDate="18/12/2022";
@@ -60,6 +58,7 @@ public class ContractServiceTest {
 
     @DisplayName("Test Get Contract By Customer ID , StartDate , EndDate , type")
     @Test
+    @Order(3)
     public void getContract(){
         String sDate="17/12/2022";
         String eDate="18/12/2022";
@@ -74,7 +73,7 @@ public class ContractServiceTest {
             Assertions.assertNull(e);
         }
     }
-
+    @Order(1)
     @DisplayName("Test Create Contract Seft Driver")
     @Test
     public void createContractTest() {
@@ -115,7 +114,7 @@ public class ContractServiceTest {
             Assertions.assertNull(e);
         }
     }
-
+    @Order(4)
     @DisplayName("Test Create Contract Had Driver")
     @Test
     public void createContractHadDriverTest() {
@@ -171,6 +170,7 @@ public class ContractServiceTest {
 
     @DisplayName("Test Get Contract Detail")
     @Test
+    @Order(6)
     public void getContractDetail() {
         long contractId = 71;
         ContractEntity contractEntity = contractRepository.FindByID(contractId);
@@ -194,6 +194,7 @@ public class ContractServiceTest {
 
     @DisplayName("Test Get List Contract Detail By Customer")
     @Test
+    @Order(7)
     public void getListContractByCustomerID() {
         List<ContractEntity> contractEntities = contractRepository.getByCustomerId(1);
         Assertions.assertEquals(contractEntities.size(),9);
@@ -201,6 +202,7 @@ public class ContractServiceTest {
 
     @DisplayName("Test Update Driver And RealPrice")
     @Test
+    @Order(8)
     public void updateDriverAndRealPriceTest() {
         long contractId = 82;
         long contractDetailId = 63;
@@ -228,6 +230,7 @@ public class ContractServiceTest {
 
     @DisplayName("Cancel Contract By Customer")
     @Test
+    @Order(9)
     public void cancelContractByCustomerTest() {
         long contractId = 82;
         CancelContractRequest cancelContractRequest = new CancelContractRequest();
@@ -243,6 +246,7 @@ public class ContractServiceTest {
 
     @DisplayName("Cancel Contract By Staff")
     @Test
+    @Order(10)
     public void cancelContractByStaffTest() {
         long contractId = 82;
         CancelContractRequest cancelContractRequest = new CancelContractRequest();
@@ -258,6 +262,7 @@ public class ContractServiceTest {
 
     @DisplayName("Payment deposit By Customer")
     @Test
+    @Order(11)
     public void paymentDepositByCustomerTest() {
         CustomerTransactionRequest customerTransactionRequest = new CustomerTransactionRequest();
         long contractId = 82;
@@ -284,11 +289,11 @@ public class ContractServiceTest {
         }catch (Exception e){
             Assertions.assertNull(e);
         }
-
     }
 
     @DisplayName("Payment deposit By Customer")
     @Test
+    @Order(12)
     public void paymentDepositByStaffTest() {
         PaymentRequest paymentRequest = new PaymentRequest();
         long contractId = 82;
@@ -321,60 +326,162 @@ public class ContractServiceTest {
 
     @DisplayName("Payment By Customer")
     @Test
+    @Order(13)
     public void paymentNotDepositByTest() {
+        CustomerTransactionRequest customerTransactionRequest = new CustomerTransactionRequest();
+        long contractId = 82;
+        customerTransactionRequest.setContractId(contractId);
+        customerTransactionRequest.setPaid(50000);
+        customerTransactionRequest.setDeposit(false);
+        try {
+            // invalid case
+            contractService.addPaymentByCustomer(customerTransactionRequest);
+            ContractEntity contractEntity = contractRepository.FindByID(contractId);
 
+            List<PaymentEntity> entity = paymentsRepository.getListPaymentByContractId(contractId);
+            Assertions.assertEquals(0,entity.size());
+
+            customerTransactionRequest.setPaid(850000);
+            contractService.addPaymentByCustomer(customerTransactionRequest);
+            contractEntity = contractRepository.FindByID(contractId);
+            Assertions.assertEquals(4,contractEntity.getStatus());
+            List<PaymentEntity> entity1 = paymentsRepository.getListPaymentByContractId(contractId);
+            Assertions.assertEquals(1,entity1.size());
+            Assertions.assertEquals(850000,entity1.get(0).getPaid());
+            Assertions.assertEquals(1560000,entity1.get(0).getTotalAmount());
+            Assertions.assertEquals(1560000 - 850000,entity1.get(0).getReceivables());
+        }catch (Exception e){
+            Assertions.assertNull(e);
+        }
     }
 
     @DisplayName("Pay ment By Staff")
     @Test
+    @Order(14)
     public void paymentByTest() {
+        PaymentRequest paymentRequest = new PaymentRequest();
+        long contractId = 82;
+        paymentRequest.setContractId(contractId);
+        paymentRequest.setPaid(50000);
+        paymentRequest.setDeposit(false);
+        paymentRequest.setAccountId(5);
+        try {
+            // invalid case
+            contractService.addPayment(paymentRequest);
+            ContractEntity contractEntity = contractRepository.FindByID(contractId);
 
+            List<PaymentEntity> entity = paymentsRepository.getListPaymentByContractId(contractId);
+            Assertions.assertEquals(0,entity.size());
+
+            paymentRequest.setPaid(850000);
+            contractService.addPayment(paymentRequest);
+            contractEntity = contractRepository.FindByID(contractId);
+            Assertions.assertEquals(5,contractEntity.getStatus());
+            List<PaymentEntity> entity1 = paymentsRepository.getListPaymentByContractId(contractId);
+            Assertions.assertEquals(2,entity1.size());
+
+        }catch (Exception e){
+            Assertions.assertNull(e);
+        }
     }
 
     @DisplayName("get Car From parking")
     @Test
+    @Order(15)
     public void getCarFromParkingTest() {
+        long contractId = 82;
+        String plateNumber = "";
+        GetCarReQuest getCarReQuest = new GetCarReQuest();
+        getCarReQuest.setContractId(82);
+        List<String> plateNumbers = new ArrayList<>();
+        plateNumbers.add(plateNumber);
+        getCarReQuest.setPlateNumber(plateNumbers);
+        try {
+            contractService.comfirmGetCar(getCarReQuest);
 
+            ContractDetailEntity contractDetailEntity = contractDetailRepository.findContractDetailByContractIdByPlateNumber(contractId,plateNumber);
+
+            Assertions.assertNotNull(contractDetailEntity);
+            // check set pick up date in to database
+            Assertions.assertNotNull(contractDetailEntity.getReal_pick_up_date());
+            // check change car status
+            CarEntity carEntity = carRepository.findCarEntityByPlateNumber(plateNumber);
+            Assertions.assertNotNull(carEntity);
+            Assertions.assertEquals(2,carEntity.getStatus());
+            // check contract status
+            ContractEntity contractEntity = contractRepository.FindByID(contractId);
+            Assertions.assertEquals(5,contractEntity.getStatus());
+        }catch (Exception e){
+            Assertions.assertNull(e);
+        }
     }
 
     @DisplayName("Add Surcharge")
     @Test
+    @Order(16)
     public void addSurchargeTest() {
+        long staffAccountId = 8;
+        long driverAccountId = 6;
+        long contractId  = 82;
+        SurchargeRequest surchargeRequest = new SurchargeRequest();
+        surchargeRequest.setContractId(contractId);
+        surchargeRequest.setNote("Test Add Surchage");
+        surchargeRequest.setAmount(1200);
+        ResponseEntity<?> responseEntity = contractService.addSurcharge(surchargeRequest);
+        // error invalid StaffId
+        Assertions.assertEquals(500,responseEntity.getStatusCodeValue());
+        surchargeRequest.setStaffAccountId(staffAccountId);
+        ResponseEntity<?> responseEntity1 = contractService.addSurcharge(surchargeRequest);
+        // Valid Staff add Surchage
+        Assertions.assertEquals(200,responseEntity1.getStatusCodeValue());
+        surchargeRequest.setDriverAccountId(driverAccountId);
+        ResponseEntity<?> responseEntity2 = contractService.addSurcharge(surchargeRequest);
+        // Valid Staff add Surchage
+        Assertions.assertEquals(200,responseEntity2.getStatusCodeValue());
+
+
+
 
     }
 
     @DisplayName("Return Car ")
     @Test
+    @Order(17)
     public void returnCarTest() {
 
     }
 
     @DisplayName("Finish Contract")
     @Test
+    @Order(18)
     public void finishContractTest() {
 
     }
 
     @DisplayName("Get List Payment By Customer Id")
     @Test
+    @Order(19)
     public void getListPaymentByCustomerTest() {
 
     }
 
     @DisplayName("Get List Payment Cal By Contract")
     @Test
+    @Order(20)
     public void getListPaymentByContractTest() {
 
     }
 
     @DisplayName("Get List Surchage By Contract ")
     @Test
+    @Order(21)
     public void getListSurchageByContractTest() {
 
     }
 
     @DisplayName("Get List Payment By Contract ")
     @Test
+    @Order(22)
     public void getListPaymentTest() {
 
     }

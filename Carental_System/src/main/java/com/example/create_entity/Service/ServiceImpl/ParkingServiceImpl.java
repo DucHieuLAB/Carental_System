@@ -1,12 +1,12 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.ServiceImpl;
 
 import com.example.create_entity.Entity.DistrictsEntity;
 import com.example.create_entity.Entity.ParkingEntity;
 import com.example.create_entity.Repository.DistrictRepository;
 import com.example.create_entity.Repository.ParkingRepository;
+import com.example.create_entity.Service.IService.ParkingService;
 import com.example.create_entity.dto.Request.DistricRequest;
 import com.example.create_entity.dto.Request.ParkingRequest;
-import com.example.create_entity.dto.Response.ListCarResponse;
 import com.example.create_entity.dto.Response.ListParkingResponse;
 import com.example.create_entity.dto.Response.ParkingResponse;
 import com.example.create_entity.dto.Response.ResponseVo;

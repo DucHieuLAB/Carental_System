@@ -1,8 +1,6 @@
 package com.example.create_entity.Controller;
 
-import com.example.create_entity.Service.CarServiceImpl;
-import com.example.create_entity.Service.ParkingServiceImpl;
-import com.example.create_entity.dto.Request.CarRequest;
+import com.example.create_entity.Service.ServiceImpl.ParkingServiceImpl;
 import com.example.create_entity.dto.Request.ParkingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

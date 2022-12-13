@@ -1,8 +1,9 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.ServiceImpl;
 
 import com.example.create_entity.Entity.BrandEntity;
 import com.example.create_entity.Repository.BrandRepository;
 import com.example.create_entity.Repository.CarRepository;
+import com.example.create_entity.Service.IService.BrandService;
 import com.example.create_entity.dto.Request.BrandRequest;
 import com.example.create_entity.dto.Response.BrandResponse;
 import com.example.create_entity.dto.Response.ListBrandReponse;

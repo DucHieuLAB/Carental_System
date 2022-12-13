@@ -2,23 +2,18 @@ package com.example.create_entity.Service;
 
 import com.example.create_entity.Entity.DriverEntity;
 import com.example.create_entity.Repository.DriverRepository;
+import com.example.create_entity.Service.ServiceImpl.DriverService;
 import com.example.create_entity.dto.Request.DriverInfoRequest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class DriverServiceTest {
 
     @Autowired

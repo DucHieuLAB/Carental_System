@@ -1,4 +1,4 @@
-package com.example.create_entity.Service;
+package com.example.create_entity.Service.ServiceImpl;
 
 import com.example.create_entity.Entity.ContractDetailEntity;
 
@@ -6,17 +6,12 @@ import com.example.create_entity.Entity.ContractHadDriverEntity;
 import com.example.create_entity.Entity.DistrictsEntity;
 import com.example.create_entity.Repository.ContractHadDriverRepository;
 import com.example.create_entity.Repository.DistrictRepository;
+import com.example.create_entity.Service.IService.ContractDetailService;
 import com.example.create_entity.dto.Request.ListBookingDetailRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 

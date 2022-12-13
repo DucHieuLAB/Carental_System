@@ -1,7 +1,6 @@
 package com.example.create_entity.Controller;
 
-import com.example.create_entity.Service.ContractServiceImpl;
-import com.example.create_entity.dto.FinishContractRequest;
+import com.example.create_entity.Service.ServiceImpl.ContractServiceImpl;
 import com.example.create_entity.dto.Request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

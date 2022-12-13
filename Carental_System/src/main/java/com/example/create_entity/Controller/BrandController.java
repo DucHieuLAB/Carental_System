@@ -1,7 +1,6 @@
 package com.example.create_entity.Controller;
 
-import com.example.create_entity.Service.BrandService;
-import com.example.create_entity.Service.BrandServiceImpl;
+import com.example.create_entity.Service.ServiceImpl.BrandServiceImpl;
 import com.example.create_entity.dto.Request.BrandRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
