@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>Create_Entity</artifactId>
+    <artifactId>CRMS_G8</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>CRSM_Ver1</name>
+    <name>CRMS_Ver1</name>
     <description>Car Rental Managerment System</description>
     <properties>
         <java.version>11</java.version>
