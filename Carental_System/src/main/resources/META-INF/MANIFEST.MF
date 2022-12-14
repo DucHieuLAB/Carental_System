@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: com.example.create_entity.CreateEntityApplication
+Main-Class: com.example.crsm_g8.CRSM_G8_Application
 
