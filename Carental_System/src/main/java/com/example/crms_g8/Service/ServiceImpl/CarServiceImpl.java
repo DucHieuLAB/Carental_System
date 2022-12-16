@@ -118,7 +118,7 @@ public class CarServiceImpl implements CarService {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
         Page<CarEntity> carPage = null;
         if (ObjectUtils.isEmpty(modelName)) {
-            carPage = carRepository.findCarEntityByStatus(pageable);
+            carPage =  carRepository.findBySearch("%%", parkingId, capacity, pageable);
         } else {
             carPage = carRepository.findBySearch("%" + modelName + "%", parkingId, capacity, pageable);
         }
@@ -148,7 +148,6 @@ public class CarServiceImpl implements CarService {
         responseData.put("totalPage", carPage.getTotalPages());
         responseVo.setData(responseData);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
-
     }
 
     @Override
@@ -211,6 +210,18 @@ public class CarServiceImpl implements CarService {
         CarEntity carEntity = carRepository.findCarEntityById(carId);
         if (ObjectUtils.isEmpty(carEntity)) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy xe tương ứng", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        // check car had contract
+        List<ContractEntity> futureContractExsit = contractRepository.findContractFutureCar(new Date(System.currentTimeMillis()), carEntity.getPlateNumber());
+        if (futureContractExsit.size() > 0){
+            HashMap<String,Object> listInvalidContract = new HashMap<>();
+            List<Long> listContract = new ArrayList<>();
+            for (ContractEntity contractEntity : futureContractExsit){
+                listContract.add(contractEntity.getId());
+            }
+            listInvalidContract.put("Contracts",listContract);
+            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không thể xóa xe do tồn tại hợp đồng", listInvalidContract);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
         try {
@@ -302,9 +313,12 @@ public class CarServiceImpl implements CarService {
             // check car had contract detail or not
             boolean hadNextStep = true;
             List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId(),new Date(System.currentTimeMillis()));
+            if (carEntity.getStatus() == 0){
+                continue;
+            }
             if (checkCarHadInDetailContract.size() <= 0 ) {
                 if (carEntity.getParking().getId() == pickupParkingId){
-                    result.add(carEntity);
+                        result.add(carEntity);
                 }
                 hadNextStep = false;
             }
@@ -381,6 +395,9 @@ public class CarServiceImpl implements CarService {
         List<CarEntity> listPassValidStartDateAndEndDate  = new ArrayList<>();
         for (CarEntity carEntity : ListCars) {
             // check car had contract detail or not
+            if (carEntity.getStatus() == 0){
+                continue;
+            }
             boolean hadNextStep = true;
             List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId(),new Date(System.currentTimeMillis()));
             if (checkCarHadInDetailContract.size() <= 0) {

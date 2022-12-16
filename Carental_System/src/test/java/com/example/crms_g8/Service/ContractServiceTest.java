@@ -1,28 +1,36 @@
 package com.example.crms_g8.Service;
 
+import com.example.crms_g8.Entity.CarEntity;
+import com.example.crms_g8.Entity.ContractEntity;
+import com.example.crms_g8.Repository.*;
+import com.example.crms_g8.Service.ServiceImpl.ContractServiceImpl;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ContractServiceTest {
-//    @Autowired
-//    ContractServiceImpl contractService;
-//
-//    @Autowired
-//    ContractRepository contractRepository;
-//
-//    @Autowired
-//    ContractDetailRepository contractDetailRepository;
-//
-//    @Autowired
-//    ContractHadDriverRepository contractHadDriverRepository;
-//
-//    @Autowired
-//    PaymentsRepository paymentsRepository;
-//
-//    @Autowired
-//    CarRepository carRepository;
+    @Autowired
+    ContractServiceImpl contractService;
+
+    @Autowired
+    ContractRepository contractRepository;
+
+    @Autowired
+    ContractDetailRepository contractDetailRepository;
+
+    @Autowired
+    ContractHadDriverRepository contractHadDriverRepository;
+
+    @Autowired
+    PaymentsRepository paymentsRepository;
+
+    @Autowired
+    CarRepository carRepository;
 //
 //    @DisplayName("Test Find Contract By CustomerID , ExceptedStartDate, ExceptedEndDate")
 //    @Test
@@ -470,5 +478,23 @@ public class ContractServiceTest {
 //    @Order(22)
 //    public void getListPaymentTest() {
 //
+//    }
+
+//    @DisplayName("Find List Contract had car in future")
+//    @Test
+//    @Order(23)
+//    public void findInvalidContractByCar(){
+//        try {
+//            String sDate = "14/12/2022";
+//            String eDate = "14/12/2022";
+//            Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
+//            Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse(eDate);
+//            CarEntity carEntity = carRepository.checkCarValidInTime(date1,date2,"14A-858.56");
+//            ContractEntity contractEntity = contractRepository.findContractInvaLidTimeByCarPlateNumber(date1,date2,"14A-858.56");
+//            Assertions.assertNull(contractEntity);
+//            Assertions.assertNull(carEntity);
+//        }catch (Exception e){
+//            Assertions.assertNull(e);
+//        }
 //    }
 }

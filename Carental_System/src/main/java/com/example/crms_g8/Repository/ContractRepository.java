@@ -20,10 +20,10 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
 
 
     @Query("SELECT b FROM ContractEntity b WHERE b.customer.ID = ?1 AND b.expected_start_date = ?2 AND b.expected_end_date = ?3 AND b.had_driver = ?4 AND b.status > 0 ")
-    ContractEntity getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(Long id, Date expected_start_date, Date expected_end_date,boolean isHadDriver);
+    ContractEntity getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(Long id, Date expected_start_date, Date expected_end_date, boolean isHadDriver);
 
     @Query(value = "select * from contracts where (status = 1 or status = 2 or status = 3 )    order by expected_start_date ASC", nativeQuery = true)
-    Page<ContractEntity>ManagerRequest(Pageable pageable);
+    Page<ContractEntity> ManagerRequest(Pageable pageable);
 
 
     @Query(value = "select * from contracts where (status = 4 or status = 5 or status = 6 or status=7 )  order by expected_start_date ASC", nativeQuery = true)
@@ -43,7 +43,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            where customers.full_name like %?1% \n" +
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END AND " +
-            "(contracts.status = 4 or contracts.status = 5 or contracts.status = 6 or contracts.status = 7)",nativeQuery = true)
+            "(contracts.status = 4 or contracts.status = 5 or contracts.status = 6 or contracts.status = 7)", nativeQuery = true)
     List<ContractEntity> SearchByNameContract2(String name, Integer HadDriver, Integer Status);
 
     @Query(value = "  select * from contracts left join customers \n" +
@@ -65,7 +65,6 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
     List<ContractEntity> SearchByPhoneContract2(String phone, Integer HadDriver, Integer Status);
 
 
-
 /// List Request
 
     @Query(value = "select * from contracts left join customers  \n" +
@@ -82,7 +81,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            where customers.full_name like %?1% \n" +
             "            AND contracts.had_driver = CASE WHEN ?2 IS NULL THEN contracts.had_driver  ELSE ?2 END\n" +
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END AND " +
-            "(contracts.status = 1 or contracts.status = 2 or contracts.status = 6 or contracts.status = 3)",nativeQuery = true)
+            "(contracts.status = 1 or contracts.status = 2 or contracts.status = 6 or contracts.status = 3)", nativeQuery = true)
     List<ContractEntity> SearchByNameRequest2(String name, Integer HadDriver, Integer Status);
 
     @Query(value = "  select * from contracts left join customers \n" +
@@ -101,17 +100,6 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "            AND contracts.status = CASE WHEN ?3 IS NULL THEN contracts.status ELSE ?3 END " +
             "AND(contracts.status = 1 or contracts.status = 2 or contracts.status = 3)", nativeQuery = true)
     List<ContractEntity> SearchByPhoneRequest2(String phone, Integer HadDriver, Integer Status);
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Query("SELECT c FROM ContractEntity c WHERE c.id = ?1 ")
@@ -154,14 +142,16 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
 
     @Query("SELECT c FROM ContractEntity c WHERE c.id= ?1 and c.status < 6 and c.status > 0")
     ContractEntity findByIdAndStatusValid(long contractId);
-    @Query(value = "SELECT * FROM contracts WHERE contracts.status=7 and contracts.create_date >= DATE(NOW()) - INTERVAL 30 DAY ",nativeQuery = true )
+
+    @Query(value = "SELECT * FROM contracts WHERE contracts.status=7 and contracts.create_date >= DATE(NOW()) - INTERVAL 30 DAY ", nativeQuery = true)
     List<ContractEntity> ListCloseContract();
 
     @Query(value = "SELECT *\n" +
             "FROM contracts\n" +
             "WHERE ADDDATE(contracts.expected_start_date, INTERVAL 1 DAY) < CURDATE() and contracts.status  > 4 and contracts.status < 7", nativeQuery = true)
     List<ContractEntity> getListInvaliContract();
-//startdate <= startdateRequest && endDate > endDateRequest , startdate > startdateRequest endđate <= enddateRequest
+
+    //startdate <= startdateRequest && endDate > endDateRequest , startdate > startdateRequest endđate <= enddateRequest
     @Query("SELECT c FROM ContractEntity c WHERE " +
             "c.expected_start_date > ?2 and  c.expected_start_date < ?3 and c.customer.ID = ?1" +
             "or c.expected_end_date > ?2 and c.expected_end_date < ?3 and c.customer.ID = ?1" +
@@ -177,4 +167,21 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "OR ct.expected_start_date <=  ?2 AND ct.expected_end_date >  ?3 and ct.status < 6 and ct.status > 1 \n" +
             "LIMIT 1", nativeQuery = true)
     ContractEntity findInvalidDateBookingDriver(Long id, Date expectedStartDate, Date expectedEndDate);
+
+    @Query(value = "SELECT * \n" +
+            "FROM cars \n" +
+            "JOIN contract_details c on cars.id = c.car_id AND cars.plate_number = ?3\n" +
+            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
+            "WHERE ct.expected_start_date >= ?1 AND ct.expected_start_date <= ?2 and ct.status >  0 and ct.status < 6\n" +
+            "OR ct.expected_start_date < ?1 AND ct.expected_end_date >  ?1 and ct.status >  0 and ct.status < 6 \n" +
+            "OR ct.expected_end_date >=  ?1 AND ct.expected_end_date <=  ?2 and  ct.status >  0 and ct.status < 6\n" +
+            "LIMIT 1", nativeQuery = true)
+    ContractEntity findContractInvaLidTimeByCarPlateNumber(Date date1, Date date2, String s);
+
+    @Query(value = "SELECT * \n" +
+            "FROM cars \n" +
+            "JOIN contract_details c on cars.id = c.car_id AND cars.plate_number = ?2\n" +
+            "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
+            "WHERE ct.expected_start_date >= ?1  and ct.status >  0 and ct.status < 7", nativeQuery = true)
+    List<ContractEntity> findContractFutureCar(Date date, String plateNumber);
 }

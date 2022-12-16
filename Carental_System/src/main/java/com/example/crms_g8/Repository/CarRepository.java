@@ -53,7 +53,7 @@ public interface CarRepository extends JpaRepository<CarEntity,Long> {
             "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
             "WHERE ct.expected_start_date >= ?1 AND ct.expected_start_date <= ?2\n" +
             "OR ct.expected_start_date < ?1 AND ct.expected_end_date >  ?1 \n" +
-            "OR ct.expected_start_date >=  ?1 AND ct.expected_end_date >  ?2 \n" +
+            "OR ct.expected_start_date >=  ?1 AND ct.expected_end_date <=  ?2 \n" +
             "LIMIT 1", nativeQuery = true)
     CarEntity checkCarValidInTime(Date expectedStartDate, Date expectedEndDate, String carPlateNumber);
 

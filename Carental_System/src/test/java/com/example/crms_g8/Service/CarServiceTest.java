@@ -1,16 +1,32 @@
 package com.example.crms_g8.Service;
 
+import com.example.crms_g8.Entity.CarEntity;
+import com.example.crms_g8.Entity.ContractEntity;
+import com.example.crms_g8.Repository.CarRepository;
+import com.example.crms_g8.Repository.ContractRepository;
+import com.example.crms_g8.Service.ServiceImpl.CarServiceImpl;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CarServiceTest {
-//    @Autowired
-//    CarServiceImpl carService;
-//
-//    @Autowired
-//    CarRepository carRepository;
+    @Autowired
+    CarServiceImpl carService;
+
+    @Autowired
+    CarRepository carRepository;
+
+    @Autowired
+    ContractRepository contractRepository;
 //
 //    @BeforeAll
 //    public static void setUp() {
@@ -156,7 +172,10 @@ public class CarServiceTest {
 //    @Test
 //    @Order(6)
 //    public void deleteCarTest() {
-//
+//        String plateNumber = "14A-858.56";
+//        List<ContractEntity> contractEntityList = contractRepository.findContractFutureCar(new Date(System.currentTimeMillis()),plateNumber);
+//        Assertions.assertNotNull(contractEntityList);
+//        Assertions.assertEquals(false,contractEntityList.size()>0?true:false);
 //    }
 //
 //    // test getlist car search by capacity
@@ -164,7 +183,15 @@ public class CarServiceTest {
 //    @Test
 //    @Order(7)
 //    public void getListCarSearchByCapacityTest() {
-//
+//        int pageIndex = 1;
+//        int pageSize = 10;
+//        long parkingId = 1;
+//        int capacity = 4;
+//        String modelName = "";
+//        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+////        carService.findAll(pageIndex,pageSize,modelName,parkingId,capacity);
+//        Page<CarEntity> carEntities = carRepository.findBySearch("%%",parkingId,capacity,pageable);
+//        Assertions.assertEquals(3,carEntities.getTotalElements());
 //    }
 //
 //    // test getlist car search by parkingId
@@ -172,7 +199,15 @@ public class CarServiceTest {
 //    @Test
 //    @Order(8)
 //    public void getListCarSearchByParkingIdTest() {
-//
+//        int pageIndex = 1;
+//        int pageSize = 10;
+//        long parkingId = 1;
+//        int capacity = 4;
+//        String modelName = "";
+//        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+////        carService.findAll(pageIndex,pageSize,modelName,parkingId,capacity);
+//        Page<CarEntity> carEntities = carRepository.findBySearch("%%",parkingId,capacity,pageable);
+//        Assertions.assertEquals(3,carEntities.getTotalElements());
 //    }
 //
 //    // test getlist car search by parkingId
@@ -214,12 +249,22 @@ public class CarServiceTest {
 //
 //    }
 //
-//    // search car for contract self driver type
+    // search car for contract self driver type
 //    @DisplayName("Search car for contract self driver type")
 //    @Test
 //    @Order(12)
 //    public void searchCarNoDriverTest() {
-//
+//        try {
+//            String sDate = "14/12/2022";
+//            String eDate = "14/12/2022";
+//            Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
+//            Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse(eDate);
+//            CarEntity carEntity = carRepository.checkCarValidInTime(date1,date2,"14A-858.56");
+////            carService.getListCarSelfDriver();
+//            Assertions.assertNull(carEntity);
+//        }catch (Exception e){
+//            Assertions.assertNull(e);
+//        }
 //    }
 //
 //    // search car for contract had driver type
