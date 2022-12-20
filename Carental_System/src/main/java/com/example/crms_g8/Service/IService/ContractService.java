@@ -11,11 +11,11 @@ import java.util.List;
 public interface ContractService {
     ResponseEntity<?> getListContractByCustomerId(long customerId);
 
-    ResponseEntity<?> getContractPaymentInf(long id);
+    ResponseEntity<?> getContractPayment(long id);
 
     ResponseEntity<?> getListSurchargeByContract(long contractId);
 
-    ResponseEntity<?> getListPaymentByStaff(long contractId);
+    ResponseEntity<?> getListPaymentByContract(long contractId);
 
     ResponseEntity<?> getExceptedPrice(ExceptedPriceRequest exceptedPriceRequest);
 

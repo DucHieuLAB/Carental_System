@@ -43,7 +43,7 @@ public class ContractDetailServiceImpl implements ContractDetailService {
     public ResponseEntity<?> ListBookingDetail(Long id) {
         ContractDetailResponse contractDetailResponse = new ContractDetailResponse();
         ContractDetailEntity contractDetailEntity;
-        contractDetailEntity = contractDetailRepository.BookingDetail(id);
+        contractDetailEntity = contractDetailRepository.getContractDetailById(id);
 
         contractDetailResponse.setReal_Pick_Up_Date(contractDetailEntity.getReal_pick_up_date());
         contractDetailResponse.setBookingID(contractDetailEntity.getBooking().getId());

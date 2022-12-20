@@ -64,15 +64,13 @@ public class ContractServiceImpl implements ContractService {
     SurchargeValidator surchargeValidator;
     @Autowired
     CarImageRepository carImageRepository;
+    @Autowired
+    PaymentRequestValidator paymentRequestValidator;
 
     @Override
     public ResponseEntity<?> add(ContractRequest contractRequest) throws Error {
         ResponseVo responseVo = null;
         // validate
-        if (ObjectUtils.isEmpty(contractRequest)) {
-            responseVo = ResponseVeConvertUntil.createResponseVo(false, "Contract truyền vào trống", null);
-            return new ResponseEntity<>(responseVo, HttpStatus.OK);
-        }
         if (contractRequest.getListCarPlateNumber().isEmpty()) {
             responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn chưa chọn xe", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -97,7 +95,7 @@ public class ContractServiceImpl implements ContractService {
         contractRequest.setExpectedEndDate(DateUntil.removeTime(endDate));
         // check user dont have same contact type start and end same day
         List<ContractEntity> exsitBooking = br.findByCustomerIDAndExpectedStartDateAndExpectedEndDate(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate());
-        if (!exsitBooking.isEmpty() || exsitBooking.size() > 0) {
+        if (exsitBooking.size() != 0) {
             if (exsitBooking.size() == 2) {
                 responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn không thể đặt thêm hợp đồng bắt đầu từ ngày " + contractRequest.getExpectedStartDate() + " đến ngày " + contractRequest.getExpectedEndDate() + " ", null);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -144,10 +142,13 @@ public class ContractServiceImpl implements ContractService {
             newContract.setCreatedDate(date);
             // save
             br.save(newContract);
-            // get Contract with ID
+            // get Contract with ID check contractExsitInDatabase
             newContract = br.getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate(), contractRequest.isHad_driver());
+            if (ObjectUtils.isEmpty(newContract)) {
+                throw new Exception("Lưu hợp đồng không thành công");
+            }
             ContractHadDriverReponse contractHadDriverReponse = null;
-            if (newContract.isHad_driver() == true) {
+            if (newContract.isHad_driver()) {
                 ContractHadDriverEntity entity = new ContractHadDriverEntity();
                 entity.set_one_way(contractRequest.isOneWay());
                 // check distric exsit if not create one
@@ -304,12 +305,16 @@ public class ContractServiceImpl implements ContractService {
         long id = cancelContractRequest.getContractId();
         long i = cancelContractRequest.isDoCustomer() == true ? 2 : 1;
         ContractEntity contractEntity = br.FindByID(id);
-        if (i < 1 || i > 2) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "role chưa hợp lệ", null);
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
         if (ObjectUtils.isEmpty(contractEntity)) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Mã hợp đồng không đúng", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        if (contractEntity.getStatus() == 6){
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Hợp đồng đã hoàn thành không thể xóa", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        if (contractEntity.getStatus() == 7){
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Hợp đồng đã được xóa", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         try {
@@ -318,11 +323,15 @@ public class ContractServiceImpl implements ContractService {
                 contractEntity.setStatus(7);
             }
             if (i == 2) {
-                if (contractEntity.getStatus() <= 4) {
+                if (contractEntity.getStatus() <= 4 ) {
                     contractEntity.setNote(cancelContractRequest.getNote());
                     contractEntity.setStatus(7);
+                }else {
+                    ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn không thể hủy hợp đồng", null);
+                    return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
                 }
             }
+            contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
             br.save(contractEntity);
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "Hủy hợp đồng thành công", null);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -364,7 +373,7 @@ public class ContractServiceImpl implements ContractService {
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         for (ListContractDetailDriverRequest l : listContractDetailDriverRequests) {
-            ContractDetailEntity contractDetailEntity = bdr.BookingDetail(l.getBookingDetailId());
+            ContractDetailEntity contractDetailEntity = bdr.getContractDetailById(l.getBookingDetailId());
             if (ObjectUtils.isEmpty(contractDetailEntity)) {
                 throw new Exception("Không tìm thấy thông tin chi tiết đông id = " + l.getBookingDetailId());
             }
@@ -373,10 +382,10 @@ public class ContractServiceImpl implements ContractService {
                 throw new Exception("Không tìm thấy thông tin tài xế ID= " + l.getDriverId());
             }
             long countByDriver = bdr.getCountContractDetailByDriverId(entity.getId());
-            DriverEntity checkValidDate = null;
+            ContractEntity checkValidDate = null;
             // if driver dont had any contract
             if (countByDriver > 0) {
-                checkValidDate = dr.findDriverValidDate(entity.getId(), contractEntity.getExpected_start_date(), contractEntity.getExpected_end_date());
+                checkValidDate = br.findInvalidDateBookingDriver(entity.getId(), contractEntity.getExpected_start_date(), contractEntity.getExpected_end_date());
                 if (!ObjectUtils.isEmpty(checkValidDate)) {
                     throw new Exception("Tài Xế: " + entity.getFullName() + " hiện đang có hợp đồng khác");
                 }
@@ -419,7 +428,7 @@ public class ContractServiceImpl implements ContractService {
         // if success
         ContractEntity contractEntity = br.findByIdAndStatusValid(CarReQuest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
-            ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);
+            ResponseVo responseVo = new ResponseVo(false, "Không tìm thấy hợp đồng hợp lệ", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         if (contractEntity.getStatus() != 4) {
@@ -475,6 +484,10 @@ public class ContractServiceImpl implements ContractService {
             ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
+        if (contractEntity.getStatus() >= 6 || contractEntity.getStatus() == 0){
+            ResponseVo responseVo = new ResponseVo(false, "Hợp đồng đã kết thúc", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
         SurchargeEntity surchargeEntity = new SurchargeEntity();
         if (SurchargeRequest.getStaffAccountId() > 0) {
             StaffEntity staffEntity = staffRepository.staffEntity(SurchargeRequest.getStaffAccountId());
@@ -517,7 +530,7 @@ public class ContractServiceImpl implements ContractService {
         //verify
         ContractEntity contractEntity = br.findByIdAndStatusValid(returnCarRequest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
-            ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);
+            ResponseVo responseVo = new ResponseVo(false, "Không tìm thấy hợp đồng hợp lệ", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         if (contractEntity.getStatus() < 5 || contractEntity.getStatus() == 6) {
@@ -540,9 +553,10 @@ public class ContractServiceImpl implements ContractService {
         bdr.save(contractDetailEntity);
         carEntity.setStatus(1);
         carEntity.setParking(contractEntity.getReturn_parking());
-        cr.save(carEntity);
         contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         br.save(contractEntity);
+        cr.save(carEntity);
+
         //response
         ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "Xe : " + returnCarRequest.getPlateNumber() + " đã được trả thành công vào " + new Date(System.currentTimeMillis()), null);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -608,11 +622,15 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public ResponseEntity<?> addPayment(PaymentRequest paymentRequest) throws Exception {
         // validate
-
+            List<ValidError> errors = paymentRequestValidator.validatePaymentRequest(paymentRequest);
+            if (errors.size()>0){
+                ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Lỗi thông tin gửi đi", errors);
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            }
         // verifi
         ContractEntity contractEntity = br.findByIdAndStatusValid(paymentRequest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng hợp lệ", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         StaffEntity staffEntity = null;
@@ -623,7 +641,6 @@ public class ContractServiceImpl implements ContractService {
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
         }
-
         // cal total
         List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
         double totalAmount = 0;
@@ -706,7 +723,6 @@ public class ContractServiceImpl implements ContractService {
         }
         ResponseVo responseVo = new ResponseVo(true, "Cập nhật thông tin thành công", null);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
-
     }
 
     @Override
@@ -745,7 +761,7 @@ public class ContractServiceImpl implements ContractService {
         // add payment
         ContractEntity contractEntity = br.findByIdAndStatusValid(customerTransactionRequest.getContractId());
         if (ObjectUtils.isEmpty(contractEntity)) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng hợp lệ", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         if (customerTransactionRequest.isDeposit()) {
@@ -831,6 +847,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public ResponseEntity<?> getExceptedPrice(ExceptedPriceRequest exceptedPriceRequest) {
+        double deposit = 0;
         double expectedRentalPrice = 0;
         long diffInMillies = Math.abs(exceptedPriceRequest.getExpectedEndDate().getTime() - exceptedPriceRequest.getExpectedStartDate().getTime());
         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
@@ -844,6 +861,7 @@ public class ContractServiceImpl implements ContractService {
                 return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
             }
             expectedRentalPrice += carEntity.getRentalPrice() * diff;
+            deposit += carEntity.getDepositAmount();
         }
 
         HashMap<String, Object> reponse = new HashMap<>();
@@ -852,6 +870,7 @@ public class ContractServiceImpl implements ContractService {
         reponse.put("listCar", exceptedPriceRequest.getListCarPlateNumber());
         NumberFormat formatter = new DecimalFormat("#0.00");
         reponse.put("exceptedPrice", formatter.format(expectedRentalPrice));
+        reponse.put("deposit",deposit);
         ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "API get excepted price", reponse);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
@@ -860,7 +879,7 @@ public class ContractServiceImpl implements ContractService {
     public ResponseEntity<?> getListSurchargeByContract(long contractId) {
         ContractEntity contractEntity = br.findByIdAndStatusValid(contractId);
         if (ObjectUtils.isEmpty(contractEntity)) {
-            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng", null);
+            ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng hợp lệ", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
         List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
@@ -870,7 +889,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ResponseEntity<?> getListPaymentByStaff(long contractId) {
+    public ResponseEntity<?> getListPaymentByContract(long contractId) {
         // list Contract
         ContractEntity contractEntity = br.FindByID(contractId);
         if (ObjectUtils.isEmpty(contractEntity)) {
@@ -895,7 +914,7 @@ public class ContractServiceImpl implements ContractService {
 
 
     @Override
-    public ResponseEntity<?> getContractPaymentInf(long id) {
+    public ResponseEntity<?> getContractPayment(long id) {
         Optional<ContractEntity> contractEntity = br.findById(id);
         if (!contractEntity.isPresent()) {
             ResponseVo responseVo = new ResponseVo(false, "Hợp đồng không tồn tại", null);

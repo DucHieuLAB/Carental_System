@@ -95,8 +95,8 @@ public class ContractController {
     }
 
     @PutMapping("/addSurchargeEntity")
-    public ResponseEntity<?> addSurchargeEntity(@RequestBody SurchargeRequest purchargeRequest){
-        return contractService.addSurcharge(purchargeRequest);
+    public ResponseEntity<?> addSurchargeEntity(@RequestBody SurchargeRequest surchargeRequest){
+        return contractService.addSurcharge(surchargeRequest);
     }
     @GetMapping("/getSurchargeByContract/{contractId}")
     public ResponseEntity<?> getListSurchargeByContract(@PathVariable long contractId){
@@ -120,12 +120,12 @@ public class ContractController {
 
     @GetMapping("/listPayment/{ContractId}")
     public ResponseEntity<?> getListPaymentByContract(@PathVariable long ContractId){
-        return contractService.getListPaymentByStaff(ContractId);
+        return contractService.getListPaymentByContract(ContractId);
     }
 
     @GetMapping("/getPaymentInf/{ContractId}")
     public ResponseEntity<?> getPaymentInf(@PathVariable long ContractId){
-        return contractService.getContractPaymentInf(ContractId);
+        return contractService.getContractPayment(ContractId);
     }
 
     @GetMapping("/finishContract/{ContractId}")

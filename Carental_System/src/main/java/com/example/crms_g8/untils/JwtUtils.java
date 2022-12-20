@@ -20,7 +20,6 @@ public class JwtUtils {
         Date issuedAt = new Date(miliTime);
         Date expiryAt = new Date(exiryTime);
 
-
         Claims claims = Jwts.claims()
                 .setSubject(Long.toString(accountEntity.getID()))
                 .setIssuedAt(issuedAt)

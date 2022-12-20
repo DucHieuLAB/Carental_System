@@ -18,7 +18,7 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
 
 
     @Query(value = "SELECT * FROM carrental.contract_details where contract_detail_id = ?1 ORDER BY contract_detail_id LIMIT 1", nativeQuery = true)
-    ContractDetailEntity BookingDetail(Long id);
+    ContractDetailEntity getContractDetailById(Long id);
 
     @Query("SELECT ctd FROM  ContractDetailEntity ctd " +
             "INNER JOIN ContractEntity  ct ON ctd.booking.id = ct.id " +
