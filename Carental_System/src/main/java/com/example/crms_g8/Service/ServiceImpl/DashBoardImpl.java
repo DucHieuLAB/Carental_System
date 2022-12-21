@@ -71,11 +71,11 @@ public class DashBoardImpl implements DashBoardService {
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
-    Integer Capacity_4 = 0;
+    Integer Capacity_5 = 0;
     Integer Capacity_7 = 0;
     Integer Capacity_16 = 0;
     Integer Capacity_29 = 0;
-    Integer Capacity_47 = 0;
+    Integer Capacity_45 = 0;
 
     @Override
     public ResponseEntity<?> CountCar() {
@@ -83,8 +83,8 @@ public class DashBoardImpl implements DashBoardService {
 
         List<ContractDetailEntity> contractDetailEntityList = contractDetailRepository.CountCar();
         contractDetailEntityList.forEach(ContractDetailEntity -> {
-            if (ContractDetailEntity.getCar().getCapacity() == 4) {
-                Capacity_4++;
+            if (ContractDetailEntity.getCar().getCapacity() == 5) {
+                Capacity_5++;
             } else if (ContractDetailEntity.getCar().getCapacity() == 7) {
                 Capacity_7++;
             } else if (ContractDetailEntity.getCar().getCapacity() == 16) {
@@ -92,20 +92,20 @@ public class DashBoardImpl implements DashBoardService {
             } else if (ContractDetailEntity.getCar().getCapacity() == 29) {
                 Capacity_29++;
             } else if (ContractDetailEntity.getCar().getCapacity() == 45) {
-                Capacity_47++;
+                Capacity_45++;
             }
         });
         ArrayList<Integer> arrayList = new ArrayList<>();
-        arrayList.add(Capacity_4);
+        arrayList.add(Capacity_5);
         arrayList.add(Capacity_7);
         arrayList.add(Capacity_16);
         arrayList.add(Capacity_29);
-        arrayList.add(Capacity_47);
-        Capacity_4 = 0;
+        arrayList.add(Capacity_45);
+        Capacity_5 = 0;
         Capacity_7 = 0;
         Capacity_16 = 0;
         Capacity_29 = 0;
-        Capacity_47 = 0;
+        Capacity_45 = 0;
 
         responseVo.setStatus(true);
         responseVo.setMessage("Danh mục xe đc thuê nhiều nhất trong tháng : ");
