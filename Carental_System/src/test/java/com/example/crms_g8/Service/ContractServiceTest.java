@@ -1,15 +1,20 @@
 package com.example.crms_g8.Service;
 
 import com.example.crms_g8.Entity.CarEntity;
+import com.example.crms_g8.Entity.ContractDetailEntity;
 import com.example.crms_g8.Entity.ContractEntity;
 import com.example.crms_g8.Repository.*;
 import com.example.crms_g8.Service.ServiceImpl.ContractServiceImpl;
+import com.example.crms_g8.dto.Request.ContractRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -72,8 +77,8 @@ public class ContractServiceTest {
 //    @Test
 //    public void createContractTest() {
 //        try {
-//            String sDate="17/12/2022";
-//            String eDate="18/12/2022";
+//            String sDate="22/12/2022";
+//            String eDate="23/12/2022";
 //            Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
 //            Date date2= new SimpleDateFormat ("dd/MM/yyyy").parse(eDate);
 //            ContractRequest contractRequest = new ContractRequest();
@@ -83,13 +88,13 @@ public class ContractServiceTest {
 //            contractRequest.setExpectedEndDate(date2);
 //            contractRequest.setNote("Kiểm tra xe trước khi lấy");
 //            contractRequest.setHad_driver(false);
-//            contractRequest.setCustomerId(1);
+//            contractRequest.setCustomerId(4);
 //            contractRequest.setStatus(2);
 //            List<String> plateNumbers = new ArrayList<>();
-//            plateNumbers.add("29A-258.45");
+//            plateNumbers.add("30A-025.36");
 //            contractRequest.setListCarPlateNumber(plateNumbers);
 //            // add contract
-//            contractService.add(contractRequest);
+//            ResponseEntity<?> response = contractService.add(contractRequest);
 //            // get Contract From Database
 //            ContractEntity contractEntity = contractRepository.getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(contractRequest.getCustomerId(),contractRequest.getExpectedStartDate(),contractRequest.getExpectedEndDate(),contractRequest.isHad_driver());
 //            // check contract from database

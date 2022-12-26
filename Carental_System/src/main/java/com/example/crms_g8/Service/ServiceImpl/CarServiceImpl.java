@@ -334,6 +334,10 @@ public class CarServiceImpl implements CarService {
         List<CarEntity> listPassDateAndPickupParking = new ArrayList<>();
         for (CarEntity carEntity : passValidDate) {
             // get Contract near excepted pick Up date
+            if (pickupParkingId == returnParkingId){
+                listPassDateAndPickupParking.add(carEntity);
+                continue;
+            }
             Optional<ContractEntity> contractEntity = contractRepository.findContractByPlateNumberAndStartDate(carEntity.getPlateNumber(), startDate);
             if (contractEntity.isPresent()){
                 if (contractEntity.get().getReturn_parking().getId() == pickupParkingId) {

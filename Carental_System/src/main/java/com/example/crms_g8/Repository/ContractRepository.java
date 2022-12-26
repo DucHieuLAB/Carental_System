@@ -15,11 +15,11 @@ import java.util.Optional;
 public interface ContractRepository extends JpaRepository<ContractEntity, Long> {
     @Query(value = "SELECT *\n" +
             "FROM contracts\n" +
-            "WHERE  id_customer = ?1 and expected_start_date = ?2 and expected_end_date = ?3", nativeQuery = true)
+            "WHERE  id_customer = ?1 and expected_start_date = ?2 and expected_end_date = ?3 and status > 0 and status < 6 ", nativeQuery = true)
     List<ContractEntity> findByCustomerIDAndExpectedStartDateAndExpectedEndDate(Long customerId, Date startDate, Date endDate);
 
 
-    @Query("SELECT b FROM ContractEntity b WHERE b.customer.ID = ?1 AND b.expected_start_date = ?2 AND b.expected_end_date = ?3 AND b.had_driver = ?4 AND b.status > 0 ")
+    @Query("SELECT b FROM ContractEntity b WHERE b.customer.ID = ?1 AND b.expected_start_date = ?2 AND b.expected_end_date = ?3 AND b.had_driver = ?4 AND b.status > 0 AND b.status < 7")
     ContractEntity getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(Long id, Date expected_start_date, Date expected_end_date, boolean isHadDriver);
 
     @Query(value = "select * from contracts where (status = 1 or status = 2 or status = 3 )    order by expected_start_date ASC", nativeQuery = true)
@@ -111,17 +111,17 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
     @Query(value = "     SELECT *, DATEDIFF(ct.expected_end_date,?2) as dayDiff\n" +
             "            FROM cars \n" +
             "            JOIN parkings on parkings.id = cars.parking_id\n" +
-            "\t\t\t      LEFT JOIN contract_details c on cars.id = c.car_id\n" +
-            "            LEFT JOIN contracts ct on c.contract_id = ct.booking_id  \n" +
-            "\t\t\t      WHERE cars.plate_number = ?1 and DATEDIFF(ct.expected_end_date,?2) < 0\n" +
+            "\t\t\t      JOIN contract_details c on cars.id = c.car_id\n" +
+            "            JOIN contracts ct on c.contract_id = ct.booking_id  \n" +
+            "\t\t\t      WHERE ct.status < 7 and ct.status > 0 and  cars.plate_number = ?1 and DATEDIFF(ct.expected_end_date,?2) < 0\n" +
             "            ORDER BY  dayDiff DESC LIMIT 1", nativeQuery = true)
     Optional<ContractEntity> findContractByPlateNumberAndStartDate(String plateNumber, Date startDate);
 
     @Query(value = "     SELECT *, DATEDIFF(ct.expected_start_date,?2) as dayDiff\n" +
             "            FROM cars \n" +
             "            JOIN parkings on parkings.id = cars.parking_id\n" +
-            "\t\t\t      LEFT JOIN contract_details c on cars.id = c.car_id\n" +
-            "            LEFT JOIN contracts ct on c.contract_id = ct.booking_id  \n" +
+            "\t\t\t      JOIN contract_details c on cars.id = c.car_id\n" +
+            "            JOIN contracts ct on c.contract_id = ct.booking_id  \n" +
             "\t\t\t      WHERE cars.plate_number = ?1 and DATEDIFF(ct.expected_start_date,?2) > 0  \n" +
             "            ORDER BY  dayDiff ASC \n" +
             "            LIMIT 1;", nativeQuery = true)
@@ -148,7 +148,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
 
     @Query(value = "SELECT *\n" +
             "FROM contracts\n" +
-            "WHERE ADDDATE(contracts.expected_start_date, INTERVAL 1 DAY) < CURDATE() and contracts.status  > 4 and contracts.status < 7", nativeQuery = true)
+            "WHERE ADDDATE(contracts.expected_start_date, INTERVAL 1 DAY) < CURDATE() and contracts.status  <= 4 ", nativeQuery = true)
     List<ContractEntity> getListInvaliContract();
 
     //startdate <= startdateRequest && endDate > endDateRequest , startdate > startdateRequest endđate <= enddateRequest

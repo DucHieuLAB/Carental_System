@@ -451,7 +451,7 @@ public class ContractServiceImpl implements ContractService {
             if (contractDetailEntity.getBooking().getExpected_start_date().getTime() > date.getTime()) {
                 throw new Exception("Chưa đến ngày lấy xe !");
             }
-            if (contractDetailEntity.getBooking().getExpected_start_date().getTime() + OTP_VALID_DURATION_2 < date.getTime()) {
+            if (contractDetailEntity.getBooking().getExpected_start_date().getTime() + OTP_VALID_DURATION < date.getTime()) {
                 throw new Exception("Quá hạn lấy xe !");
             }
             // Kiểm tra thời gian hiện tại và thời gian trong hợp đồng nếu ít hơn thì báo  : 24h thì báo la " Chưa đến ngày lấy xe"
