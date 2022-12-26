@@ -2,6 +2,7 @@ package com.example.crms_g8.schedular;
 
 import com.example.crms_g8.Entity.ContractEntity;
 import com.example.crms_g8.Service.IService.ContractService;
+import com.example.crms_g8.Service.ServiceImpl.ContractServiceImpl;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,7 +13,7 @@ import java.util.List;
 @Component
 public class ExpiredSchedular {
     @Autowired
-    ContractService contractService;
+    ContractServiceImpl contractService;
 
     @SneakyThrows
     @Scheduled(cron = "0 0 1 * * ?")

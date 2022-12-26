@@ -400,6 +400,7 @@ public class ContractServiceImpl implements ContractService {
             bdr.save(contractDetailEntity);
         }
         contractEntity.setReal_price(contractDriverRealPriceRequest.getReal_price());
+        contractEntity.setDeposit_amount(contractDriverRealPriceRequest.getDeposit());
         contractEntity.setStatus(2);
         br.save(contractEntity);
         contractEntity = br.FindByID(contractDriverRealPriceRequest.getContractId());
@@ -877,12 +878,12 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public ResponseEntity<?> getListSurchargeByContract(long contractId) {
-        ContractEntity contractEntity = br.findByIdAndStatusValid(contractId);
-        if (ObjectUtils.isEmpty(contractEntity)) {
+        Optional<ContractEntity> contractEntity = br.findById(contractId);
+        if (!contractEntity.isPresent()) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Không tìm thấy thông tin hợp đồng hợp lệ", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.getId());
+        List<SurchargeEntity> surchargeEntities = surchargeRepository.getListSurchargeByContractId(contractEntity.get().getId());
         List<ListSurchargeResponse> listSurchargeResponse = ListSurchargeResponse.createListSurchargeResponse(surchargeEntities);
         ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(true, "API get list Surcharge From Contract", listSurchargeResponse);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);

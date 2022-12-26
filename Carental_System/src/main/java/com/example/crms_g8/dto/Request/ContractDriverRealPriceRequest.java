@@ -14,5 +14,6 @@ import java.util.List;
 public class ContractDriverRealPriceRequest {
     private long contractId;
     private double real_price;
+    private double deposit;
     List<ListContractDetailDriverRequest> listContractDetailDriverRequests;
 }

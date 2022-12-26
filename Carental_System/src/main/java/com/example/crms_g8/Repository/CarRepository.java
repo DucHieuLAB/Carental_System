@@ -74,5 +74,8 @@ public interface CarRepository extends JpaRepository<CarEntity,Long> {
             "LEFT JOIN contract_details c on cars.id = c.car_id \n" +
             "LEFT JOIN contracts ct on c.contract_id = ct.booking_id AND  ct.expected_start_date = NULl  AND ct.expected_end_date = NULL  OR  c.contract_id = ct.booking_id AND ct.expected_start_date > ?2 OR c.contract_id = ct.booking_id AND ct.expected_end_date < ?1",nativeQuery = true)
     Page<CarEntity> findByStartDateAndEndDateAndParkingIdAndCitiName(Date startDate, Date endDate, Long parkingId, String cityName, Pageable pageable);
+
+    @Query("SELECT c FROM CarEntity c WHERE c.status > 0")
+    List<CarEntity> findCarActive();
 }
 

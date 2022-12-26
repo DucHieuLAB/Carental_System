@@ -6,6 +6,7 @@ import com.example.crms_g8.Service.IService.CarService;
 import com.example.crms_g8.dto.Request.CarRequest;
 import com.example.crms_g8.dto.Request.DriverByCarByContractRequest;
 import com.example.crms_g8.dto.Response.*;
+import com.example.crms_g8.untils.DateUntil;
 import com.example.crms_g8.untils.ResponseVeConvertUntil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -303,7 +304,7 @@ public class CarServiceImpl implements CarService {
         //Create data response Map<String,Objet>
         Map<String, Object> responseData = new HashMap<>();
         // Get list Cars
-        ListCars = carRepository.findAll();
+        ListCars = carRepository.findCarActive();
         if (ListCars.isEmpty()) {
             ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Danh sac cach xe trong", null);
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
@@ -312,7 +313,8 @@ public class CarServiceImpl implements CarService {
         for (CarEntity carEntity : ListCars) {
             // check car had contract detail or not
             boolean hadNextStep = true;
-            List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId(),new Date(System.currentTimeMillis()));
+            Date currendate = new Date(System.currentTimeMillis());
+            List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId(),DateUntil.removeTime(currendate));
             if (carEntity.getStatus() == 0){
                 continue;
             }
@@ -377,6 +379,12 @@ public class CarServiceImpl implements CarService {
             List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(carImageService.getListCarByPlateNumber(c.getPlateNumber()));
             c.setListImg(carImageResponses);
         }
+        Collections.sort(cars, new Comparator<ListCarResponse>() {
+            @Override
+            public int compare(ListCarResponse o1, ListCarResponse o2) {
+                return o1.getCapacity()>o2.getCapacity()?1:-1;
+            }
+        });
         responseData.put("cars", cars);
         responseData.put("startDate", startDate);
         responseData.put("endDate", endDate);
@@ -395,7 +403,7 @@ public class CarServiceImpl implements CarService {
         //Create data response Map<String,Objet>
         Map<String, Object> responseData = new HashMap<>();
         // Get list Cars valid
-        ListCars = carRepository.findAll();
+        ListCars = carRepository.findCarActive();
         List<CarEntity> listPassValidStartDateAndEndDate  = new ArrayList<>();
         for (CarEntity carEntity : ListCars) {
             // check car had contract detail or not
@@ -403,7 +411,8 @@ public class CarServiceImpl implements CarService {
                 continue;
             }
             boolean hadNextStep = true;
-            List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId(),new Date(System.currentTimeMillis()));
+            Date currendate = new Date(System.currentTimeMillis());
+            List<ContractDetailEntity> checkCarHadInDetailContract = contractDetailRepository.findContractDetailByCar(carEntity.getId(),DateUntil.removeTime(currendate));
             if (checkCarHadInDetailContract.size() <= 0) {
                 result.add(carEntity);
                 hadNextStep = false;
@@ -416,6 +425,7 @@ public class CarServiceImpl implements CarService {
             }
         }
         for (CarEntity carEntity : listPassValidStartDateAndEndDate){
+
             Optional<ContractEntity> contractEntity = contractRepository.findContractByPlateNumberAndStartDate(carEntity.getPlateNumber(), startDate);
             if (contractEntity.isPresent()){
                 if (contractEntity.get().getReturn_parking().getDistrictsEntity().getCity().equals(cityName)) {
@@ -442,6 +452,12 @@ public class CarServiceImpl implements CarService {
             List<ListCarImageResponse> carImageResponses = ListCarImageResponse.createListCarImagePesponse(carImageService.getListCarByPlateNumber(c.getPlateNumber()));
             c.setListImg(carImageResponses);
         }
+        Collections.sort(cars, new Comparator<ListCarResponse>() {
+            @Override
+            public int compare(ListCarResponse o1, ListCarResponse o2) {
+                return o1.getCapacity()>o2.getCapacity()?1:-1;
+            }
+        });
         responseData.put("cars", cars);
         responseData.put("startDate", startDate);
         responseData.put("endDate", endDate);
