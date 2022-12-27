@@ -3,9 +3,12 @@ package com.example.crms_g8.Service;
 import com.example.crms_g8.Entity.CarEntity;
 import com.example.crms_g8.Entity.ContractDetailEntity;
 import com.example.crms_g8.Entity.ContractEntity;
+import com.example.crms_g8.Entity.ContractHadDriverEntity;
 import com.example.crms_g8.Repository.*;
 import com.example.crms_g8.Service.ServiceImpl.ContractServiceImpl;
 import com.example.crms_g8.dto.Request.ContractRequest;
+import com.example.crms_g8.dto.Request.DistricRequest;
+import com.example.crms_g8.untils.DateUntil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +39,30 @@ public class ContractServiceTest {
 
     @Autowired
     CarRepository carRepository;
+
+    @Test
+    public void testfindInvalidDateBooking(){
+        try {
+            long customerId = 2;
+            String sDate="27/12/2022";
+            String eDate="27/12/2022";
+            Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
+            Date date2= new SimpleDateFormat ("dd/MM/yyyy").parse(eDate);
+            ContractEntity contractEntity = contractRepository.findInvalidDateBooking(customerId,date1,date2);
+            Assertions.assertNull(contractEntity);
+        }catch (Exception e){
+            Assertions.assertNull(e);
+        }
+
+    }
+
+    @Test
+    public void testScheduleFuture(){
+    Date currendate = new Date(System.currentTimeMillis());
+    String username = "hongcx";
+    List<ContractDetailEntity>  contractDetailEntities = contractDetailRepository.Future_Schedule(username, DateUntil.removeTime(currendate));
+    Assertions.assertEquals(1,contractDetailEntities.size());
+}
 //
 //    @DisplayName("Test Find Contract By CustomerID , ExceptedStartDate, ExceptedEndDate")
 //    @Test
@@ -113,59 +140,59 @@ public class ContractServiceTest {
 //            Assertions.assertNull(e);
 //        }
 //    }
-//    @Order(4)
-//    @DisplayName("Test Create Contract Had Driver")
-//    @Test
-//    public void createContractHadDriverTest() {
-//       try {
-//           ContractRequest contractRequest = new ContractRequest();
-//           // add contract
-//           String sDate="17/01/2023";
-//           String eDate="18/01/2023";
-//           Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
-//           Date date2= new SimpleDateFormat ("dd/MM/yyyy").parse(eDate);
-//           contractRequest.setPickupParkingId(1);
-//           contractRequest.setReturnParkingId(1);
-//           contractRequest.setExpectedStartDate(date1);
-//           contractRequest.setExpectedEndDate(date2);
-//           contractRequest.setNote("Kiểm tra xe trước khi lấy");
-//           contractRequest.setHad_driver(true);
-//           contractRequest.setCustomerId(1);
-//           contractRequest.setStatus(1);
-//           List<String> plateNumbers = new ArrayList<>();
-//           plateNumbers.add("29A-258.45");
-//           contractRequest.setListCarPlateNumber(plateNumbers);
-//           contractRequest.setOneWay(false);
-//           contractRequest.setPickUpAddress("HH1C Linh Đàm, Hoàng Mai, Hà Nội");
-//           contractRequest.setReturnAddress("HH1C Linh Đàm, Hoàng Mai, Hà Nội");
-//           contractRequest.setDistricPickUpAddress(new DistricRequest(null,"Linh Đàm","Hoàng Mai","Thành phố Hà Nội"));
-//           contractRequest.setDistricReturnAddress(new DistricRequest(null,"Linh Đàm","Hoàng Mai","Thành phố Hà Nội"));
-//           contractService.add(contractRequest);
-//           // get Contract By
-//           ContractEntity contractEntity = contractRepository.getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(contractRequest.getCustomerId(),contractRequest.getExpectedStartDate(),contractRequest.getExpectedEndDate(),contractRequest.isHad_driver());
-//           // check contract from database
-//           Assertions.assertNotNull(contractEntity);
-//           // check startDate, endDate
-//           Assertions.assertEquals(contractRequest.getExpectedStartDate(),contractEntity.getExpected_start_date());
-//           Assertions.assertEquals(contractRequest.getExpectedEndDate(),contractEntity.getExpected_end_date());
-//           // check customer
-//           Assertions.assertEquals(contractRequest.getCustomerId(),contractEntity.getCustomer().getID());
-//           // check quantity
-//           Assertions.assertEquals(contractEntity.getQuantity(),contractRequest.getListCarPlateNumber().size());
-//           // check car
-//           List<ContractDetailEntity> contractDetailEntity = contractDetailRepository.getListContractDetailEntitiesByContractId(contractEntity.getId());
-//           // check number of car
-//           Assertions.assertEquals(contractDetailEntity.size(),contractRequest.getListCarPlateNumber().size());
-//           // check pickup Address
-//           ContractHadDriverEntity entity = contractHadDriverRepository.getByContractID(contractEntity.getId());
-//           Assertions.assertNotNull(entity);
-//           Assertions.assertEquals(entity.getPickup_address(),contractRequest.getPickUpAddress());
-//           Assertions.assertEquals(entity.getReturn_address(),contractRequest.getReturnAddress());
-//       }catch (Exception e){
-//           Assertions.assertNull(e);
-//       }
-//
-//    }
+    @Order(4)
+    @DisplayName("Test Create Contract Had Driver")
+    @Test
+    public void createContractHadDriverTest() {
+       try {
+           ContractRequest contractRequest = new ContractRequest();
+           // add contract
+           String sDate="27/12/2022";
+           String eDate="27/12/2022";
+           Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
+           Date date2= new SimpleDateFormat ("dd/MM/yyyy").parse(eDate);
+           contractRequest.setPickupParkingId(1);
+           contractRequest.setReturnParkingId(1);
+           contractRequest.setExpectedStartDate(date1);
+           contractRequest.setExpectedEndDate(date2);
+           contractRequest.setNote("Kiểm tra xe trước khi lấy");
+           contractRequest.setHad_driver(true);
+           contractRequest.setCustomerId(2);
+           contractRequest.setStatus(1);
+           List<String> plateNumbers = new ArrayList<>();
+           plateNumbers.add("29A-890.41");
+           contractRequest.setListCarPlateNumber(plateNumbers);
+           contractRequest.setOneWay(false);
+           contractRequest.setPickUpAddress("HH1C Linh Đàm, Hoàng Mai, Hà Nội");
+           contractRequest.setReturnAddress("HH1C Linh Đàm, Hoàng Mai, Hà Nội");
+           contractRequest.setDistricPickUpAddress(new DistricRequest(null,"Linh Đàm","Hoàng Mai","Thành phố Hà Nội"));
+           contractRequest.setDistricReturnAddress(new DistricRequest(null,"Linh Đàm","Hoàng Mai","Thành phố Hà Nội"));
+           contractService.add(contractRequest);
+           // get Contract By
+           ContractEntity contractEntity = contractRepository.getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(contractRequest.getCustomerId(),contractRequest.getExpectedStartDate(),contractRequest.getExpectedEndDate(),contractRequest.isHad_driver());
+           // check contract from database
+           Assertions.assertNotNull(contractEntity);
+           // check startDate, endDate
+           Assertions.assertEquals(contractRequest.getExpectedStartDate(),contractEntity.getExpected_start_date());
+           Assertions.assertEquals(contractRequest.getExpectedEndDate(),contractEntity.getExpected_end_date());
+           // check customer
+           Assertions.assertEquals(contractRequest.getCustomerId(),contractEntity.getCustomer().getID());
+           // check quantity
+           Assertions.assertEquals(contractEntity.getQuantity(),contractRequest.getListCarPlateNumber().size());
+           // check car
+           List<ContractDetailEntity> contractDetailEntity = contractDetailRepository.getListContractDetailEntitiesByContractId(contractEntity.getId());
+           // check number of car
+           Assertions.assertEquals(contractDetailEntity.size(),contractRequest.getListCarPlateNumber().size());
+           // check pickup Address
+           ContractHadDriverEntity entity = contractHadDriverRepository.getByContractID(contractEntity.getId());
+           Assertions.assertNotNull(entity);
+           Assertions.assertEquals(entity.getPickup_address(),contractRequest.getPickUpAddress());
+           Assertions.assertEquals(entity.getReturn_address(),contractRequest.getReturnAddress());
+       }catch (Exception e){
+           Assertions.assertNull(e);
+       }
+
+    }
 //
 //    @DisplayName("Test Get Contract Detail")
 //    @Test

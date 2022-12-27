@@ -143,7 +143,8 @@ public class ContractServiceImpl implements ContractService {
             // save
             br.save(newContract);
             // get Contract with ID check contractExsitInDatabase
-            newContract = br.getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate(), contractRequest.isHad_driver());
+            long contractId = newContract.getId();
+            newContract = br.findByIdAndStatusValid(contractId);
             if (ObjectUtils.isEmpty(newContract)) {
                 throw new Exception("Lưu hợp đồng không thành công");
             }
@@ -211,7 +212,7 @@ public class ContractServiceImpl implements ContractService {
             newContract.setDeposit_amount(depositAmount);
             br.save(newContract);
             // create reponse
-            newContract = br.getByCustomerIdAndExpectStartDateAndExpectEndDateAndType(contractRequest.getCustomerId(), contractRequest.getExpectedStartDate(), contractRequest.getExpectedEndDate(), contractRequest.isHad_driver());
+            newContract = br.findByIdAndStatusValid(contractId);
             bookingDetailEntities = bdr.getListContractDetailEntitiesByContractId(newContract.getId());
             List<ListContractDetailResponse> listContractDetailRespons = null;
             if (bookingDetailEntities.size() > 0) {
