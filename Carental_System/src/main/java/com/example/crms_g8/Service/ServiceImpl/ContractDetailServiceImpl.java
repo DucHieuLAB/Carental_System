@@ -8,10 +8,12 @@ import com.example.crms_g8.Repository.ContractHadDriverRepository;
 import com.example.crms_g8.Repository.DistrictRepository;
 import com.example.crms_g8.Service.IService.ContractDetailService;
 import com.example.crms_g8.dto.Request.ListBookingDetailRequest;
+import com.example.crms_g8.untils.DateUntil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -60,8 +62,8 @@ public class ContractDetailServiceImpl implements ContractDetailService {
 
     @Override
     public ResponseEntity<?> FutureSchedule(String username) {
-
-        List<ContractDetailEntity> contractDetailEntities = contractDetailRepository.Future_Schedule(username);
+        Date currendate = new Date(System.currentTimeMillis());
+        List<ContractDetailEntity> contractDetailEntities = contractDetailRepository.Future_Schedule(username, DateUntil.removeTime(currendate));
         return this.responseFutureSchedule(contractDetailEntities);
     }
 

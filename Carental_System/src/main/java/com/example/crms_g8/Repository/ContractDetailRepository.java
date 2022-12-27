@@ -23,11 +23,11 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetailEn
     @Query("SELECT ctd FROM  ContractDetailEntity ctd " +
             "INNER JOIN ContractEntity  ct ON ctd.booking.id = ct.id " +
             "WHERE ctd.driverEntity.accountEntity.Username = ?1 " +
-            "AND ct.status=4 " +
+            "AND ct.status= 4 " +
             "AND ct.had_driver = true " +
-            "AND ct.expected_start_date > current_date " +
+            "AND ct.expected_start_date > ?2 " +
             "ORDER BY ct.expected_start_date asc ")
-    List<ContractDetailEntity> Future_Schedule(String username);
+    List<ContractDetailEntity> Future_Schedule(String username, Date CurrenDate);
 
     @Query("SELECT ctd FROM  ContractDetailEntity ctd " +
             "INNER JOIN ContractEntity  ct ON ctd.booking.id = ct.id " +
