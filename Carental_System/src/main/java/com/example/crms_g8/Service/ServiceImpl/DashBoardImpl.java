@@ -4,6 +4,7 @@ import com.example.crms_g8.Entity.*;
 import com.example.crms_g8.Repository.*;
 import com.example.crms_g8.Service.IService.DashBoardService;
 import com.example.crms_g8.dto.Response.ResponseVo;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -121,21 +122,23 @@ public class DashBoardImpl implements DashBoardService {
     public ArrayList<Object> ResponseTotalPaid(List<PaymentEntity> paymentEntityList) {
         ArrayList<Object> objects = new ArrayList<>();
         paymentEntityList.forEach(PaymentEntity -> {
-            if (PaymentEntity.getContract().getCreatedDate().getMonth() == 1 ||
-                    PaymentEntity.getContract().getCreatedDate().getMonth() == 2 ||
-                    PaymentEntity.getContract().getCreatedDate().getMonth() == 3) {
+            DateTime datetime = new DateTime(PaymentEntity.getContract().getCreatedDate());
+            int month = Integer.parseInt(datetime.toString("MM"));
+            if (month == 1 ||
+                    month == 2 ||
+                    month == 3) {
                 Paid_1 += PaymentEntity.getPaid();
-            } else if (PaymentEntity.getContract().getCreatedDate().getMonth() == 4 ||
-                    PaymentEntity.getContract().getCreatedDate().getMonth() == 6 ||
-                    PaymentEntity.getContract().getCreatedDate().getMonth() == 5) {
+            } else if (month == 4 ||
+                    month == 6 ||
+                    month == 5) {
                 Paid_2 += PaymentEntity.getPaid();
-            } else if (PaymentEntity.getContract().getCreatedDate().getMonth() == 9 ||
-                    PaymentEntity.getContract().getCreatedDate().getMonth() == 7 ||
-                    PaymentEntity.getContract().getCreatedDate().getMonth() == 8) {
+            } else if (month == 9 ||
+                    month == 7 ||
+                    month == 8) {
                 Paid_3 += PaymentEntity.getPaid();
-            } else if (PaymentEntity.getContract().getCreatedDate().getMonth() == 10 ||
-                    PaymentEntity.getContract().getCreatedDate().getMonth() == 11 ||
-                    PaymentEntity.getContract().getCreatedDate().getMonth() == 12) {
+            } else if (month == 10 ||
+                    month == 11 ||
+                    month == 12) {
                 Paid_4 += PaymentEntity.getPaid();
             }
         });
