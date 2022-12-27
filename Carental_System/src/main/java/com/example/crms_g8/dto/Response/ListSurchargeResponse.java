@@ -21,6 +21,7 @@ public class ListSurchargeResponse {
     private String note;
     private Date createdDate;
     private String staffName;
+    private String driverName;
     public static List<ListSurchargeResponse> createListSurchargeResponse(List<SurchargeEntity> surchargeEntityList){
         List<ListSurchargeResponse> listSurchargeResponses = new ArrayList<>();
         for (SurchargeEntity surchargeEntity : surchargeEntityList){
@@ -31,6 +32,9 @@ public class ListSurchargeResponse {
             listSurchargeResponse.setCreatedDate(surchargeEntity.getCreatedDate());
             if (!ObjectUtils.isEmpty(surchargeEntity.getStaffEntity())){
                 listSurchargeResponse.setStaffName(surchargeEntity.getStaffEntity().getFullName());
+            }
+            if (!ObjectUtils.isEmpty(surchargeEntity.getDriverEntity())){
+                listSurchargeResponse.setDriverName(surchargeEntity.getDriverEntity().getFullName());
             }
             listSurchargeResponses.add(listSurchargeResponse);
         }

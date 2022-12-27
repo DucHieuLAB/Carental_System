@@ -136,6 +136,4 @@ public class ContractController {
     public ResponseEntity<?> paymentByCustomer(@RequestBody CustomerTransactionRequest customerTransactionRequest) throws Exception {
         return contractService.addPaymentByCustomer(customerTransactionRequest);
     }
-
-
 }
