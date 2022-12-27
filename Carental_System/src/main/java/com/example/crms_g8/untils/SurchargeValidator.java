@@ -17,8 +17,8 @@ public class SurchargeValidator {
             errors.add(error);
         }
 //        amount
-        if (SurchargeRequest.getAmount() <= 0){
-            ValidError error = new ValidError("Số tiền thu","Số tiền thu không thể nhỏ hơn hoặc bằng 0");
+        if (SurchargeRequest.getAmount() == 0){
+            ValidError error = new ValidError("Số tiền thu","Số tiền thu không thể bằng 0");
             errors.add(error);
         }
 

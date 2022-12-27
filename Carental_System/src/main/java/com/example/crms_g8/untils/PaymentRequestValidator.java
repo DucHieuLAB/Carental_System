@@ -15,8 +15,8 @@ public class PaymentRequestValidator {
             ValidError error = new ValidError("ContractID", "Mã hợp đồng không hợp lệ");
             errors.add(error);
         }
-        if (paymentRequest.getPaid() <= 0){
-            ValidError error = new ValidError("ContractID", "Số tiền không thể bé hơn 0 ");
+        if (paymentRequest.getPaid() == 0){
+            ValidError error = new ValidError("ContractID", "Số tiền không thể bằng 0 ");
             errors.add(error);
         }
         return errors;

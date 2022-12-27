@@ -699,6 +699,9 @@ public class ContractServiceImpl implements ContractService {
         }
         paymentEntity.setContract(contractEntity);
         String des = paymentRequest.isDeposit() == true ? "Cọc hợp đồng" : "Thanh toán hợp đồng";
+        if (paymentRequest.getPaid() < 0){
+            des = "tiền hoàn trả khách";
+        }
         paymentEntity.setDescription(des);
         paymentEntity.setPaid(paymentRequest.getPaid());
         paymentEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
@@ -755,6 +758,10 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public ResponseEntity<?> addPaymentByCustomer(CustomerTransactionRequest customerTransactionRequest) throws Exception {
         // valid
+        if (customerTransactionRequest.getPaid() <= 0){
+            ResponseVo responseVo = new ResponseVo(false, "Số tiền đặt cọc không thể bé hơn 0", null);
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
         if (customerTransactionRequest.getContractId() <= 0) {
             // if not success
             ResponseVo responseVo = new ResponseVo(false, "Mã hợp đồng không chính xác", null);
