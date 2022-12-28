@@ -185,4 +185,9 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
             "JOIN contracts ct on c.contract_id = ct.booking_id\n" +
             "WHERE ct.expected_start_date >= ?1  and ct.status >  0 and ct.status < 7", nativeQuery = true)
     List<ContractEntity> findContractFutureCar(Date date, String plateNumber);
+
+
+
+    @Query(value = "SELECT * FROM carrental.contracts where return_parking_id !=  pickup_parking_id",nativeQuery = true)
+    Page<ContractEntity>ListContractChangeParking(Pageable pageable);
 }

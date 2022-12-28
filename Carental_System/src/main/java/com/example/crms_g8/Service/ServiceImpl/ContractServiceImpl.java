@@ -926,6 +926,48 @@ public class ContractServiceImpl implements ContractService {
         br.save(contractEntity);
     }
 
+    @Override
+    public ResponseEntity<?> ListContractChangeParking(Integer p) {
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        }
+        ReposMesses messes = new ReposMesses();
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+
+            Page<ContractEntity> page = br.ListContractChangeParking(pageable);
+
+            List<ContractResponse> contractResponse = new ArrayList<>();
+
+            page.forEach(BookingEntity -> {
+
+                ContractResponse contractResponse1 = ContractEntity.convertToContractResponse(BookingEntity);
+                contractResponse.add(contractResponse1);
+            });
+
+            PagingContract pagingContract = new PagingContract();
+
+            pagingContract.setContractResponseList(contractResponse);
+            pagingContract.setTotalPage(page.getTotalPages());
+            pagingContract.setNumberPage(page.getNumber() + 1);
+
+
+            if (!page.isEmpty()) {
+                return new ResponseEntity<>(pagingContract, HttpStatus.OK);
+            } else {
+                messes.setMess("Không có dữ liệu của bảng !");
+                return new ResponseEntity<>(messes, HttpStatus.OK);
+            }
+
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 
     @Override
     public ResponseEntity<?> getContractPayment(long id) {

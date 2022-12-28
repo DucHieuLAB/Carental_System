@@ -32,13 +32,14 @@ public class ContractController {
         return contractService.ManageContract(p);
     }
 
+
     @RequestMapping(value = "/SearchContract", method = RequestMethod.GET)
     public ResponseEntity<?> FilterListContract(@RequestParam(required = false) Integer p,
-                                    @RequestParam(required = false) String name,
-                                    @RequestParam(required = false) Integer HadDriver,
-                                    @RequestParam(required = false) Integer Status,
-                                    @RequestParam(required = false) String phone) {
-        if (phone != null &&  (name == null || name=="")) {
+                                                @RequestParam(required = false) String name,
+                                                @RequestParam(required = false) Integer HadDriver,
+                                                @RequestParam(required = false) Integer Status,
+                                                @RequestParam(required = false) String phone) {
+        if (phone != null && (name == null || name == "")) {
             return contractService.SearchByPhoneContract(phone, HadDriver, Status, p);
         }
         return contractService.SearchByNameContract(name, HadDriver, Status, p);
@@ -46,11 +47,11 @@ public class ContractController {
 
     @RequestMapping(value = "/SearchRequest", method = RequestMethod.GET)
     public ResponseEntity<?> FilterListRequest(@RequestParam(required = false) Integer p,
-                                    @RequestParam(required = false) String name,
-                                    @RequestParam(required = false) Integer HadDriver,
-                                    @RequestParam(required = false) Integer Status,
-                                    @RequestParam(required = false) String phone) {
-        if (phone != null && (name == null || name=="")) {
+                                               @RequestParam(required = false) String name,
+                                               @RequestParam(required = false) Integer HadDriver,
+                                               @RequestParam(required = false) Integer Status,
+                                               @RequestParam(required = false) String phone) {
+        if (phone != null && (name == null || name == "")) {
             return contractService.SearchByPhoneRequest(phone, HadDriver, Status, p);
         }
         return contractService.SearchByNameRequest(name, HadDriver, Status, p);
@@ -62,7 +63,7 @@ public class ContractController {
     }
 
     @PutMapping("/rentalPrice")
-    public ResponseEntity<?> getPrice(@RequestBody ExceptedPriceRequest exceptedPriceRequest){
+    public ResponseEntity<?> getPrice(@RequestBody ExceptedPriceRequest exceptedPriceRequest) {
         return contractService.getExceptedPrice(exceptedPriceRequest);
     }
 
@@ -94,12 +95,12 @@ public class ContractController {
     }
 
     @PutMapping("/addSurchargeEntity")
-    public ResponseEntity<?> addSurchargeEntity(@RequestBody SurchargeRequest surchargeRequest){
+    public ResponseEntity<?> addSurchargeEntity(@RequestBody SurchargeRequest surchargeRequest) {
         return contractService.addSurcharge(surchargeRequest);
     }
 
     @GetMapping("/getSurchargeByContract/{contractId}")
-    public ResponseEntity<?> getListSurchargeByContract(@PathVariable long contractId){
+    public ResponseEntity<?> getListSurchargeByContract(@PathVariable long contractId) {
         return contractService.getListSurchargeByContract(contractId);
     }
 
@@ -109,8 +110,8 @@ public class ContractController {
     }
 
     @PutMapping("/returnCarToParking")
-    public ResponseEntity<?> returnCarToParking(@RequestBody ReturnCarRequest returnCarRequest){
-    return contractService.returnCar(returnCarRequest);
+    public ResponseEntity<?> returnCarToParking(@RequestBody ReturnCarRequest returnCarRequest) {
+        return contractService.returnCar(returnCarRequest);
     }
 
     @GetMapping("getListPaymentByCustomer/{customerAccountId}")
@@ -119,12 +120,12 @@ public class ContractController {
     }
 
     @GetMapping("/listPayment/{ContractId}")
-    public ResponseEntity<?> getListPaymentByContract(@PathVariable long ContractId){
+    public ResponseEntity<?> getListPaymentByContract(@PathVariable long ContractId) {
         return contractService.getListPaymentByContract(ContractId);
     }
 
     @GetMapping("/getPaymentInf/{ContractId}")
-    public ResponseEntity<?> getPaymentInf(@PathVariable long ContractId){
+    public ResponseEntity<?> getPaymentInf(@PathVariable long ContractId) {
         return contractService.getContractPayment(ContractId);
     }
 
@@ -136,5 +137,11 @@ public class ContractController {
     @PutMapping("/PaymentByCustomer")
     public ResponseEntity<?> paymentByCustomer(@RequestBody CustomerTransactionRequest customerTransactionRequest) throws Exception {
         return contractService.addPaymentByCustomer(customerTransactionRequest);
+    }
+
+
+    @RequestMapping(value = "/ListContractChangeParking", method = RequestMethod.GET)
+    public ResponseEntity<?> ListContractChangeParking(@RequestParam(value = "p", required = false) Integer p) {
+        return contractService.ListContractChangeParking(p);
     }
 }

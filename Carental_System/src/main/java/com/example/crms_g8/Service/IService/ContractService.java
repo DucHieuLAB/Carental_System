@@ -2,6 +2,7 @@ package com.example.crms_g8.Service.IService;
 
 import com.example.crms_g8.Entity.ContractEntity;
 import com.example.crms_g8.dto.Request.*;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,4 +66,7 @@ public interface ContractService {
     List<ContractEntity> getListInvalidContract();
 
     void save(ContractEntity contractEntity);
+
+
+    ResponseEntity<?> ListContractChangeParking(Integer p);
 }
