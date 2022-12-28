@@ -28,11 +28,11 @@ public class ExpiredSchedular {
                 }else {
                     if (contractEntity.getPickup_parking().getId() == contractEntity.getReturn_parking().getId()){
                         contractEntity.setStatus(7);
-                        contractEntity.setNote("ER101 Hợp đồng quá hạn! Cảnh báo hợp đồng thay đổi bãi đỗ xe");
+                        contractEntity.setNote("Hợp đồng quá hạn");
                         contractService.save(contractEntity);
                     }else {
                         contractEntity.setStatus(7);
-                        contractEntity.setNote("Hợp đồng quá hạn");
+                        contractEntity.setNote("ER101 Hợp đồng quá hạn ! Cảnh báo hợp đồng thay đổi bãi đỗ xe");
                         contractService.save(contractEntity);
                     }
                 }

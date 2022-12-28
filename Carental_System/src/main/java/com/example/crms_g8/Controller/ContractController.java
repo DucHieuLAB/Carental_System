@@ -33,6 +33,11 @@ public class ContractController {
     }
 
 
+    @RequestMapping(value = "/ListWarringContract", method = RequestMethod.GET)
+    public ResponseEntity<?> listWarringContract(@RequestParam(value = "p", required = false) Integer p) {
+        return contractService.getListWarningContract(p);
+    }
+
     @RequestMapping(value = "/SearchContract", method = RequestMethod.GET)
     public ResponseEntity<?> FilterListContract(@RequestParam(required = false) Integer p,
                                                 @RequestParam(required = false) String name,

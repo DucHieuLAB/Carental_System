@@ -67,6 +67,7 @@ public interface ContractService {
 
     void save(ContractEntity contractEntity);
 
+    ResponseEntity<?> getListWarningContract(Integer p);
 
     ResponseEntity<?> ListContractChangeParking(Integer p);
 }

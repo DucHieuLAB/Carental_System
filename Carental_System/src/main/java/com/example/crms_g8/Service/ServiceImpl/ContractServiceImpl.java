@@ -320,13 +320,21 @@ public class ContractServiceImpl implements ContractService {
         }
         try {
             if (i == 1) {
-                // check type of contract if
-                contractEntity.setNote(cancelContractRequest.getNote());
+                // check type of contract
+                String note = cancelContractRequest.getNote();
+                if (contractEntity.getPickup_parking()!=contractEntity.getReturn_parking()){
+                    note.concat(" ER101");
+                }
+                contractEntity.setNote(note);
                 contractEntity.setStatus(7);
             }
             if (i == 2) {
                 if (contractEntity.getStatus() <= 4 ) {
-                    contractEntity.setNote(cancelContractRequest.getNote());
+                    String note = cancelContractRequest.getNote();
+                    if (contractEntity.getPickup_parking()!=contractEntity.getReturn_parking()){
+                        note.concat(" ER101");
+                    }
+                    contractEntity.setNote(note);
                     contractEntity.setStatus(7);
                 }else {
                     ResponseVo responseVo = ResponseVeConvertUntil.createResponseVo(false, "Bạn không thể hủy hợp đồng", null);
@@ -926,48 +934,6 @@ public class ContractServiceImpl implements ContractService {
         br.save(contractEntity);
     }
 
-    @Override
-    public ResponseEntity<?> ListContractChangeParking(Integer p) {
-        if (p == null) {
-            p = 0;
-        } else if (p > 0) {
-            p = p - 1;
-        }
-        ReposMesses messes = new ReposMesses();
-        try {
-            Pageable pageable = PageRequest.of(p, 5);
-
-            Page<ContractEntity> page = br.ListContractChangeParking(pageable);
-
-            List<ContractResponse> contractResponse = new ArrayList<>();
-
-            page.forEach(BookingEntity -> {
-
-                ContractResponse contractResponse1 = ContractEntity.convertToContractResponse(BookingEntity);
-                contractResponse.add(contractResponse1);
-            });
-
-            PagingContract pagingContract = new PagingContract();
-
-            pagingContract.setContractResponseList(contractResponse);
-            pagingContract.setTotalPage(page.getTotalPages());
-            pagingContract.setNumberPage(page.getNumber() + 1);
-
-
-            if (!page.isEmpty()) {
-                return new ResponseEntity<>(pagingContract, HttpStatus.OK);
-            } else {
-                messes.setMess("Không có dữ liệu của bảng !");
-                return new ResponseEntity<>(messes, HttpStatus.OK);
-            }
-
-        } catch (Exception e) {
-            messes.setMess(e.getMessage());
-            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
 
     @Override
     public ResponseEntity<?> getContractPayment(long id) {
@@ -1189,5 +1155,86 @@ public class ContractServiceImpl implements ContractService {
         return responseResultContract(contractEntities, contractEntities1, size, p);
     }
 
+    @Override
+    public ResponseEntity<?> getListWarningContract(Integer p) {
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        }
+        ReposMesses messes = new ReposMesses();
+
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+
+            Page<ContractEntity> page = br.getListWarningContract(pageable);
+
+            List<ContractResponse> contractResponse = new ArrayList<>();
+
+            page.forEach(BookingEntity -> {
+
+                ContractResponse contractResponse1 = ContractEntity.convertToContractResponse(BookingEntity);
+                contractResponse.add(contractResponse1);
+            });
+
+            PagingContract pagingContract = new PagingContract();
+
+            pagingContract.setContractResponseList(contractResponse);
+            pagingContract.setTotalPage(page.getTotalPages());
+            pagingContract.setNumberPage(page.getNumber() + 1);
+
+
+            if (!page.isEmpty()) {
+                return new ResponseEntity<>(pagingContract, HttpStatus.OK);
+            } else {
+                messes.setMess("Không có dữ liệu của bảng  !");
+                return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+    }
+    @Override
+    public ResponseEntity<?> ListContractChangeParking(Integer p) {
+        if (p == null) {
+            p = 0;
+        } else if (p > 0) {
+            p = p - 1;
+        }
+        ReposMesses messes = new ReposMesses();
+        try {
+            Pageable pageable = PageRequest.of(p, 5);
+
+            Page<ContractEntity> page = br.ListContractChangeParking(pageable);
+
+            List<ContractResponse> contractResponse = new ArrayList<>();
+
+            page.forEach(BookingEntity -> {
+
+                ContractResponse contractResponse1 = ContractEntity.convertToContractResponse(BookingEntity);
+                contractResponse.add(contractResponse1);
+            });
+
+            PagingContract pagingContract = new PagingContract();
+
+            pagingContract.setContractResponseList(contractResponse);
+            pagingContract.setTotalPage(page.getTotalPages());
+            pagingContract.setNumberPage(page.getNumber() + 1);
+
+
+            if (!page.isEmpty()) {
+                return new ResponseEntity<>(pagingContract, HttpStatus.OK);
+            } else {
+                messes.setMess("Không có dữ liệu của bảng !");
+                return new ResponseEntity<>(messes, HttpStatus.OK);
+            }
+
+        } catch (Exception e) {
+            messes.setMess(e.getMessage());
+            return new ResponseEntity<>(messes, HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
 }
