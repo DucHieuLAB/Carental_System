@@ -12,4 +12,5 @@ import lombok.Setter;
 public class ReturnCarRequest {
     private long contractId;
     private String plateNumber;
+    private String returnSpeedometer;
 }

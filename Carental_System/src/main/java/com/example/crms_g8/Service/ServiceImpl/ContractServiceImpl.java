@@ -320,6 +320,7 @@ public class ContractServiceImpl implements ContractService {
         }
         try {
             if (i == 1) {
+                // check type of contract if
                 contractEntity.setNote(cancelContractRequest.getNote());
                 contractEntity.setStatus(7);
             }
@@ -460,6 +461,7 @@ public class ContractServiceImpl implements ContractService {
             // Nếu lấy xe muộn quá 12h thì quá hạn lấy xe
             contractDetailEntity.setReal_pick_up_date(new Date(System.currentTimeMillis()));
             contractDetailEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
+            contractDetailEntity.setPickUpSpeedometer(carEntity.getSpeedometer());
             bdr.save(contractDetailEntity);
             carEntity.setStatus(2);
         }
@@ -551,9 +553,11 @@ public class ContractServiceImpl implements ContractService {
         }
 
         contractDetailEntity.setReal_return_date(new Date(System.currentTimeMillis()));
+        contractDetailEntity.setReturnSpeedometer(returnCarRequest.getReturnSpeedometer());
         contractDetailEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         bdr.save(contractDetailEntity);
         carEntity.setStatus(1);
+        carEntity.setSpeedometer(returnCarRequest.getReturnSpeedometer());
         carEntity.setParking(contractEntity.getReturn_parking());
         contractEntity.setLastModifiedDate(new Date(System.currentTimeMillis()));
         br.save(contractEntity);
@@ -913,7 +917,8 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<ContractEntity> getListInvalidContract() {
-        return br.getListInvaliContract();
+        Date date = new Date(System.currentTimeMillis());
+        return br.getListInvaliContract(DateUntil.removeTime(date));
     }
 
     @Override

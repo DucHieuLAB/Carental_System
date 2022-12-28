@@ -26,6 +26,12 @@ public class ContractDetailEntity {
     @Column
     private Date real_return_date;
 
+    @Column(nullable = true)
+    private String pickUpSpeedometer;
+
+    @Column(nullable = true)
+    private String returnSpeedometer;
+
     @ManyToOne(optional = true)
     @JoinColumn(name = "ID_Driver", foreignKey = @ForeignKey(name = "FK_Driver"))
     private DriverEntity driverEntity;

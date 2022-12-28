@@ -97,6 +97,7 @@ public class ContractController {
     public ResponseEntity<?> addSurchargeEntity(@RequestBody SurchargeRequest surchargeRequest){
         return contractService.addSurcharge(surchargeRequest);
     }
+
     @GetMapping("/getSurchargeByContract/{contractId}")
     public ResponseEntity<?> getListSurchargeByContract(@PathVariable long contractId){
         return contractService.getListSurchargeByContract(contractId);

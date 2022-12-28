@@ -42,7 +42,7 @@ public class ContractDetailServiceImpl implements ContractDetailService {
     }
 
     @Override
-    public ResponseEntity<?> ListBookingDetail(Long id) {
+    public ResponseEntity<?> ListContractDetail(Long id) {
         ContractDetailResponse contractDetailResponse = new ContractDetailResponse();
         ContractDetailEntity contractDetailEntity;
         contractDetailEntity = contractDetailRepository.getContractDetailById(id);

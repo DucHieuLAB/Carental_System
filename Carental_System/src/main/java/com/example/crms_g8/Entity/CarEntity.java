@@ -81,6 +81,9 @@ public class CarEntity {
     @JoinColumn(name = "parking_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Car_parking_id"))
     ParkingEntity parking;
 
+    @Column(nullable = true)
+    private String Speedometer;
+
     public static CarEntity createCarEntity(CarRequest carRequest) {
         CarEntity result = new CarEntity();
         result.setId(carRequest.getId());
@@ -95,6 +98,7 @@ public class CarEntity {
         result.setColor(carRequest.getColor());
         result.setDescription(carRequest.getDescription());
         result.setStatus(carRequest.getStatus());
+        result.setSpeedometer(carRequest.getSpeedometer());
         return result;
     }
 
@@ -125,6 +129,7 @@ public class CarEntity {
         crdp.setParkingName(car.getParking().getName());
         crdp.setParkingAddress(car.getParking().getAddress());
         crdp.setLicenseName(car.getLicenseTypeEntity().getName_License());
+        crdp.setSpeedometer(car.getSpeedometer());
         return crdp;
     }
 }

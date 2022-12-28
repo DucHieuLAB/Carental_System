@@ -31,4 +31,5 @@ public class CarResponseDetailResponse {
     private String parkingAddress;
     private String licenseName;
     private List<ListCarImageResponse> imgs;
+    private String speedometer;
 }

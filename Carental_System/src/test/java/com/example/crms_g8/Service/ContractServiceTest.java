@@ -41,6 +41,12 @@ public class ContractServiceTest {
     CarRepository carRepository;
 
 //    @Test
+//    public void testGetListInvalidContract(){
+//        List<ContractEntity> contractEntities = contractService.getListInvalidContract();
+//        Assertions.assertEquals(1,contractEntities.size());
+//    }
+
+//    @Test
 //    public void testfindInvalidDateBooking(){
 //        try {
 //            long customerId = 2;

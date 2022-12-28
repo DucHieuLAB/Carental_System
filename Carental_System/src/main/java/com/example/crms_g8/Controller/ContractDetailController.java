@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/")
 public class ContractDetailController {
     @Autowired
-    ContractDetailService bookingService;
+    ContractDetailService contractService;
 
     @RequestMapping(value = "/Contracts_Detail/View")
     public ResponseEntity<?> BookingDetail(@RequestParam(name = "id", required = false) Long id) {
-        return bookingService.ListBookingDetail(id);
+        return contractService.ListContractDetail(id);
     }
 }

@@ -5,14 +5,18 @@ import com.example.crms_g8.Entity.ContractEntity;
 import com.example.crms_g8.Repository.CarRepository;
 import com.example.crms_g8.Repository.ContractRepository;
 import com.example.crms_g8.Service.ServiceImpl.CarServiceImpl;
+import com.example.crms_g8.dto.Request.CarRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,12 +43,12 @@ public class CarServiceTest {
 //    @Order(1)
 //    public void addCarTest() {
 //        CarRequest carRequest = new CarRequest();
-//        carRequest.setModelName("Toyota Vios");
+//        carRequest.setModelName("Toyota Vios Test");
 //        carRequest.setBrandId(1);
 //        carRequest.setYearOfManufacture(2018);
 //        carRequest.setRentalPrice(300000);
 //        carRequest.setDepositAmount(500000);
-//        carRequest.setPlateNumber("30A-123.456");
+//        carRequest.setPlateNumber("30A-123.478");
 //        carRequest.setCapacity(5);
 //        carRequest.setFuel("Xăng");
 //        carRequest.setGears("gears");
@@ -53,10 +57,11 @@ public class CarServiceTest {
 //        carRequest.setDescription("Toyota Vios");
 //        carRequest.setLicenseId(2);
 //        carRequest.setParkingId(1);
+//        carRequest.setSpeedometer("588537");
 //        List<String> img = new ArrayList<>();
 //        img.add("https://static.danhgiaxe.com/data/201525/the-aventadors-aggressive-lines-and-stealth-fighter-like-edges-make-for-a-menacing-beauty-thats-perfect-for-lambos-attention-hoarding-ethos_2324.jpg");
 //        ResponseEntity<?> responseEntity = carService.add(carRequest);
-//        CarEntity carEntity = carRepository.findCarEntityByPlateNumber("30A-123.456");
+//        CarEntity carEntity = carRepository.findCarEntityByPlateNumber("30A-123.478");
 //        Assertions.assertNotNull(carEntity);
 //    }
 //
@@ -131,12 +136,12 @@ public class CarServiceTest {
 //    @Order(5)
 //    public void updateCarTest() {
 //        CarRequest carRequest = new CarRequest();
-//        carRequest.setModelName("Toyota Vios");
+//        carRequest.setModelName("Toyota Vios Test");
 //        carRequest.setBrandId(1);
 //        carRequest.setYearOfManufacture(2020);
 //        carRequest.setRentalPrice(300000);
 //        carRequest.setDepositAmount(500000);
-//        carRequest.setPlateNumber("30A-123.459");
+//        carRequest.setPlateNumber("30A-123.478");
 //        carRequest.setCapacity(5);
 //        carRequest.setFuel("Xăng");
 //        carRequest.setGears("gears");
@@ -146,16 +151,19 @@ public class CarServiceTest {
 //        carRequest.setDescription("Toyota Vios");
 //        carRequest.setLicenseId(2);
 //        carRequest.setParkingId(1);
+//        carRequest.setSpeedometer("580000");
 //        List<String> img = new ArrayList<>();
 //        img.add("https://static.danhgiaxe.com/data/201525/the-aventadors-aggressive-lines-and-stealth-fighter-like-edges-make-for-a-menacing-beauty-thats-perfect-for-lambos-attention-hoarding-ethos_2324.jpg");
-//        CarEntity carEntity1 = carRepository.findCarEntityByPlateNumber("30A-123.457");
+//        carRequest.setImgs(img);
+//        CarEntity carEntity1 = carRepository.findCarEntityByPlateNumber("30A-123.478");
 //        if (!ObjectUtils.isEmpty(carEntity1)){
 //            carRequest.setId(carEntity1.getId());
 //            ResponseEntity<?> responseEntity = carService.update(carRequest);
-//            CarEntity carEntity = carRepository.findCarEntityByPlateNumber("30A-123.459");
+//            CarEntity carEntity = carRepository.findCarEntityByPlateNumber("30A-123.478");
 //            // check not null
 //            Assertions.assertNotNull(carEntity);
 //            // check update
+//            Assertions.assertEquals(carEntity.getSpeedometer(),carRequest.getSpeedometer());
 //            Assertions.assertEquals(carEntity.getModelName(), (carRequest.getModelName()));
 //            Assertions.assertEquals(carEntity.getBrand().getId(), (carRequest.getBrandId()));
 //            Assertions.assertEquals(carEntity.getRentalPrice(),carRequest.getRentalPrice());

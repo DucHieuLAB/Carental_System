@@ -10,7 +10,7 @@ public interface ContractDetailService {
     @Transactional
     ResponseEntity<?> addList(List<ListBookingDetailRequest> listBookingDetailRequests);
 
-    ResponseEntity<?> ListBookingDetail(Long id);
+    ResponseEntity<?> ListContractDetail(Long id);
 
     ResponseEntity<?>FutureSchedule(String username);
 
